@@ -62,30 +62,11 @@ public class ChocoSolver {
         moduleInChoco = probleme.getModulesFormation().stream().map(m -> new ModuleChoco(m, probleme.getContraintes(), probleme.getPeriodeFormation())).collect(Collectors.toList());
 
     //Traitement des contraintes
+
         //Période de formation
         int debutFormation = DateTimeHelper.InstantToDays(probleme.getPeriodeFormation().getInstantDebut());
         int finFormation = DateTimeHelper.InstantToDays(probleme.getPeriodeFormation().getInstantFin());
 
-        // Nombre de stagiaire pour l'entreprise
-        int nbMaxStagiaireEntreprise = probleme.getContraintes().stream().mapToInt(c -> c.getMaxStagiaireEntrepriseEnFormation()).min().getAsInt();
-        int heureAnnuelMax = probleme.getContraintes().stream().mapToInt(c -> c.getNbHeureAnnuel()).min().getAsInt();
-        int semaineMaxEnFormation = probleme.getContraintes().stream().mapToInt(c -> c.getMaxSemaineFormation()).min().getAsInt();
-        int dureeMaxEnFormation = probleme.getContraintes().stream().mapToInt(c -> c.getDureeMaxFormation()).min().getAsInt();
-        List<Periode> periodeExclusion = probleme.getContraintes().stream().flatMap(c -> c.getPeriodeFormationExclusion().stream()).collect(Collectors.toList());
-        List<Periode> periodeInclusion = probleme.getContraintes().stream().flatMap(c -> c.getPeriodeFormationInclusion().stream()).collect(Collectors.toList());
-
-        // les lieux autorisés
-        List<Integer> listLieuxAutorises = probleme.getContraintes().stream().flatMap(c -> c.getIdLieux().stream()).collect(Collectors.toList());
-
-        // les cours autorisés des stagiaires recquis
-        Set<Periode> coursDesStagiairesRecquis = probleme.getContraintes().stream().flatMap(c -> c.getStagiairesRecquis().stream().flatMap(stagiaire -> stagiaire.getCours().stream().map(cr -> cr.getPeriode()))).collect(Collectors.toSet());
-
-        // les cours dont le nombre de stagiaire a atteint le nombre maximum
-        Set<Periode> coursRefuse = probleme.getContraintes().stream()
-                .flatMap(c -> c.getStagiairesEntreprise().stream()
-                        .flatMap(stagiaire -> stagiaire.getCours().stream()))
-                .collect(Collectors.groupingBy( e->e, Collectors.counting())).entrySet().stream()
-                .filter(c -> c.getValue() >= nbMaxStagiaireEntreprise ).map(c -> c.getKey()).map(c -> c.getPeriode()).collect(Collectors.toSet());
 
     // Création des jeux de données basé sur tous les cours pour Choco
         List<CoursChoco> coursChocoAutorise = moduleInChoco.stream().flatMap(m -> m.getCoursDuModule().stream()).collect(Collectors.toList());;
@@ -194,11 +175,13 @@ public class ChocoSolver {
 
      // Création des contraintes
         IntVar[][] table = new IntVar[nbModules][];
+
+        // Liste blanche des cours
         Tuples tuple = new Tuples(coursListeBlanche, true);
 
         for (int i = 0; i < nbModules; i++) {
 
-            // La liste des cours sont les seuls enregistrements autorisées
+            // La liste des cours à rechercher
             table[i] = new IntVar[] { modulesID[i], coursID[i], modulesDebut[i], modulesFin[i], coursIdentifier[i], modulesLieu[i], modulesDuration[i], modulesNbHeure[i], modulesNbSemaine[i]};
             model.table(table[i], tuple ).post();
 
@@ -228,7 +211,7 @@ public class ChocoSolver {
                                     DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantDebut()),
                                     DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantFin()))))
                     .toArray(Constraint[]::new);
-            model.or(contraintesDePeriodeExclues).post();
+            model.and(contraintesDePeriodeExclues).post();
 
 
             // Début et fin de la formation
@@ -249,6 +232,11 @@ public class ChocoSolver {
             }
 
         }
+
+        ContrainteManager contrainteManager = new ContrainteManager(model, probleme.getContraintes(), modulesID, coursID, modulesDebut, modulesFin, coursIdentifier, modulesLieu, modulesDuration, modulesNbHeure, modulesNbSemaine);
+
+        contrainteManager.post();
+
 
         // Permet de ressortir la solution, non nécessaire pour le moment
         // Solution solution = new Solution(model);

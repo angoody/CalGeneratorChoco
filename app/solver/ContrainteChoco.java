@@ -3,19 +3,60 @@ package solver;
 import models.Contrainte;
 import models.Periode;
 import models.Stagiaire;
+import org.chocosolver.solver.Model;
+import org.chocosolver.solver.variables.IntVar;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ContrainteChoco {
 
     private int idContrainte;
     private Contrainte contrainte;
 
+    private List<IntVar> lesContraintesDansChoco = new ArrayList<>();
+
     public ContrainteChoco(Contrainte contrainte)
     {
 
         this.contrainte = contrainte;
+
+
+        // Nombre de stagiaire pour l'entreprise
+        int nbMaxStagiaireEntreprise = contrainte.getMaxStagiaireEntrepriseEnFormation() > 0 ? contrainte.getMaxStagiaireEntrepriseEnFormation() : 0 ;
+        int heureAnnuelMax = contrainte.getNbHeureAnnuel() > 0 ? contrainte.getNbHeureAnnuel() : 0 ;
+        int semaineMaxEnFormation = contrainte.getMaxSemaineFormation() > 0 ? contrainte.getMaxSemaineFormation() : 0;
+        int dureeMaxEnFormation = contrainte.getDureeMaxFormation() > 0 ? contrainte.getDureeMaxFormation() : 0;
+        List<PeriodeChoco> periodeExclusion = contrainte.getPeriodeFormationExclusion().stream().map(p -> new PeriodeChoco(p)).collect(Collectors.toList());
+        List<PeriodeChoco> periodeInclusion = contrainte.getPeriodeFormationInclusion().stream().map(p -> new PeriodeChoco(p)).collect(Collectors.toList());
+
+        // les lieux autorisés
+        List<Integer> listLieuxAutorises = contrainte.getIdLieux().stream().collect(Collectors.toList());
+
+        // les cours autorisés des stagiaires recquis
+        List<PeriodeChoco> coursDesStagiairesRecquis = contrainte.getStagiairesRecquis().stream().flatMap(stagiaire -> stagiaire.getCours().stream().map(cr -> new PeriodeChoco(cr.getPeriode()))).collect(Collectors.toList());
+
+        // les cours dont le nombre de stagiaire a atteint le nombre maximum
+        List<PeriodeChoco> coursRefuse = contrainte.getStagiairesEntreprise().stream()
+                        .flatMap(stagiaire -> stagiaire.getCours().stream())
+                .collect(Collectors.groupingBy( e->e, Collectors.counting())).entrySet().stream()
+                .filter(c -> c.getValue() >= nbMaxStagiaireEntreprise ).map(c -> c.getKey()).map(c -> new PeriodeChoco(c.getPeriode())).collect(Collectors.toList());
+
     }
+
+
+    public void post(Model model)
+    {
+        lesContraintesDansChoco
+    }
+
+    public void unPost(Model model)
+    {
+
+    }
+
 
     public int getIdContrainte() {
         return idContrainte;

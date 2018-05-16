@@ -66,26 +66,34 @@ public class ChocoSolver {
         int debutFormation = DateTimeHelper.InstantToDays(probleme.getPeriodeFormation().getInstantDebut());
         int finFormation = DateTimeHelper.InstantToDays(probleme.getPeriodeFormation().getInstantFin());
 
+        int heureAnnuelMax = 0;
+        final List<Integer> listLieuxAutorises = new ArrayList<>();
+        final List<Periode> periodeExclusion = new ArrayList<>();
+
         // Nombre de stagiaire pour l'entreprise
-        int nbMaxStagiaireEntreprise = probleme.getContraintes().stream().mapToInt(c -> c.getMaxStagiaireEntrepriseEnFormation()).min().getAsInt();
-        int heureAnnuelMax = probleme.getContraintes().stream().mapToInt(c -> c.getNbHeureAnnuel()).min().getAsInt();
-        int semaineMaxEnFormation = probleme.getContraintes().stream().mapToInt(c -> c.getMaxSemaineFormation()).min().getAsInt();
-        int dureeMaxEnFormation = probleme.getContraintes().stream().mapToInt(c -> c.getDureeMaxFormation()).min().getAsInt();
-        List<Periode> periodeExclusion = probleme.getContraintes().stream().flatMap(c -> c.getPeriodeFormationExclusion().stream()).collect(Collectors.toList());
-        List<Periode> periodeInclusion = probleme.getContraintes().stream().flatMap(c -> c.getPeriodeFormationInclusion().stream()).collect(Collectors.toList());
+        if (probleme.getContraintes().size() > 0) {
+            int nbMaxStagiaireEntreprise = probleme.getContraintes().stream().mapToInt(c -> c.getMaxStagiaireEntrepriseEnFormation()).min().getAsInt();
 
-        // les lieux autorisés
-        List<Integer> listLieuxAutorises = probleme.getContraintes().stream().flatMap(c -> c.getIdLieux().stream()).collect(Collectors.toList());
+            heureAnnuelMax = probleme.getContraintes().stream().mapToInt(c -> c.getNbHeureAnnuel()).min().getAsInt();
+            int semaineMaxEnFormation = probleme.getContraintes().stream().mapToInt(c -> c.getMaxSemaineFormation()).min().getAsInt();
+            int dureeMaxEnFormation = probleme.getContraintes().stream().mapToInt(c -> c.getDureeMaxFormation()).min().getAsInt();
+            periodeExclusion .addAll(probleme.getContraintes().stream().flatMap(c -> c.getPeriodeFormationExclusion().stream()).collect(Collectors.toList()));
+            List<Periode> periodeInclusion = probleme.getContraintes().stream().flatMap(c -> c.getPeriodeFormationInclusion().stream()).collect(Collectors.toList());
 
-        // les cours autorisés des stagiaires recquis
-        Set<Periode> coursDesStagiairesRecquis = probleme.getContraintes().stream().flatMap(c -> c.getStagiairesRecquis().stream().flatMap(stagiaire -> stagiaire.getCours().stream().map(cr -> cr.getPeriode()))).collect(Collectors.toSet());
+            // les lieux autorisés
 
-        // les cours dont le nombre de stagiaire a atteint le nombre maximum
-        Set<Periode> coursRefuse = probleme.getContraintes().stream()
-                .flatMap(c -> c.getStagiairesEntreprise().stream()
-                        .flatMap(stagiaire -> stagiaire.getCours().stream()))
-                .collect(Collectors.groupingBy( e->e, Collectors.counting())).entrySet().stream()
-                .filter(c -> c.getValue() >= nbMaxStagiaireEntreprise ).map(c -> c.getKey()).map(c -> c.getPeriode()).collect(Collectors.toSet());
+            listLieuxAutorises.addAll(probleme.getContraintes().stream().flatMap(c -> c.getIdLieux().stream()).collect(Collectors.toList()));
+
+            // les cours autorisés des stagiaires recquis
+            Set<Periode> coursDesStagiairesRecquis = probleme.getContraintes().stream().flatMap(c -> c.getStagiairesRecquis().stream().flatMap(stagiaire -> stagiaire.getCours().stream().map(cr -> cr.getPeriode()))).collect(Collectors.toSet());
+
+            // les cours dont le nombre de stagiaire a atteint le nombre maximum
+            Set<Periode> coursRefuse = probleme.getContraintes().stream()
+                    .flatMap(c -> c.getStagiairesEntreprise().stream()
+                            .flatMap(stagiaire -> stagiaire.getCours().stream()))
+                    .collect(Collectors.groupingBy(e -> e, Collectors.counting())).entrySet().stream()
+                    .filter(c -> c.getValue() >= nbMaxStagiaireEntreprise).map(c -> c.getKey()).map(c -> c.getPeriode()).collect(Collectors.toSet());
+        }
 
     // Création des jeux de données basé sur tous les cours pour Choco
         List<CoursChoco> coursChocoAutorise = moduleInChoco.stream().flatMap(m -> m.getCoursDuModule().stream()).collect(Collectors.toList());;
@@ -206,7 +214,7 @@ public class ChocoSolver {
             // Contrainte de lieux
             int finalI = i;
             Constraint[] contraintesDeLieux = IntStream.range(0, listLieuxAutorises.size()).mapToObj(a -> model.arithm(modulesLieu[finalI], "=", listLieuxAutorises.get(a))).toArray(Constraint[]::new);
-            model.or(contraintesDeLieux).post();
+            //model.or(contraintesDeLieux).post();
 
             // Contrainte de période exclusion
             /*Constraint[] contraintesDePeriodeExclues = IntStream.range(0, periodeExclusion.size())
@@ -217,7 +225,7 @@ public class ChocoSolver {
                                     model.arithm(modulesDebut[finalI], ">", DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantFin())))))
                     .toArray(Constraint[]::new);*/
 
-            Constraint[] contraintesDePeriodeExclues = IntStream.range(0, periodeExclusion.size())
+/*            Constraint[] contraintesDePeriodeExclues = IntStream.range(0, periodeExclusion.size())
                     .mapToObj(a -> model.and(
                             model.notMember(
                                     modulesFin[finalI],
@@ -228,7 +236,7 @@ public class ChocoSolver {
                                     DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantDebut()),
                                     DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantFin()))))
                     .toArray(Constraint[]::new);
-            model.or(contraintesDePeriodeExclues).post();
+            model.or(contraintesDePeriodeExclues).post();*/
 
 
             // Début et fin de la formation

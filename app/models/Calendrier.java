@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class Calendrier implements Serializable{
 
-    private List<Cours> cours;
+    private List<String> idCours;
 
     private Set<Contrainte> contraintesResolus;
     private Set<Contrainte> contrainteNonResolu;
@@ -14,16 +14,16 @@ public class Calendrier implements Serializable{
     public Calendrier() {
     }
 
-    public Calendrier(List<Cours> cours) {
-        this.cours = cours;
+    public Calendrier(List<String> idCours) {
+        this.idCours = idCours;
     }
 
-    public List<Cours> getCours() {
-        return cours;
+    public List<String> getCours() {
+        return idCours;
     }
 
-    public void setCours(List<Cours> cours) {
-        this.cours = cours;
+    public void setCours(List<String> cours) {
+        this.idCours = cours;
     }
 
     public Set<Contrainte> getContraintesResolus() {

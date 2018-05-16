@@ -21,7 +21,7 @@ public class test {
             @Override
             public void foundCalendar(Calendrier calendrier) {
 
-                calendrier.getCours().forEach(c -> afficheCours(c));
+                //calendrier.getCours().forEach(c -> afficheCours(c));
 
             }
 
@@ -41,13 +41,7 @@ public class test {
         return calendriers;
 
     }
-    private static void afficheCours(Cours c) {
-        System.out.printf("Module d'id %s à %d le %s au %s\n",
-                c.getIdModule(),
-                c.getLieu(),
-                c.getPeriode().getDebut(),
-                c.getPeriode().getFin());
-    }
+
     private static void compare(List<Calendrier> calendriers) {
         for (Calendrier calendrier:calendriers) {
             List <Calendrier> autresCalendriers = new ArrayList<>(calendriers);
@@ -329,7 +323,7 @@ public class test {
                                 1500,
                                 3000,
                                 20,
-                                Arrays.asList(),
+                                Arrays.asList(new Periode("2018-03-19 00:00:00", "2018-03-23 00:00:00", "yyyy-MM-dd HH:mm:ss")),
                                 Arrays.asList(),
                                 3,
                                 Arrays.asList(),

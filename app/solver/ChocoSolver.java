@@ -178,40 +178,15 @@ public class ChocoSolver {
 
         // Liste blanche des cours
         Tuples tuple = new Tuples(coursListeBlanche, true);
+        ContrainteManager contrainteManager = new ContrainteManager(model, probleme.getContraintes());
 
         for (int i = 0; i < nbModules; i++) {
 
             // La liste des cours à rechercher
             table[i] = new IntVar[] { modulesID[i], coursID[i], modulesDebut[i], modulesFin[i], coursIdentifier[i], modulesLieu[i], modulesDuration[i], modulesNbHeure[i], modulesNbSemaine[i]};
             model.table(table[i], tuple ).post();
-
-
-            // Contrainte de lieux
-            int finalI = i;
-            Constraint[] contraintesDeLieux = IntStream.range(0, listLieuxAutorises.size()).mapToObj(a -> model.arithm(modulesLieu[finalI], "=", listLieuxAutorises.get(a))).toArray(Constraint[]::new);
-            model.or(contraintesDeLieux).post();
-
-            // Contrainte de période exclusion
-            /*Constraint[] contraintesDePeriodeExclues = IntStream.range(0, periodeExclusion.size())
-                    .mapToObj(a -> model.and(
-                            model.or(model.arithm(modulesFin[finalI], "<", DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantDebut())),
-                                    model.arithm(modulesFin[finalI], ">", DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantFin()))),
-                            model.or(model.arithm(modulesDebut[finalI], "<", DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantDebut())),
-                                    model.arithm(modulesDebut[finalI], ">", DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantFin())))))
-                    .toArray(Constraint[]::new);*/
-
-            Constraint[] contraintesDePeriodeExclues = IntStream.range(0, periodeExclusion.size())
-                    .mapToObj(a -> model.and(
-                            model.notMember(
-                                    modulesFin[finalI],
-                                    DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantDebut()),
-                                    DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantFin())),
-                            model.notMember(
-                                    modulesDebut[finalI],
-                                    DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantDebut()),
-                                    DateTimeHelper.InstantToDays(periodeExclusion.get(a).getInstantFin()))))
-                    .toArray(Constraint[]::new);
-            model.and(contraintesDePeriodeExclues).post();
+            contrainteManager.createContrainteLieu(modulesLieu[i]);
+            contrainteManager.createContraintePeriodeExclusion(modulesDebut[i], modulesFin[i]);
 
 
             // Début et fin de la formation
@@ -233,9 +208,9 @@ public class ChocoSolver {
 
         }
 
-        ContrainteManager contrainteManager = new ContrainteManager(model, probleme.getContraintes(), modulesID, coursID, modulesDebut, modulesFin, coursIdentifier, modulesLieu, modulesDuration, modulesNbHeure, modulesNbSemaine);
 
-        contrainteManager.post();
+
+
 
 
         // Permet de ressortir la solution, non nécessaire pour le moment
@@ -262,6 +237,8 @@ public class ChocoSolver {
 
             }
             Calendrier calendrierTrouve = new Calendrier(lesCoursChoisi.stream().sorted(Comparator.comparing(o -> o.getPeriode().getInstantDebut())).map(c -> c.getIdCours()).collect(Collectors.toList()));
+            calendrierTrouve.setContrainteNonResolu(contrainteManager.getContraintesNonRespecte());
+            calendrierTrouve.setContraintesResolus(contrainteManager.getContraintesRespecte());
             calendriersTrouve .add(calendrierTrouve);
             listeners.forEach(l -> l.foundCalendar(calendrierTrouve));
         });

@@ -1,7 +1,10 @@
 package utils;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
@@ -20,7 +23,12 @@ public class DateTimeHelper {
                 .appendPattern(format)
                 .parseDefaulting(ChronoField.NANO_OF_DAY, 0)
                 .toFormatter()
-                .withZone(ZoneId.of("Europe/Paris"));
+                .withZone(ZoneOffset.UTC);
+        return FMT.parse(date, Instant::from);
+    }
+
+    public static Instant format(String date) {
+        DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneOffset.UTC);
         return FMT.parse(date, Instant::from);
     }
 

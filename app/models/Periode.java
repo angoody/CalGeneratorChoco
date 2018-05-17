@@ -7,18 +7,24 @@ import java.time.Instant;
 
 public class Periode implements Serializable {
 
-    private String debut = Instant.now().toString();
-    private String fin = Instant.now().toString();
-    private Instant instantDebut = Instant.now();
-    private Instant instantFin = Instant.now();
-    private String format = "YYYY-MM-dd";
+    private String debut;
+    private String fin;
+    private Instant instantDebut;
+    private Instant instantFin;
+    private String format = "yyyy-MM-dd" ;
 
     public Periode(String debut, String fin,String format) {
         this.format = format;
         this.debut = debut;
         this.fin = fin;
-        this.instantDebut = DateTimeHelper.format(this.debut, this.format);
-        this.instantFin = DateTimeHelper.format(this.fin, this.format);
+    }
+
+    public Periode(String debut, String fin) {
+        this.format = "yyyy-MM-dd";
+        this.debut = debut;
+        this.fin = fin;
+        this.instantDebut = DateTimeHelper.format(this.debut, format);
+        this.instantFin = DateTimeHelper.format(this.fin, format);
     }
 
     public Periode(Instant instantDebut, Instant instantFin, String format) {
@@ -48,6 +54,10 @@ public class Periode implements Serializable {
 
 
     public Instant getInstantDebut() {
+        if (instantDebut == null)
+        {
+            instantDebut = DateTimeHelper.format(this.debut, format);
+        }
         return instantDebut;
     }
 
@@ -56,6 +66,10 @@ public class Periode implements Serializable {
     }
 
     public Instant getInstantFin() {
+        if (instantFin == null)
+        {
+            instantFin = DateTimeHelper.format(this.fin, format);
+        }
         return instantFin;
     }
 

@@ -13,6 +13,7 @@ import solver.test;
 public class CalendrierController  extends Controller {
 
     public Result solve() {
+
         JsonNode json = request().body().asJson();
         if (json == null)
             return badRequest();

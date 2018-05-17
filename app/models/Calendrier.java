@@ -8,8 +8,8 @@ public class Calendrier implements Serializable{
 
     private List<String> idCours;
 
-    private Set<Contrainte> contraintesResolus;
-    private Set<Contrainte> contrainteNonResolu;
+    private List<Contrainte> contraintesResolus;
+    private List<Contrainte> contrainteNonResolu;
 
     public Calendrier() {
     }
@@ -26,19 +26,19 @@ public class Calendrier implements Serializable{
         this.idCours = cours;
     }
 
-    public Set<Contrainte> getContraintesResolus() {
+    public List<Contrainte> getContraintesResolus() {
         return contraintesResolus;
     }
 
-    public void setContraintesResolus(Set<Contrainte> contraintesResolus) {
+    public void setContraintesResolus(List<Contrainte> contraintesResolus) {
         this.contraintesResolus = contraintesResolus;
     }
 
-    public Set<Contrainte> getContrainteNonResolu() {
+    public List<Contrainte> getContrainteNonResolu() {
         return contrainteNonResolu;
     }
 
-    public void setContrainteNonResolu(Set<Contrainte> contrainteNonResolu) {
+    public void setContrainteNonResolu(List<Contrainte> contrainteNonResolu) {
         this.contrainteNonResolu = contrainteNonResolu;
     }
 }

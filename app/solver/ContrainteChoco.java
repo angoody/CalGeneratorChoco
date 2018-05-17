@@ -60,16 +60,16 @@ public class ContrainteChoco {
 
 
     public void createContrainteLieu(IntVar lieu) {
-        respectDesContraintes.add(model.or(listLieuxAutorises.stream().map(l -> model.arithm( lieu, "=", l)).toArray(Constraint[]::new)).reify());
+        model.or(listLieuxAutorises.stream().map(l -> model.arithm( lieu, "=", l)).toArray(Constraint[]::new)).post();
     }
 
     public void createContraintePeriodeExclusion(IntVar debut, IntVar fin) {
-        respectDesContraintes.add( model.and(periodeExclusion.stream().map(
+         model.and(periodeExclusion.stream().map(
                         (PeriodeChoco p) -> model.and(
                                 model.notMember(debut, p.getDebut(), p.getFin()),
                                 model.notMember(fin, p.getDebut(), p.getFin())))
                         .toArray(Constraint[]::new))
-                        .reify());
+                        .post();
 
     }
 

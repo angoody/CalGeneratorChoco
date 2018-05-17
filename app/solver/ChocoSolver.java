@@ -188,7 +188,8 @@ public class ChocoSolver {
             // La liste des cours à rechercher
             table[i] = new IntVar[] { modulesID[i], coursID[i], modulesDebut[i], modulesFin[i], coursIdentifier[i], modulesLieu[i], modulesDuration[i], modulesNbHeure[i], modulesNbSemaine[i]};
             model.table(table[i], tuple ).post();
-
+            contrainteManager.createContrainteLieu(modulesLieu[i]);
+            contrainteManager.createContraintePeriodeExclusion(modulesDebut[i], modulesFin[i]);
 
             // Début et fin de la formation
             modulesDebut[i].ge(debutFormation).post();

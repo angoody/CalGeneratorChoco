@@ -1,18 +1,19 @@
 package models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Contrainte implements Serializable {
-    private List<Integer> idLieux;
-    private Integer nbHeureAnnuel;
-    private Integer dureeMaxFormation;
-    private Integer maxSemaineFormation;
-    private List<Periode> periodeFormationExclusion;
-    private List<Periode> periodeFormationInclusion;
-    private Integer maxStagiaireEntrepriseEnFormation;
-    private List<Stagiaire> stagiairesEntreprise;
-    private List<Stagiaire> stagiairesRecquis;
+    private List<Integer> idLieux = new ArrayList<>();
+    private Integer nbHeureAnnuel = 0;
+    private Integer dureeMaxFormation = 0;
+    private Integer maxSemaineFormation = 0;
+    private List<Periode> periodeFormationExclusion = new ArrayList<>();
+    private List<Periode> periodeFormationInclusion = new ArrayList<>();
+    private Integer maxStagiaireEntrepriseEnFormation = 0;
+    private List<Stagiaire> stagiairesEntreprise = new ArrayList<>();
+    private List<Stagiaire> stagiairesRecquis = new ArrayList<>();
 
     public Contrainte() {
     }

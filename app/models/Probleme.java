@@ -1,12 +1,13 @@
 package models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Probleme implements Serializable {
     private Periode periodeFormation;
-    private List<Module> modulesFormation;
-    private List<Contrainte> contraintes;
+    private List<Module> modulesFormation = new ArrayList<>();
+    private List<Contrainte> contraintes = new ArrayList<>();
 
     public Probleme() {
     }

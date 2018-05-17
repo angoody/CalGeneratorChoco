@@ -1,20 +1,22 @@
 package models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class Module implements Serializable {
 
-    private Integer idModule;
-    private Set<Module> prerequis;
-    private Set<Cours> cours;
-    private Integer nbSemainePrevu;
-    private Integer nbHeurePrevu;
+    private Integer idModule = 0;
+    private List<Module> prerequis = new ArrayList<>();
+    private List<Cours> cours = new ArrayList<>();
+    private Integer nbSemainePrevu = 0;
+    private Integer nbHeurePrevu = 0;
 
     public Module() {
     }
 
-    public Module(Integer idModule, Set<Module> prerequis, Set<Cours> cours, Integer nbSemainePrevu, Integer nbHeurePrevu) {
+    public Module(Integer idModule, List<Module> prerequis, List<Cours> cours, Integer nbSemainePrevu, Integer nbHeurePrevu) {
         this.idModule = idModule;
         this.prerequis = prerequis;
         this.cours = cours;
@@ -30,19 +32,19 @@ public class Module implements Serializable {
         this.idModule = idModule;
     }
 
-    public Set<Module> getPrerequis() {
+    public List<Module> getPrerequis() {
         return prerequis;
     }
 
-    public void setPrerequis(Set<Module> prerequis) {
+    public void setPrerequis(List<Module> prerequis) {
         this.prerequis = prerequis;
     }
 
-    public Set<Cours> getCours() {
+    public List<Cours> getCours() {
         return cours;
     }
 
-    public void setCours(Set<Cours> cours) {
+    public void setCours(List<Cours> cours) {
         this.cours = cours;
     }
 

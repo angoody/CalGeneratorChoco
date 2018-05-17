@@ -318,7 +318,7 @@ public class test {
         probleme.setContraintes( Arrays.asList(
                         new Contrainte(
 
-                                Arrays.asList(new Integer(2), new Integer(1)),
+                                Arrays.asList(new Integer(10)),
                                 1500,
                                 3000,
                                 20,

@@ -60,7 +60,13 @@ public class ContrainteChoco {
 
 
     public void createContrainteLieu(IntVar lieu) {
-        model.or(listLieuxAutorises.stream().map(l -> model.arithm( lieu, "=", l)).toArray(Constraint[]::new)).post();
+        if (listLieuxAutorises.size() == 1)
+        {
+            model.arithm( lieu, "=", listLieuxAutorises.get(0)).post();
+        }
+        else {
+            model.or(listLieuxAutorises.stream().map(l -> model.arithm(lieu, "=", l)).toArray(Constraint[]::new)).post();
+        }
     }
 
     public void createContraintePeriodeExclusion(IntVar debut, IntVar fin) {

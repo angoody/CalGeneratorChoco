@@ -6,8 +6,7 @@ import utils.DateTimeHelper;
 public class CoursChoco {
 
     private final Cours cours;
-    private int debut ;
-    private int fin ;
+    private PeriodeChoco periode ;
     private int idModule;
     private int nbSemaine;
     private int nbHeure;
@@ -15,25 +14,26 @@ public class CoursChoco {
     private int duration;
 
     private int lieu;
+    private int idCours;
 
     public CoursChoco(Cours cours, Integer idModule, Integer nbSemaine, Integer nbHeure) {
         this.cours = cours;
-        this.debut = DateTimeHelper.InstantToDays(cours.getPeriode().getInstantDebut());
-        this.fin = DateTimeHelper.InstantToDays(cours.getPeriode().getInstantFin());
+        this.idCours = idCours;
+        this.periode = new PeriodeChoco(cours.getPeriode());
         this.idModule = idModule;
         this.nbSemaine = nbSemaine;
         this.nbHeure = nbHeure;
-        this.coursIdentifier = (this.debut + this.fin) / 2;
+        this.coursIdentifier = (periode.getDebut() + periode.getFin()) / 2;
         this.duration = cours.getNbHeureReel();
         this.lieu = cours.getLieu();
     }
 
     public int getDebut() {
-        return debut;
+        return periode.getDebut();
     }
 
     public int getFin() {
-        return fin;
+        return periode.getFin();
     }
 
     public int getCoursIdentifier() {
@@ -68,11 +68,20 @@ public class CoursChoco {
         this.nbSemaine = nbSemaine;
     }
 
+    public void setIdCours(int idCours) {
+        this.idCours = idCours;
+    }
+
     public Cours getCours() {
         return cours;
     }
 
-    public int[] getInt() {
-        return new int[] { idModule, debut, fin, coursIdentifier, lieu, duration, nbHeure, nbSemaine};
+    public int getIdCours() {
+        return idCours;
     }
+
+    public int[] getInt() {
+        return new int[] { idModule, idCours, periode.getDebut(), periode.getFin(), coursIdentifier, lieu, duration, nbHeure, nbSemaine};
+    }
+
 }

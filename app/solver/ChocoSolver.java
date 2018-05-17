@@ -14,6 +14,7 @@ import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
+import solver.contraintes.ContrainteChoco;
 import utils.DateTimeHelper;
 
 import java.util.*;
@@ -59,7 +60,7 @@ public class ChocoSolver {
 
     // Création des modèles de données des modules pour Choco
         // Transforme les modules en objet préparé pour Choco
-        moduleInChoco = probleme.getModulesFormation().stream().map(m -> new ModuleChoco(m, probleme.getContraintes(), probleme.getPeriodeFormation())).collect(Collectors.toList());
+        moduleInChoco = probleme.getModulesFormation().stream().map(m -> new ModuleChoco(m)).collect(Collectors.toList());
 
 
 
@@ -115,7 +116,7 @@ public class ChocoSolver {
                 .range(0, nbModules)
                 .mapToObj(i ->
                         model.intVar(
-                                "Fin " + moduleInChoco.get(i).getId(),
+                                "Lieu " + moduleInChoco.get(i).getId(),
                                 moduleInChoco.get(i).getLieu()))
                 .toArray(IntVar[]::new);
 
@@ -181,7 +182,7 @@ public class ChocoSolver {
 
         // Liste blanche des cours
         Tuples tuple = new Tuples(coursListeBlanche, true);
-        ContrainteManager contrainteManager = new ContrainteManager(model, probleme.getContraintes());
+        ContrainteChoco contrainteManager = new ContrainteChoco(model, probleme.getContraintes());
 
         for (int i = 0; i < nbModules; i++) {
 
@@ -189,10 +190,12 @@ public class ChocoSolver {
             table[i] = new IntVar[] { modulesID[i], coursID[i], modulesDebut[i], modulesFin[i], coursIdentifier[i], modulesLieu[i], modulesDuration[i], modulesNbHeure[i], modulesNbSemaine[i]};
             model.table(table[i], tuple ).post();
 
-
             // Début et fin de la formation
             modulesDebut[i].ge(debutFormation).post();
             modulesFin[i].le(finFormation).post();
+
+            contrainteManager.postContrainteLieu(modulesLieu[i]);
+            contrainteManager.postContraintePeriodeExclusion(modulesDebut[i], modulesFin[i]);
 
             //modulesLieu[i].eq(lieuxAutorise).post();
             // Pour chaque module qui n'a pas été traité
@@ -236,8 +239,6 @@ public class ChocoSolver {
                 listeners.forEach(l -> l.foundCours(coursTrouve));
             }
             Calendrier calendrierTrouve = new Calendrier(lesCoursChoisi.stream().sorted(Comparator.comparing(o -> o.getPeriode().getInstantDebut())).map(c -> c.getIdCours()).collect(Collectors.toList()));
-            calendrierTrouve.setContrainteNonResolu(contrainteManager.getContraintesNonRespecte());
-            calendrierTrouve.setContraintesResolus(contrainteManager.getContraintesRespecte());
             calendriersTrouve.add(calendrierTrouve);
 
             lesCoursChoisi.stream().sorted(Comparator.comparing(o -> o.getPeriode().getInstantDebut())).forEach(c -> afficheCours(c));
@@ -274,7 +275,15 @@ public class ChocoSolver {
                 coursIdentifier
         ));
 
-        for (int i = 0; i < nbCalendrier; i++) solver.solve();
+        for (int i = 0; i < nbCalendrier; i++) {
+
+            if (solver.solve() == false) {
+                for (int j =0; j < nbModules; j++) {
+                    contrainteManager.freeConstraint(modulesLieu[j]);
+                }
+                solver.solve();
+            }
+        }
 
         return calendriersTrouve;
 

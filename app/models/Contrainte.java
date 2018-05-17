@@ -4,20 +4,20 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Contrainte implements Serializable {
-    private List<Integer> idLieux;
-    private Integer nbHeureAnnuel;
-    private Integer dureeMaxFormation;
-    private Integer maxSemaineFormation;
+    private IntegerContrainte idLieux;
+    private IntegerContrainte nbHeureAnnuel;
+    private IntegerContrainte dureeMaxFormation;
+    private IntegerContrainte maxSemaineFormation;
     private List<Periode> periodeFormationExclusion;
     private List<Periode> periodeFormationInclusion;
-    private Integer maxStagiaireEntrepriseEnFormation;
+    private IntegerContrainte maxStagiaireEntrepriseEnFormation;
     private List<Stagiaire> stagiairesEntreprise;
     private List<Stagiaire> stagiairesRecquis;
 
     public Contrainte() {
     }
 
-    public Contrainte(List<Integer> idLieux, Integer nbHeureAnnuel, Integer dureeMaxFormation, Integer maxSemaineFormation, List<Periode> periodeFormationExclusion, List<Periode> periodeFormationInclusion, Integer maxStagiaireEntrepriseEnFormation, List<Stagiaire> stagiairesEntreprise, List<Stagiaire> stagiairesRecquis) {
+    public Contrainte(IntegerContrainte idLieux, IntegerContrainte nbHeureAnnuel, IntegerContrainte dureeMaxFormation, IntegerContrainte maxSemaineFormation, List<Periode> periodeFormationExclusion, List<Periode> periodeFormationInclusion, IntegerContrainte maxStagiaireEntrepriseEnFormation, List<Stagiaire> stagiairesEntreprise, List<Stagiaire> stagiairesRecquis) {
         this.idLieux = idLieux;
         this.nbHeureAnnuel = nbHeureAnnuel;
         this.dureeMaxFormation = dureeMaxFormation;
@@ -29,35 +29,35 @@ public class Contrainte implements Serializable {
         this.stagiairesRecquis = stagiairesRecquis;
     }
 
-    public List<Integer> getIdLieux() {
+    public IntegerContrainte getIdLieux() {
         return idLieux;
     }
 
-    public void setIdLieux(List<Integer> idLieux) {
+    public void setIdLieux(IntegerContrainte idLieux) {
         this.idLieux = idLieux;
     }
 
-    public Integer getNbHeureAnnuel() {
+    public IntegerContrainte getNbHeureAnnuel() {
         return nbHeureAnnuel;
     }
 
-    public void setNbHeureAnnuel(Integer nbHeureAnnuel) {
+    public void setNbHeureAnnuel(IntegerContrainte nbHeureAnnuel) {
         this.nbHeureAnnuel = nbHeureAnnuel;
     }
 
-    public Integer getDureeMaxFormation() {
+    public IntegerContrainte getDureeMaxFormation() {
         return dureeMaxFormation;
     }
 
-    public void setDureeMaxFormation(Integer dureeMaxFormation) {
+    public void setDureeMaxFormation(IntegerContrainte dureeMaxFormation) {
         this.dureeMaxFormation = dureeMaxFormation;
     }
 
-    public Integer getMaxSemaineFormation() {
+    public IntegerContrainte getMaxSemaineFormation() {
         return maxSemaineFormation;
     }
 
-    public void setMaxSemaineFormation(Integer maxSemaineFormation) {
+    public void setMaxSemaineFormation(IntegerContrainte maxSemaineFormation) {
         this.maxSemaineFormation = maxSemaineFormation;
     }
 
@@ -77,11 +77,11 @@ public class Contrainte implements Serializable {
         this.periodeFormationInclusion = periodeFormationInclusion;
     }
 
-    public Integer getMaxStagiaireEntrepriseEnFormation() {
+    public IntegerContrainte getMaxStagiaireEntrepriseEnFormation() {
         return maxStagiaireEntrepriseEnFormation;
     }
 
-    public void setMaxStagiaireEntrepriseEnFormation(Integer maxStagiaireEntrepriseEnFormation) {
+    public void setMaxStagiaireEntrepriseEnFormation(IntegerContrainte maxStagiaireEntrepriseEnFormation) {
         this.maxStagiaireEntrepriseEnFormation = maxStagiaireEntrepriseEnFormation;
     }
 

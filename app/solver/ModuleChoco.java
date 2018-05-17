@@ -15,10 +15,9 @@ import java.util.stream.IntStream;
 public class ModuleChoco {
 
     private Module module;
-    private IntVar moduleInChoco;
     private List<CoursChoco> coursDuModule;
 
-    public ModuleChoco(Module module, List<Contrainte> contraintes, Periode periodeFormation) {
+    public ModuleChoco(Module module) {
 
         // Initialisation des variables
         this.module = module;

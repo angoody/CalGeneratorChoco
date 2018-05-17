@@ -6,12 +6,12 @@ import java.util.List;
 public class Probleme implements Serializable {
     private Periode periodeFormation;
     private List<Module> modulesFormation;
-    private List<Contrainte> contraintes;
+    private Contrainte contraintes;
 
     public Probleme() {
     }
 
-    public Probleme(Periode periodeFormation, List<Module> modulesFormation, List<Contrainte> contraintes) {
+    public Probleme(Periode periodeFormation, List<Module> modulesFormation, Contrainte contraintes) {
         this.periodeFormation = periodeFormation;
         this.modulesFormation = modulesFormation;
         this.contraintes = contraintes;
@@ -33,11 +33,11 @@ public class Probleme implements Serializable {
         this.modulesFormation = modulesFormation;
     }
 
-    public List<Contrainte> getContraintes() {
+    public Contrainte getContraintes() {
         return contraintes;
     }
 
-    public void setContraintes(List<Contrainte> contraintes) {
+    public void setContraintes(Contrainte contraintes) {
         this.contraintes = contraintes;
     }
 }

@@ -315,20 +315,20 @@ public class test {
 
         probleme.setModulesFormation(modules);
         probleme.setPeriodeFormation(new Periode("2018-01-02", "2019-03-11"));
-        probleme.setContraintes( Arrays.asList(
+        probleme.setContraintes(
                         new Contrainte(
 
-                                Arrays.asList(new Integer(2), new Integer(1)),
-                                1500,
-                                3000,
-                                20,
+                                new IntegerContrainte(2),
+                                new IntegerContrainte(1500),
+                                new IntegerContrainte(3000),
+                                new IntegerContrainte(20),
                                 Arrays.asList(new Periode("2018-03-19", "2018-03-23")),
                                 Arrays.asList(),
-                                3,
+                                new IntegerContrainte(3),
                                 Arrays.asList(),
                                 Arrays.asList()
                         )
-                )
+
         );
         return probleme;
     }

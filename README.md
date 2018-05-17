@@ -17,413 +17,169 @@ Exemple des paramètres en entrée :
 
 ```json
 [
-  {
-    "debut": "2018-08-20 00:00:00.0",
-    "fin": "2018-08-24 00:00:00.0",
-    "dureeReelleEnHeures": 35,
-    "codePromotion": "ACDI_001",
-    "idCours": "CDF20F3C-94D4-4069-A640-00E3100FDAE1",
-    "idModule": 541,
-    "libelleCours": "DVWEBCL",
-    "dureePrevueEnHeures": 35,
-    "dateAdefinir": false,
-    "codeSalle": null,
-    "codeFormateur": 0,
-    "codeLieu": 11
-  },
-  {
-    "debut": "2018-03-26 00:00:00.0",
-    "fin": "2018-03-30 00:00:00.0",
-    "dureeReelleEnHeures": 35,
-    "codePromotion": "ADL__001",
-    "idCours": "9AC9F5B9-BE0F-418D-AC3C-00EBB8582246",
-    "idModule": 20,
-    "libelleCours": "SQL",
-    "dureePrevueEnHeures": 35,
-    "dateAdefinir": false,
-    "codeSalle": null,
-    "codeFormateur": 0,
-    "codeLieu": 11
-  }
+ {
+    "periodeFormation":{
+       "debut":"2018-08-20",
+       "fin":"2019-04-01"
+    },
+    "modulesFormation":[
+       {
+          "idModule":20,
+          "prerequis":[
+ 
+          ],
+          "cours":[
+             {
+                "periode":{
+                   "debut":"2018-12-10 00:00:00.0",
+                   "fin":"2018-12-14 00:00:00.0"
+                },
+                "idCours":"A7F50F72-8930-4C01-93F7-32388A4B91E2",
+                "idModule":20,
+                "lieu":10,
+                "nbHeureReel":35
+             },
+             {
+                "periode":{
+                   "debut":"2018-10-08 00:00:00.0",
+                   "fin":"2018-10-12 00:00:00.0"
+                },
+                "idCours":"3F2BA010-10EA-412E-BF94-33E25B078A46",
+                "idModule":20,
+                "lieu":1,
+                "nbHeureReel":35
+             },
+             {
+                "periode":{
+                   "debut":"2018-12-03 00:00:00.0",
+                   "fin":"2018-12-07 00:00:00.0"
+                },
+                "idCours":"B2165BF1-133F-4502-A621-6683E9929885",
+                "idModule":20,
+                "lieu":1,
+                "nbHeureReel":35
+             },
+             {
+                "periode":{
+                   "debut":"2018-10-08 00:00:00.0",
+                   "fin":"2018-10-12 00:00:00.0"
+                },
+                "idCours":"BC2762CC-2544-4D01-8B47-B25DC6C07B12",
+                "idModule":20,
+                "lieu":1,
+                "nbHeureReel":35
+             }
+          ],
+          "nbSemainePrevu":1,
+          "nbHeurePrevu":35
+       },
+       {
+          "idModule":21,
+          "prerequis":[
+ 
+          ],
+          "cours":[
+             {
+                "periode":{
+                   "debut":"2018-12-10 00:00:00.0",
+                   "fin":"2018-12-14 00:00:00.0"
+                },
+                "idCours":"F4F54845-1C84-4EB7-8F6A-5FD020B54B01",
+                "idModule":21,
+                "lieu":1,
+                "nbHeureReel":35
+             },
+             {
+                "periode":{
+                   "debut":"2018-12-17 00:00:00.0",
+                   "fin":"2018-12-21 00:00:00.0"
+                },
+                "idCours":"C3AFAF49-73E8-4737-AA7A-8EEC81927D16",
+                "idModule":21,
+                "lieu":10,
+                "nbHeureReel":35
+             },
+             {
+                "periode":{
+                   "debut":"2018-10-15 00:00:00.0",
+                   "fin":"2018-10-19 00:00:00.0"
+                },
+                "idCours":"427EA863-2410-47C1-9825-B15DEB1BC565",
+                "idModule":21,
+                "lieu":1,
+                "nbHeureReel":35
+             },
+             {
+                "periode":{
+                   "debut":"2018-10-15 00:00:00.0",
+                   "fin":"2018-10-19 00:00:00.0"
+                },
+                "idCours":"69D4F236-9A75-41C5-B103-ED63FABDDFE2",
+                "idModule":21,
+                "lieu":1,
+                "nbHeureReel":35
+             }
+          ],
+          "nbSemainePrevu":1,
+          "nbHeurePrevu":35
+       },
+       {
+          "idModule":817,
+          "prerequis":[
+ 
+          ],
+          "cours":[
+             {
+                "periode":{
+                   "debut":"2018-11-19 00:00:00.0",
+                   "fin":"2018-11-20 00:00:00.0"
+                },
+                "idCours":"2CF00DDF-FB7B-4C16-8C36-6C23B776FD86",
+                "idModule":817,
+                "lieu":2,
+                "nbHeureReel":14
+             }
+          ],
+          "nbSemainePrevu":0,
+          "nbHeurePrevu":14
+       }
+    ],
+    "contraintes":[
+ 
+    ]
+ }
 ]
 ```
 
-Exemple 2 :
-
-```json
-{
-  "debut": "2018-08-20 00:00:00.0",
-  "fin": "2018-08-24 00:00:00.0",
-  "dureeReelleEnHeures": 35,
-  "codePromotion": "ACDI_001",
-  "idCours": "CDF20F3C-94D4-4069-A640-00E3100FDAE1",
-  "idModule": 541,
-  "libelleCours": "DVWEBCL",
-  "dureePrevueEnHeures": 35,
-  "dateAdefinir": false,
-  "codeSalle": null,
-  "codeFormateur": 0,
-  "codeLieu": 11
-}
-```
-
-### Entreprise
-
-| Méthode | Route | Paramètre | Retour | Exemple | 
-|---------|-------|-----------|------- |---------|
-| Get | /entreprises | Aucun | Liste l'ensemble de `entreprise` présent en base de données | 1 |
-| Get | /entreprises/:codeEntreprise | codeEntreprise : Int (identifiant de `entreprise` souhaité) | Affiche les détails de `entreprise` souhaité | 2 |
-
-Exemple 1 :
-
-```json
-[]
-```
-
-Exemple 2 :
-
-```json
-{
-  "todo": "TODO"
-}
-```
-
-### Formation
-
-| Méthode | Route | Paramètre | Retour | Exemple | 
-|---------|-------|-----------|------- |---------|
-| Get | /formations | Aucun | Liste l'ensemble de `formation` présent en base de données | 1 |
-| Get | /formations/:codeFormation | codeEntreprise : String (identifiant de `formation` souhaité) | Affiche les détails de `formation` souhaité | 2 |
-
-Exemple 1 :
+Exemple des paramètres en entrée :
 
 ```json
 [
-  {
-    "codeFormation": "17ASR   ",
-    "libelleLong": "Administrateur Système Et Réseau",
-    "libelleCourt": "[2017]ASR",
-    "dureeEnHeures": 1680,
-    "tauxHoraire": 0,
-    "codeTitre": "ASR     ",
-    "heuresCentre": 1120,
-    "heuresStage": 560,
-    "semainesCentre": 32,
-    "semainesStage": 16,
-    "dureeEnSemaines": 48,
-    "typeFormation": 1,
-    "codeLieu": 0
-  },
-  {
-    "codeFormation": "17CDI   ",
-    "libelleLong": "Concepteur Développeur Informatique",
-    "libelleCourt": "[2017]CDI",
-    "dureeEnHeures": 1295,
-    "tauxHoraire": 0,
-    "codeTitre": "CDI     ",
-    "heuresCentre": 1015,
-    "heuresStage": 280,
-    "semainesCentre": 29,
-    "semainesStage": 8,
-    "dureeEnSemaines": 37,
-    "typeFormation": 1,
-    "codeLieu": 0
-  }
+    {
+        "contraintesResolus": [],
+        "contrainteNonResolu": [],
+        "cours": [
+            "3F2BA010-10EA-412E-BF94-33E25B078A46",
+            "F4F54845-1C84-4EB7-8F6A-5FD020B54B01",
+            "F1D989DA-24A7-4D62-A248-2A6615F93994",
+            "7487CDF9-CD97-44A6-8ECF-F9DF66748166",
+            "CB4DD72B-0C0E-45E7-932E-3A1D75F9841C",
+            "1B040E3B-F71D-4A51-B408-7348746C1A9C",
+            "9CD9F784-76BC-4BA3-AA82-CABB25ACA379",
+            "966E9CF6-1126-474A-A8CC-D01EA99E3735",
+            "59B0F1DC-DAEB-4BF4-BB81-484F3919F66B",
+            "D9E80C62-D60F-4D41-A938-80C44A7FFAE4",
+            "23C7F6A7-D917-4C3A-84A7-1FFEA8F83016",
+            "7F8F6DB0-54A7-4E74-A2FC-58A96E11F60E",
+            "F10880DF-9F18-41B3-85E1-C77C5031AD4F",
+            "F522EAF4-5A9B-4927-9919-B383A3116AB0",
+            "CAB51343-77CE-4A05-9A27-75BDA17AFAAD",
+            "058B4374-63DC-4416-A2E9-948160022AC8",
+            "C9EAD594-44CE-4F79-88E2-D1B75D274942",
+            "45AA1DB4-9BE1-4584-9D43-7E8F522D13AC",
+            "2CF00DDF-FB7B-4C16-8C36-6C23B776FD86"
+        ]
+    }
 ]
 ```
 
-Exemple 2 :
-
-```json
-{
-  "codeFormation": "17ASR   ",
-  "libelleLong": "Administrateur Système Et Réseau",
-  "libelleCourt": "[2017]ASR",
-  "dureeEnHeures": 1680,
-  "tauxHoraire": 0,
-  "codeTitre": "ASR     ",
-  "heuresCentre": 1120,
-  "heuresStage": 560,
-  "semainesCentre": 32,
-  "semainesStage": 16,
-  "dureeEnSemaines": 48,
-  "typeFormation": 1,
-  "codeLieu": 0
-}
-```
-
-### Lieu
-
-| Méthode | Route | Paramètre | Retour | Exemple | 
-|---------|-------|-----------|------- |---------|
-| Get | /lieux | Aucun | Liste l'ensemble de `lieu` présent en base de données | 1 |
-| Get | /lieux/:codeLieu | codeLieu : Int (identifiant de `lieu` souhaité) | Affiche les détails du `lieu` souhaité | 2 |
-
-Exemple 1 :
-
-```json
-[
-  {
-    "codeLieu": 1,
-    "libelle": "NANTES",
-    "debutAM": "9H00",
-    "finAM": "12H30",
-    "debutPM": "14H00",
-    "finPM": "17H30",
-    "adresse": "ZAC du Moulin Neuf - 2 B Rue Benjamin Franklin BP 80009",
-    "cP": 44801,
-    "ville": "SAINT-HERBLAIN"
-  },
-  {
-    "codeLieu": 2,
-    "libelle": "RENNES",
-    "debutAM": "9H00",
-    "finAM": "12H30",
-    "debutPM": "13H30",
-    "finPM": "17H00",
-    "adresse": "ZAC de la Conterie - 8 rue Léo Lagrange",
-    "cP": 35131,
-    "ville": "CHARTRES DE BRETAGNE"
-  }
-]
-```
-
-Exemple 2 :
-
-```json
-{
-  "codeLieu": 1,
-  "libelle": "NANTES",
-  "debutAM": "9H00",
-  "finAM": "12H30",
-  "debutPM": "14H00",
-  "finPM": "17H30",
-  "adresse": "ZAC du Moulin Neuf - 2 B Rue Benjamin Franklin BP 80009",
-  "cP": 44801,
-  "ville": "SAINT-HERBLAIN"
-}
-```
-
-### Module
-
-| Méthode | Route | Paramètre | Retour | Exemple | 
-|---------|-------|-----------|------- |---------|
-| Get | /modules | Aucun | Liste l'ensemble de `module` présent en base de données | 1 |
-| Get | /modules/:idModule | idModule : Int (identifiant du `module` souhaité) | Affiche les détails du `module` souhaité | 2 |
-
-Exemple 1 :
-
-```json
-[
-  {
-    "libelle": "Le langage de requête SQL",
-    "dureeEnHeures": 35,
-    "dureeEnSemaines": 1,
-    "libelleCourt": "SQL",
-    "idModule": 20,
-    "typeModule": 1
-  },
-  {
-    "libelle": "Procédures stockées avec PL-SQL",
-    "dureeEnHeures": 35,
-    "dureeEnSemaines": 1,
-    "libelleCourt": "PL-SQL",
-    "idModule": 21,
-    "typeModule": 1
-  }
-]
-```
-
-Exemple 2 :
-
-```json
-{
-  "libelle": "Le langage de requête SQL",
-  "dureeEnHeures": 35,
-  "dureeEnSemaines": 1,
-  "libelleCourt": "SQL",
-  "idModule": 20,
-  "typeModule": 1
-}
-```
-
-### Promotion
-
-| Méthode | Route | Paramètre | Retour | Exemple | 
-|---------|-------|-----------|------- |---------|
-| Get | /promotions | Aucun | Liste l'ensemble de `promotion` présent en base de données | 1 |
-| Get | /promotions/:codePromotion | codePromotion : String (identifiant du `promotion` souhaité) | Affiche les détails du `promotion` souhaité | 2 |
-
-Exemple 1 :
-
-```json
-[
-  {
-    "codePromotion": "AASR_001",
-    "libelle": "AASR_001",
-    "debut": "2018-04-09 00:00:00.0",
-    "fin": "2019-03-29 00:00:00.0",
-    "codeFormation": "17ASR   ",
-    "codeLieu": 11
-  },
-  {
-    "codePromotion": "ACDI_001",
-    "libelle": "ACDI_001",
-    "debut": "2018-06-11 00:00:00.0",
-    "fin": "2019-03-15 00:00:00.0",
-    "codeFormation": "17CDI   ",
-    "codeLieu": 11
-  }
-]
-```
-
-Exemple 2 :
-
-```json
-{
-  "codePromotion": "AASR_001",
-  "libelle": "AASR_001",
-  "debut": "2018-04-09 00:00:00.0",
-  "fin": "2019-03-29 00:00:00.0",
-  "codeFormation": "17ASR   ",
-  "codeLieu": 11
-}
-```
-
-### Salle
-
-| Méthode | Route | Paramètre | Retour | Exemple | 
-|---------|-------|-----------|------- |---------|
-| Get | /salles | Aucun | Liste l'ensemble de `salle` présent en base de données | 1 |
-| Get | /salles/:codeSalle | codeSalle : String (identifiant du `salle` souhaité) | Affiche les détails de `salle` souhaité | 2 |
-
-Exemple 1 :
-
-```json
-[
-  {
-    "codeSalle": "0001",
-    "libelle": "Salle 1",
-    "capacite": 13,
-    "lieu": 4
-  },
-  {
-    "codeSalle": "0002",
-    "libelle": "Salle 2",
-    "capacite": 13,
-    "lieu": 4
-  }
-]
-```
-
-Exemple 2 :
-
-```json
-{
-  "codeSalle": "0001",
-  "libelle": "Salle 1",
-  "capacite": 13,
-  "lieu": 4
-}
-```
-
-### Stagiaire
-
-| Méthode | Route | Paramètre | Retour | Exemple | 
-|---------|-------|-----------|------- |---------|
-| Get | /stagiaires | Aucun | Liste l'ensemble de `stagiaire` présent en base de données | 1 |
-| Get | /stagiaires/:codeStagiaire | codeStagiaire : Int (identifiant du `stagiaire` souhaité) | Affiche les détails de `stagiaire` souhaité | 2 |
-
-Exemple 1 :
-
-```json
-[]
-```
-
-Exemple 2 :
-
-```json
-{
-  "TODO": "TODO"
-}
-```
-
-### Titre
-
-| Méthode | Route | Paramètre | Retour | Exemple | 
-|---------|-------|-----------|------- |---------|
-| Get | /titres | Aucun | Liste l'ensemble de `titre` présent en base de données | 1 |
-| Get | /titres/:codeTitre | codeTitre : String (identifiant du `titre` souhaité) | Affiche les détails de `titre` souhaité | 2 |
-
-Exemple 1 :
-
-```json
-[
-  {
-    "codeTitre": "TSRIT   ",
-    "libelleCourt": "TSRIT",
-    "libelleLong": "Technicien Supérieur en Réseaux Informatiques et Télécommunications",
-    "niveau": "III",
-    "millesime": "06"
-  },
-  {
-    "codeTitre": "TSSI    ",
-    "libelleCourt": "TSSI",
-    "libelleLong": "Technicien Supérieur de Support en Informatique",
-    "niveau": "III",
-    "millesime": "08"
-  }
-]
-```
-
-Exemple 2 :
-
-```json
-{
-  "codeTitre": "TSSI    ",
-  "libelleCourt": "TSSI",
-  "libelleLong": "Technicien Supérieur de Support en Informatique",
-  "niveau": "III",
-  "millesime": "08"
-}
-```
-
-### UniteFormation
-
-| Méthode | Route | Paramètre | Retour | Exemple | 
-|---------|-------|-----------|------- |---------|
-| GET | /uniteFormations | Aucun | Liste l'ensemble de `uniteFormation` présent en base de données | 1 |
-| GET | /uniteFormations/:idUniteFormation | idUniteFormation : Int (identifiant du `uniteFormation` souhaité) | Affiche les détails du uniteFormation souhaité | 2 |
-
-Exemple 1 :
-
-```json
-[
-  {
-    "libelle": "Développement Java SOPRA-STERIA (2017)",
-    "dureeEnHeures": 280,
-    "dureeEnSemaines": 8,
-    "libelleCourt": "17SOPJAV",
-    "idUniteFormation": 1
-  },
-  {
-    "libelle": "Assistance aux utilisateurs du poste de travail",
-    "dureeEnHeures": 350,
-    "dureeEnSemaines": 10,
-    "libelleCourt": "IM14ASS17",
-    "idUniteFormation": 2
-  }
-]
-```
-
-Exemple 2 :
-
-```json
-{
-  "libelle": "Développement Java SOPRA-STERIA (2017)",
-  "dureeEnHeures": 280,
-  "dureeEnSemaines": 8,
-  "libelleCourt": "17SOPJAV",
-  "idUniteFormation": 1
-}
-```

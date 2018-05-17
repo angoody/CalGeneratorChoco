@@ -61,6 +61,8 @@ public class ChocoSolver {
         // Transforme les modules en objet préparé pour Choco
         moduleInChoco = probleme.getModulesFormation().stream().map(m -> new ModuleChoco(m, probleme.getContraintes(), probleme.getPeriodeFormation())).collect(Collectors.toList());
 
+
+
     //Traitement des contraintes
 
         //Période de formation
@@ -71,6 +73,7 @@ public class ChocoSolver {
     // Création des jeux de données basé sur tous les cours pour Choco
         List<CoursChoco> coursChocoAutorise = moduleInChoco.stream().flatMap(m -> m.getCoursDuModule().stream()).collect(Collectors.toList());;
         int[][] coursListeBlanche = new int[coursChocoAutorise.size()][];
+
 
         for (int i=0; i < coursChocoAutorise.size(); i++ )
         {
@@ -231,13 +234,13 @@ public class ChocoSolver {
 
                 lesCoursChoisi.add(coursTrouve);
                 listeners.forEach(l -> l.foundCours(coursTrouve));
-                afficheCours(coursTrouve);
-
             }
             Calendrier calendrierTrouve = new Calendrier(lesCoursChoisi.stream().sorted(Comparator.comparing(o -> o.getPeriode().getInstantDebut())).map(c -> c.getIdCours()).collect(Collectors.toList()));
             calendrierTrouve.setContrainteNonResolu(contrainteManager.getContraintesNonRespecte());
             calendrierTrouve.setContraintesResolus(contrainteManager.getContraintesRespecte());
-            calendriersTrouve .add(calendrierTrouve);
+            calendriersTrouve.add(calendrierTrouve);
+
+            lesCoursChoisi.stream().sorted(Comparator.comparing(o -> o.getPeriode().getInstantDebut())).forEach(c -> afficheCours(c));
             listeners.forEach(l -> l.foundCalendar(calendrierTrouve));
         });
 

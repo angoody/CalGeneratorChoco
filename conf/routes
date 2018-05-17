@@ -4,7 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index
-GET     /solve                      controllers.CalendrierController.solve
+POST     /solve                      controllers.CalendrierController.solve
 GET     /test                       controllers.CalendrierController.test
 
 # Map static resources from the /public folder to the /assets URL path

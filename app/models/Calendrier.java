@@ -6,39 +6,39 @@ import java.util.Set;
 
 public class Calendrier implements Serializable{
 
-    private List<Cours> cours;
+    private List<String> idCours;
 
-    private Set<Contrainte> contraintesResolus;
-    private Set<Contrainte> contrainteNonResolu;
+    private List<Contrainte> contraintesResolus;
+    private List<Contrainte> contrainteNonResolu;
 
     public Calendrier() {
     }
 
-    public Calendrier(List<Cours> cours) {
-        this.cours = cours;
+    public Calendrier(List<String> idCours) {
+        this.idCours = idCours;
     }
 
-    public List<Cours> getCours() {
-        return cours;
+    public List<String> getCours() {
+        return idCours;
     }
 
-    public void setCours(List<Cours> cours) {
-        this.cours = cours;
+    public void setCours(List<String> cours) {
+        this.idCours = cours;
     }
 
-    public Set<Contrainte> getContraintesResolus() {
+    public List<Contrainte> getContraintesResolus() {
         return contraintesResolus;
     }
 
-    public void setContraintesResolus(Set<Contrainte> contraintesResolus) {
+    public void setContraintesResolus(List<Contrainte> contraintesResolus) {
         this.contraintesResolus = contraintesResolus;
     }
 
-    public Set<Contrainte> getContrainteNonResolu() {
+    public List<Contrainte> getContrainteNonResolu() {
         return contrainteNonResolu;
     }
 
-    public void setContrainteNonResolu(Set<Contrainte> contrainteNonResolu) {
+    public void setContrainteNonResolu(List<Contrainte> contrainteNonResolu) {
         this.contrainteNonResolu = contrainteNonResolu;
     }
 }

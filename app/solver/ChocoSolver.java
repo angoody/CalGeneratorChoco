@@ -61,7 +61,7 @@ public class ChocoSolver {
 
     // Création des modèles de données des modules pour Choco
         // Transforme les modules en objet préparé pour Choco
-        moduleInChoco = probleme.getModulesFormation().stream().map(m -> new ModuleChoco(m)).collect(Collectors.toList());
+        moduleInChoco = probleme.getModulesFormation().stream().map(ModuleChoco::new).collect(Collectors.toList());
 
 
 
@@ -73,7 +73,7 @@ public class ChocoSolver {
 
 
     // Création des jeux de données basé sur tous les cours pour Choco
-        List<CoursChoco> coursChocoAutorise = moduleInChoco.stream().flatMap(m -> m.getCoursDuModule().stream()).collect(Collectors.toList());;
+        List<CoursChoco> coursChocoAutorise = moduleInChoco.stream().flatMap(m -> m.getCoursDuModule().stream()).collect(Collectors.toList());
         int[][] coursListeBlanche = new int[coursChocoAutorise.size()][];
 
 

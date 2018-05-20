@@ -318,13 +318,13 @@ public class test {
         probleme.setContraintes(
                         new Contrainte(
 
-                                new IntegerContrainte(2),
-                                new IntegerContrainte(1500),
-                                new IntegerContrainte(3000),
-                                new IntegerContrainte(20),
+                                new IntegerContrainte(2, 5),
+                                new IntegerContrainte(1500, 4),
+                                new IntegerContrainte(3000, 3),
+                                new IntegerContrainte(20, 2),
                                 Arrays.asList(new Periode("2018-03-19", "2018-03-23")),
                                 Arrays.asList(),
-                                new IntegerContrainte(3),
+                                new IntegerContrainte(3, 1),
                                 Arrays.asList(),
                                 Arrays.asList()
                         )

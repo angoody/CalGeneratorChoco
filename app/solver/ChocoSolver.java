@@ -2,21 +2,22 @@ package solver;
 
 import models.Calendrier;
 import models.Cours;
-import models.Periode;
 import models.Probleme;
 import org.chocosolver.solver.Model;
-import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
-import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.constraints.extension.Tuples;
+import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
-import org.chocosolver.solver.variables.BoolVar;
+import org.chocosolver.solver.search.strategy.decision.Decision;
+import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
+import org.chocosolver.solver.search.strategy.strategy.IntStrategy;
 import org.chocosolver.solver.variables.IntVar;
-import solver.contraintes.ContrainteChoco;
+import solver.contraintes.ContrainteManager;
 import utils.DateTimeHelper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -182,7 +183,18 @@ public class ChocoSolver {
 
         // Liste blanche des cours
         Tuples tuple = new Tuples(coursListeBlanche, true);
-        ContrainteChoco contrainteManager = new ContrainteChoco(model, probleme.getContraintes());
+        ContrainteManager contrainteManager = null;
+        try {
+            contrainteManager = new ContrainteManager(model, probleme.getContraintes());
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
         for (int i = 0; i < nbModules; i++) {
 
@@ -194,8 +206,6 @@ public class ChocoSolver {
             modulesDebut[i].ge(debutFormation).post();
             modulesFin[i].le(finFormation).post();
 
-            contrainteManager.postContrainteLieu(modulesLieu[i]);
-            contrainteManager.postContraintePeriodeExclusion(modulesDebut[i], modulesFin[i]);
 
             //modulesLieu[i].eq(lieuxAutorise).post();
             // Pour chaque module qui n'a pas été traité
@@ -212,9 +222,8 @@ public class ChocoSolver {
 
         }
 
-
-
-
+        contrainteManager.postContrainteLieu(modulesLieu);
+        contrainteManager.postContraintePeriodeExclusion(modulesDebut, modulesFin);
 
 
         // Permet de ressortir la solution, non nécessaire pour le moment
@@ -275,16 +284,20 @@ public class ChocoSolver {
                 coursIdentifier
         ));
 
-        for (int i = 0; i < nbCalendrier; i++) {
+        int j = 0;
+        int nbEssai = 0;
+        int nbConstraintToFree = 1;
+        while ((calendriersTrouve.size() < nbCalendrier) & (nbEssai < 100))
+        {
 
             if (solver.solve() == false) {
-                for (int j =0; j < nbModules; j++) {
-                    contrainteManager.freeConstraint(modulesLieu[j]);
-                }
-                solver.solve();
-            }
-        }
 
+                //contrainteManager.freeConstraint(nbEssai % nbModules, (nbEssai / nbModules) + 1, (nbEssai / (nbModules * nbModules)) + 1);
+                //solver.reset();
+            }
+            nbEssai++;
+        }
+        System.out.println("Essai " + nbEssai);
         return calendriersTrouve;
 
     }

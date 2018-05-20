@@ -1,6 +1,7 @@
 package models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -8,8 +9,8 @@ public class Calendrier implements Serializable{
 
     private List<String> idCours;
 
-    private List<Contrainte> contraintesResolus;
-    private List<Contrainte> contrainteNonResolu;
+    private List<Contrainte> contraintesResolus = new ArrayList<>();
+    private List<Contrainte> contrainteNonResolu = new ArrayList<>();
 
     public Calendrier() {
     }

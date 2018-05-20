@@ -7,6 +7,13 @@ public class IntegerContrainte extends ContrainteDecompose{
     {
         this.value = value;
     }
+
+    public IntegerContrainte(Integer value, Integer priority)
+    {
+        this.value = value;
+        setPriority(priority);
+    }
+
     public Integer getValue() {
         return value;
     }

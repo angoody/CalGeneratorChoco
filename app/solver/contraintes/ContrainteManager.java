@@ -1,6 +1,8 @@
 package solver.contraintes;
 
 import models.Contrainte;
+import models.IntegerContrainte;
+import models.Probleme;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.BoolVar;
@@ -32,13 +34,45 @@ public class ContrainteManager {
     private int oldNbConstraintToFree = 0;
 
 
-    public ContrainteManager(Model model, Contrainte contrainte) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public ContrainteManager(Model model, Probleme probleme) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
-        this.contrainte = contrainte;
+        this.contrainte = probleme.getContrainte();
         this.model = model;
 
-        if (contrainte.getIdLieux().getValue() > -1)
-            contrainteLieu = new ContrainteChocoLieu(model, contrainte.getIdLieux());
+
+                
+        if (contrainte.getIdLieux().getValue() > -1) {
+
+            Map<Integer, Long> lieuxPossibleGroupe = probleme.getModulesFormation().stream()
+                    .flatMap(m -> m.getCours().stream())
+                    .map(c -> new Integer(c.getLieu()))
+                    .filter(l -> l != contrainte.getIdLieux().getValue())
+                    .collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+
+            Comparator<Map.Entry<Integer, Long>> valueComparator = new Comparator<Map.Entry<Integer, Long>>() {
+
+                @Override
+                public int compare(Map.Entry<Integer, Long> e1, Map.Entry<Integer, Long> e2) {
+                    Long v1 = e1.getValue();
+                    Long v2 = e2.getValue();
+                    return v1.compareTo(v2);
+                }
+            };
+
+            List<Map.Entry<Integer, Long>> listOfEntries = new ArrayList<Map.Entry<Integer, Long>>(lieuxPossibleGroupe.entrySet());
+            Collections.sort(listOfEntries, valueComparator);
+
+            // sorting HashMap by values using comparator
+            Collections.reverse(listOfEntries);
+
+
+            List<Integer> lieuxPossible = listOfEntries.stream().map(e -> e.getKey()).collect(Collectors.toList());
+
+            contrainteLieu = new ContrainteChocoLieu(
+                    model,
+                    contrainte.getIdLieux(),
+                    lieuxPossible);
+        }
 
         if (contrainte.getPeriodeFormationExclusion().size() > 0){
             contraintePeriodeExclusion = new ListeContrainteChoco<ContrainteChocoPeriodeExclusion>(model,contrainte.getPeriodeFormationExclusion(), ContrainteChocoPeriodeExclusion.class, ListeContrainteChoco.AND );
@@ -51,9 +85,11 @@ public class ContrainteManager {
         // les cours dont le nombre de stagiaire a atteint le nombre maximum
         if (contrainte.getMaxStagiaireEntrepriseEnFormation().getValue() > 0)
             coursRefuse = contrainte.getStagiairesEntreprise().stream()
-                        .flatMap(stagiaire -> stagiaire.getCours().stream())
-                .collect(Collectors.groupingBy(e->e, Collectors.counting())).entrySet().stream()
-                    .filter(c -> c.getValue() >= contrainte.getMaxStagiaireEntrepriseEnFormation().getValue() ).map(c -> c.getKey()).map(c -> new PeriodeChoco(c.getPeriode())).collect(Collectors.toList());
+                    .flatMap(stagiaire -> stagiaire.getCours().stream())
+                    .collect(Collectors.groupingBy(e->e, Collectors.counting()))
+                    .entrySet().stream()
+                    .filter(c -> c.getValue() >= contrainte.getMaxStagiaireEntrepriseEnFormation().getValue() )
+                    .map(Map.Entry::getKey).map(c -> new PeriodeChoco(c.getPeriode())).collect(Collectors.toList());
 
         contrainteChocoParPriorite.add(contrainteLieu);
         contrainteChocoParPriorite.addAll(contraintePeriodeExclusion.getContraintesChoco());
@@ -66,6 +102,7 @@ public class ContrainteManager {
 
     public Constraint[] postContrainteLieu(IntVar[] lieu) {
         variableParContrainte.put(contrainteLieu, lieu);
+
         return Arrays.stream(lieu).map(l -> contrainteLieu.post(l)).toArray(Constraint[]::new);
     }
 
@@ -101,6 +138,63 @@ public class ContrainteManager {
 
 
         }
+    }
+
+    private void disableAlternateSearch(int start, int nbModuleToFree, int nbConstraintToFree) {
+
+        for (int i = 0; i < nbConstraintToFree; i++)
+        {
+            IntVar[] var = variableParContrainte.get(contrainteChocoParPriorite.get(i));
+            if (start + nbModuleToFree <= var.length) {
+                for (int j = start; j < start + nbModuleToFree; j++) {
+                    contrainteChocoParPriorite.get(i).disableAlternateSearch(var[j]);
+                }
+            }
+            else
+            {
+                for (int j = start; j < var.length; j++) {
+                    contrainteChocoParPriorite.get(i).disableAlternateSearch(var[j]);
+                }
+                for (int j = 0; j < (start + nbModuleToFree - var.length); j++ )
+                {
+                    contrainteChocoParPriorite.get(i).disableAlternateSearch(var[j]);
+                }
+            }
+
+
+        }
+    }
+
+    public void alternateSearch(int start, int nbModuleToFree, int nbConstraintToFree) {
+        disableAlternateSearch(oldStart,oldNbModuleToFree, oldNbConstraintToFree);
+
+        for (int i = 0; i < nbConstraintToFree; i++)
+        {
+
+            IntVar[] var = variableParContrainte.get(contrainteChocoParPriorite.get(i));
+            if (start + nbModuleToFree <= var.length) {
+                for (int j = start; j < start + nbModuleToFree; j++) {
+                    contrainteChocoParPriorite.get(i).enableAlternateSearch(var[j]);
+                }
+            }
+            else
+            {
+                for (int j = start; j < var.length; j++) {
+                    contrainteChocoParPriorite.get(i).enableAlternateSearch(var[j]);
+                }
+                for (int j = 0; j < (start + nbModuleToFree - var.length); j++ )
+                {
+                    contrainteChocoParPriorite.get(i).enableAlternateSearch(var[j]);
+                }
+            }
+
+
+        }
+
+        oldStart = start;
+        oldNbModuleToFree = nbModuleToFree;
+        oldNbConstraintToFree = nbConstraintToFree;
+
     }
 
     public void freeConstraint(int start, int nbModuleToFree, int nbConstraintToFree) {

@@ -185,7 +185,7 @@ public class ChocoSolver {
         Tuples tuple = new Tuples(coursListeBlanche, true);
         ContrainteManager contrainteManager = null;
         try {
-            contrainteManager = new ContrainteManager(model, probleme.getContraintes());
+            contrainteManager = new ContrainteManager(model, probleme);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {
@@ -195,6 +195,9 @@ public class ChocoSolver {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+
+        contrainteManager.postContrainteLieu(modulesLieu);
+        contrainteManager.postContraintePeriodeExclusion(modulesDebut, modulesFin);
 
         for (int i = 0; i < nbModules; i++) {
 
@@ -222,8 +225,7 @@ public class ChocoSolver {
 
         }
 
-        contrainteManager.postContrainteLieu(modulesLieu);
-        contrainteManager.postContraintePeriodeExclusion(modulesDebut, modulesFin);
+
 
 
         // Permet de ressortir la solution, non nécessaire pour le moment
@@ -248,6 +250,7 @@ public class ChocoSolver {
                 listeners.forEach(l -> l.foundCours(coursTrouve));
             }
             Calendrier calendrierTrouve = new Calendrier(lesCoursChoisi.stream().sorted(Comparator.comparing(o -> o.getPeriode().getInstantDebut())).map(c -> c.getIdCours()).collect(Collectors.toList()));
+            calendrierTrouve.setContrainte(probleme.getContrainte());
             calendriersTrouve.add(calendrierTrouve);
 
             lesCoursChoisi.stream().sorted(Comparator.comparing(o -> o.getPeriode().getInstantDebut())).forEach(c -> afficheCours(c));
@@ -292,8 +295,8 @@ public class ChocoSolver {
 
             if (solver.solve() == false) {
 
-                //contrainteManager.freeConstraint(nbEssai % nbModules, (nbEssai / nbModules) + 1, (nbEssai / (nbModules * nbModules)) + 1);
-                //solver.reset();
+                contrainteManager.alternateSearch(nbEssai % nbModules, (nbEssai / nbModules) + 1, (nbEssai / (nbModules * nbModules)) + 1);
+                solver.reset();
             }
             nbEssai++;
         }
@@ -302,12 +305,13 @@ public class ChocoSolver {
 
     }
 
-    private static void afficheCours(Cours c) {
+    private void afficheCours(Cours c) {
         System.out.printf("Module d'id %s à %d le %s au %s\n",
                 c.getIdModule(),
                 c.getLieu(),
                 c.getPeriode().getDebut(),
                 c.getPeriode().getFin());
+
     }
 
     private List<Cours> rechercheCours(IntVar idModule, IntVar debut, IntVar fin, IntVar periodeIdentifier, IntVar lieux) {

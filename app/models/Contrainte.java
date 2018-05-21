@@ -1,6 +1,7 @@
 package models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Contrainte implements Serializable {
@@ -8,11 +9,11 @@ public class Contrainte implements Serializable {
     private IntegerContrainte nbHeureAnnuel;
     private IntegerContrainte dureeMaxFormation;
     private IntegerContrainte maxSemaineFormation;
-    private List<Periode> periodeFormationExclusion;
-    private List<Periode> periodeFormationInclusion;
+    private List<Periode> periodeFormationExclusion = new ArrayList<>();
+    private List<Periode> periodeFormationInclusion = new ArrayList<>();
     private IntegerContrainte maxStagiaireEntrepriseEnFormation;
-    private List<Stagiaire> stagiairesEntreprise;
-    private List<Stagiaire> stagiairesRecquis;
+    private List<Stagiaire> stagiairesEntreprise = new ArrayList<>();
+    private List<Stagiaire> stagiairesRecquis = new ArrayList<>();
 
     public Contrainte() {
     }

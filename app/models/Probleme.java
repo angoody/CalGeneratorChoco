@@ -33,7 +33,7 @@ public class Probleme implements Serializable {
         this.modulesFormation = modulesFormation;
     }
 
-    public Contrainte getContraintes() {
+    public Contrainte getContrainte() {
         return contraintes;
     }
 

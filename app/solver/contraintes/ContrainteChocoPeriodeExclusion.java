@@ -28,4 +28,14 @@ public class ContrainteChocoPeriodeExclusion extends ItemContrainteChoco {
 
         return contrainte;
     }
+
+    @Override
+    public void enableAlternateSearch(IntVar... var) {
+        unPost(var);
+    }
+
+    @Override
+    public void disableAlternateSearch(IntVar... var) {
+        post(var);
+    }
 }

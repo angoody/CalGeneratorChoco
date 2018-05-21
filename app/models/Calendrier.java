@@ -9,8 +9,7 @@ public class Calendrier implements Serializable{
 
     private List<String> idCours;
 
-    private List<Contrainte> contraintesResolus = new ArrayList<>();
-    private List<Contrainte> contrainteNonResolu = new ArrayList<>();
+    private Contrainte contrainte;
 
     public Calendrier() {
     }
@@ -27,19 +26,11 @@ public class Calendrier implements Serializable{
         this.idCours = cours;
     }
 
-    public List<Contrainte> getContraintesResolus() {
-        return contraintesResolus;
+    public Contrainte getContrainte() {
+        return contrainte;
     }
 
-    public void setContraintesResolus(List<Contrainte> contraintesResolus) {
-        this.contraintesResolus = contraintesResolus;
-    }
-
-    public List<Contrainte> getContrainteNonResolu() {
-        return contrainteNonResolu;
-    }
-
-    public void setContrainteNonResolu(List<Contrainte> contrainteNonResolu) {
-        this.contrainteNonResolu = contrainteNonResolu;
+    public void setContrainte(Contrainte contrainte) {
+        this.contrainte = contrainte;
     }
 }

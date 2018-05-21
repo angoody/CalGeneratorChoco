@@ -3,6 +3,7 @@ package solver;
 import models.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class test {
@@ -58,25 +59,25 @@ public class test {
 
 
         // SELECT 'Module m' + REPLACE(m.LibelleCourt, '-', '') + ' = new Module (' +  CAST(m.IdModule AS VARCHAR(10) ) +', new HashSet<Module>(), new TreeSet<Cours>());' from module m left join ModuleParUnite mpu on m.IdModule = mpu.IdModule left join UniteParFormation upf on mpu.IdUnite = upf.Id where upf.CodeFormation = '17CDI   '
-        Module mSTAGECDI2 = new Module(304, new HashSet<Module>(), new TreeSet<Cours>(), 2, 70);
-        Module m16DLPOOJ = new Module(708, new HashSet<Module>(), new TreeSet<Cours>(), 3, 105);
-        Module mSQL = new Module(20, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mPLSQL = new Module(21, new HashSet<Module>(), new TreeSet<Cours>(), 2, 35);
-        Module mJAVA1DL17 = new Module(725, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mPRJ1DEV17 = new Module(730, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mDVWEBCL = new Module(541, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mDVWEBPH = new Module(544, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mJAVA2 = new Module(302, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mPRJ2DEV17 = new Module(727, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mMOB1DEV17 = new Module(728, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mPRJ3DEV17 = new Module(729, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mJ2EAV = new Module(34, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mAPACCDI17 = new Module(731, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mCPCOURS = new Module(36, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mDVWEBASPX = new Module(560, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mXAMARIN = new Module(566, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module mCONCDEV17 = new Module(734, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
-        Module m17BILAN_FINAL = new Module(817, new HashSet<Module>(), new TreeSet<Cours>(), 1, 35);
+        Module mSTAGECDI2 = new Module(304, new ArrayList<Module>(), new ArrayList<Cours>(), 2, 70);
+        Module m16DLPOOJ = new Module(708, new ArrayList<Module>(), new ArrayList<Cours>(), 3, 105);
+        Module mSQL = new Module(20, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mPLSQL = new Module(21, new ArrayList<Module>(), new ArrayList<Cours>(), 2, 35);
+        Module mJAVA1DL17 = new Module(725, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mPRJ1DEV17 = new Module(730, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mDVWEBCL = new Module(541, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mDVWEBPH = new Module(544, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mJAVA2 = new Module(302, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mPRJ2DEV17 = new Module(727, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mMOB1DEV17 = new Module(728, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mPRJ3DEV17 = new Module(729, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mJ2EAV = new Module(34, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mAPACCDI17 = new Module(731, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mCPCOURS = new Module(36, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mDVWEBASPX = new Module(560, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mXAMARIN = new Module(566, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module mCONCDEV17 = new Module(734, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+        Module m17BILAN_FINAL = new Module(817, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
 
 
 
@@ -314,11 +315,11 @@ public class test {
 
 
         probleme.setModulesFormation(modules);
-        probleme.setPeriodeFormation(new Periode("2018-01-02", "2019-03-11"));
+        probleme.setPeriodeFormation(new Periode("2018-01-02", "2019-08-11"));
         probleme.setContraintes(
                         new Contrainte(
 
-                                new IntegerContrainte(2, 5),
+                                new IntegerContrainte(10, 5),
                                 new IntegerContrainte(1500, 4),
                                 new IntegerContrainte(3000, 3),
                                 new IntegerContrainte(20, 2),
@@ -330,6 +331,9 @@ public class test {
                         )
 
         );
+        modules.stream().forEach(m -> m.setCours(m.getCours().stream().filter(d ->
+                d.getPeriode().getInstantDebut().isAfter(probleme.getPeriodeFormation().getInstantDebut()) &&
+                        d.getPeriode().getInstantFin().isBefore(probleme.getPeriodeFormation().getInstantFin())).collect(Collectors.toList())));
         return probleme;
     }
 

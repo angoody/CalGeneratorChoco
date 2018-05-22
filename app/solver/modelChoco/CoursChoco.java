@@ -1,7 +1,6 @@
-package solver;
+package solver.modelChoco;
 
 import models.Cours;
-import utils.DateTimeHelper;
 
 public class CoursChoco {
 

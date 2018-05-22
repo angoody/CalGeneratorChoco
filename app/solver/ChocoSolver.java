@@ -6,15 +6,13 @@ import models.Probleme;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.extension.Tuples;
-import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
-import org.chocosolver.solver.search.strategy.decision.Decision;
-import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
-import org.chocosolver.solver.search.strategy.strategy.IntStrategy;
 import org.chocosolver.solver.variables.IntVar;
 import solver.contraintes.ContrainteManager;
+import solver.modelChoco.CoursChoco;
+import solver.modelChoco.ModuleChoco;
 import utils.DateTimeHelper;
 
 import java.lang.reflect.InvocationTargetException;
@@ -278,7 +276,7 @@ public class ChocoSolver {
                 .boxed()
                 .collect(Collectors.toMap(i -> coursIdentifier[i], i -> coursIdentifier[i].getValue()));
         solver.setSearch(Search.intVarSearch(
-                variables -> Arrays.stream(variables)
+                variables -> Arrays.stream(coursIdentifier)
                         .filter(v -> !v.isInstantiated())
                         .min((v1, v2) -> closest(v2, map) - closest(v1, map))
                         .orElse(null),
@@ -295,7 +293,8 @@ public class ChocoSolver {
 
             if (solver.solve() == false) {
 
-                contrainteManager.alternateSearch(nbEssai % nbModules, (nbEssai / nbModules) + 1, (nbEssai / (nbModules * nbModules)) + 1);
+                contrainteManager.alternateSearch(nbEssai );
+                //contrainteManager.alternateSearch(nbEssai % nbModules, (nbEssai / nbModules) + 1, (nbEssai / (nbModules * nbModules)) + 1);
                 solver.reset();
             }
             nbEssai++;

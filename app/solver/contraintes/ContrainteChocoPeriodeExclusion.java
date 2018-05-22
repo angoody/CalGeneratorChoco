@@ -5,10 +5,7 @@ import models.Periode;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.IntVar;
-import solver.PeriodeChoco;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import solver.modelChoco.PeriodeChoco;
 
 public class ContrainteChocoPeriodeExclusion extends ItemContrainteChoco {
 

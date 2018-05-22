@@ -1,14 +1,10 @@
-package solver;
+package solver.modelChoco;
 
-import models.Contrainte;
 import models.Cours;
 import models.Module;
-import models.Periode;
-import org.chocosolver.solver.variables.IntVar;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 

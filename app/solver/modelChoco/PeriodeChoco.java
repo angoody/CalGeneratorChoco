@@ -1,4 +1,4 @@
-package solver;
+package solver.modelChoco;
 
 import models.Periode;
 import utils.DateTimeHelper;

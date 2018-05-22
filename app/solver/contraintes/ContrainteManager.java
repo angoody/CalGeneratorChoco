@@ -1,13 +1,12 @@
 package solver.contraintes;
 
 import models.Contrainte;
-import models.IntegerContrainte;
 import models.Probleme;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
-import solver.PeriodeChoco;
+import solver.modelChoco.PeriodeChoco;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -163,6 +162,11 @@ public class ContrainteManager {
 
 
         }
+    }
+
+    public void alternateSearch(int nbEssai) {
+
+
     }
 
     public void alternateSearch(int start, int nbModuleToFree, int nbConstraintToFree) {

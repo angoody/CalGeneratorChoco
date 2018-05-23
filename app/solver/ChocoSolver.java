@@ -293,8 +293,8 @@ public class ChocoSolver {
 
             if (solver.solve() == false) {
 
-                contrainteManager.alternateSearch(nbEssai );
-                //contrainteManager.alternateSearch(nbEssai % nbModules, (nbEssai / nbModules) + 1, (nbEssai / (nbModules * nbModules)) + 1);
+                //contrainteManager.alternateSearch(nbEssai );
+                contrainteManager.alternateSearch(nbEssai % nbModules, (nbEssai / nbModules) + 1, (nbEssai / (nbModules * nbModules)) + 1);
                 solver.reset();
             }
             nbEssai++;

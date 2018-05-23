@@ -319,7 +319,7 @@ public class test {
         probleme.setContraintes(
                         new Contrainte(
 
-                                new IntegerContrainte(10, 5),
+                                new IntegerContrainte(2, 5),
                                 new IntegerContrainte(1500, 4),
                                 new IntegerContrainte(3000, 3),
                                 new IntegerContrainte(20, 2),

@@ -1,5 +1,6 @@
 package solver.propagator;
 
+import models.ContrainteDecompose;
 import org.chocosolver.solver.constraints.unary.PropMemberEnum;
 import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.variables.IntVar;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 public class PropagatorContrainteLieu extends PropMemberEnum {
     List<Integer> lieuxDuModule = new ArrayList<>();
     int lieuPrefere;
-    public List<Integer> autreLieuPossible = null;
+    public static  List<Integer> autreLieuPossible = null;
     private Boolean alternatif = false;
 
     public PropagatorContrainteLieu(IntVar var, Integer lieuPrefere, List<Integer> lieuxPossible) {
@@ -32,8 +33,8 @@ public class PropagatorContrainteLieu extends PropMemberEnum {
             this.lieuxDuModule.add(valueIterator.next());
         }
 
-
-        autreLieuPossible = autreLieuPossible.stream().filter(al -> lieuxDuModule.contains(al)).collect(Collectors.toList());
+        if (lieuxDuModule.size() > 1)
+            autreLieuPossible = autreLieuPossible.stream().filter(al -> lieuxDuModule.contains(al)).collect(Collectors.toList());
     }
 
     public void searchAternatif(Boolean alternatif)
@@ -48,7 +49,7 @@ public class PropagatorContrainteLieu extends PropMemberEnum {
 
     @Override
     public void propagate(int evtmask) throws ContradictionException {
-        if (!alternatif)
+        /*if (!alternatif  && lieuxDuModule.contains(lieuPrefere))
             for (IntVar var : getVars()) {
                 for (Integer integer : lieuxDuModule) {
                     if (integer != lieuPrefere) {
@@ -57,35 +58,32 @@ public class PropagatorContrainteLieu extends PropMemberEnum {
 
                 }
             }
+        */
 
-        /*for (IntVar var : getVars()) {
-            for (Integer integer : lieuxDuModule) {
-                if (alternatif) {
-                    if (integer != lieuPrefere && integer.compareTo(autreLieuPossible.get(0)) != 0)
+        if (lieuxDuModule.contains(lieuPrefere) && !alternatif) {
+            for (IntVar var : getVars()) {
+                for (Integer integer : lieuxDuModule) {
+                    if (alternatif) {
+                        if (integer != lieuPrefere && !autreLieuPossible.contains(integer))
+                            var.removeValue(integer, this);
+                    } else if (integer != lieuPrefere) {
                         var.removeValue(integer, this);
-                }
-                else if (integer != lieuPrefere) {
-                    var.removeValue(integer, this);
-                }
+                    }
 
+                }
             }
-        }*/
-
-
-
-        /*get
-        lieuxDuModule.stream().filter(l -> Arrays.stream(getVIndices()).filter(value -> l == value).count() > 0).forEach(l -> getVar(0).removeValue(l, this));
-                IntStream.range(0, getVIndices().length - 1).forEach(i -> (getVIndice(i)) ).forEach( l -> );
-        getVar(0).removeValue()
-
-        if (isActive() == true) {
-            int LB = alternatif == -1 ? b : alternatif;
-            int GB = alternatif == -1 ? b : alternatif;
-            if (LB == -1)
-                LB = lieux;
-            getVar(0).
         }
-*/
+        else if (alternatif) {
+            for (IntVar var : getVars())
+                for (Integer integer : lieuxDuModule)
+                    if (!autreLieuPossible.contains(integer))
+                    var.removeValue(integer, this);
+        }
+
+
+
+
+
     }
 
     @Override

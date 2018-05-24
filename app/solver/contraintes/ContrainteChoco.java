@@ -5,47 +5,52 @@ import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.variables.IntVar;
+import solver.modelChoco.ModuleChoco;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class ContrainteChoco {
-    protected Map<String, Constraint> constraints  = new HashMap<>();
+    protected Map<ModuleChoco, Constraint> constraints  = new HashMap<>();
     private ContrainteDecompose contrainteModel;
+    private List<ModuleChoco> modulesInChoco;
     protected Model model;
-    private ContrainteDecompose alternative;
 
-    public ContrainteChoco(Model model, ContrainteDecompose contrainte)
+    public ContrainteChoco(Model model, ContrainteDecompose contrainte, List<ModuleChoco> modulesInChoco)
     {
         this.model = model;
         this.contrainteModel = contrainte;
+        this.modulesInChoco = modulesInChoco;
+
     }
 
+
     // Toute class héritant de cette class doit implémenter la méthode createContraints
-    public abstract Constraint createConstraint(IntVar... var);
+    public abstract Constraint createConstraint(ModuleChoco module);
 
     public ContrainteDecompose getContrainteModel() {
         return contrainteModel;
     }
 
-    public void setAlternative(ContrainteDecompose contrainte)
+
+    public void enableAlternateSearch(ModuleChoco module){
+        unPost(module);
+    }
+
+    public void disableAlternateSearch(ModuleChoco module){
+        post(module);
+    }
+
+    public Boolean isAlternateSearch()
     {
-        this.alternative = contrainte;
+        return (constraints.values().stream().filter(c -> c.getStatus() == Constraint.Status.POSTED).count() == constraints.values().size());
     }
 
-    public ContrainteDecompose getAlternative() {
-        return alternative;
-    }
-
-    public abstract void enableAlternateSearch(IntVar... var);
-
-    public abstract void disableAlternateSearch(IntVar... var);
-
-    public Constraint post(IntVar... var) {
-        Constraint constraint = constraints.get(var[0].getName());
+    public Constraint post(ModuleChoco module) {
+        Constraint constraint = constraints.get(module);
         if (constraint == null) {
-            constraint = createConstraint(var);
-            constraints.put(var[0].getName(), constraint);
+            constraint = createConstraint(module);
+            constraints.put(module, constraint);
         }
         if (constraint.getStatus() == Constraint.Status.REIFIED)
             model.unpost(constraint);
@@ -59,9 +64,9 @@ public abstract class ContrainteChoco {
         return constraint;
     }
 
-    public Constraint unPost(IntVar... var)
+    public Constraint unPost(ModuleChoco module)
     {
-        Constraint constraint = constraints.get(var[0].getName());
+        Constraint constraint = constraints.get(module);
         model.unpost(constraint);
         //constraint.reify();
         contrainteModel.setRespeced(false);
@@ -69,11 +74,11 @@ public abstract class ContrainteChoco {
         return constraint;
     }
 
-    public Constraint getContraint(IntVar... var) {
-        Constraint constraint = constraints.get(var[0].getName());
+    public Constraint getContraint(ModuleChoco module) {
+        Constraint constraint = constraints.get(module);
         if (constraint == null) {
-            constraint = createConstraint(var);
-            constraints.put(var[0].getName(), constraint);
+            constraint = createConstraint(module);
+            constraints.put(module, constraint);
         }
         return constraint;
     }
@@ -84,4 +89,7 @@ public abstract class ContrainteChoco {
     }
 
 
+    public List<ModuleChoco> getModulesInChoco() {
+        return modulesInChoco;
+    }
 }

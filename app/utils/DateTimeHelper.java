@@ -7,7 +7,9 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.FormatStyle;
 import java.time.temporal.ChronoField;
+import java.util.Locale;
 
 public class DateTimeHelper {
 
@@ -27,9 +29,23 @@ public class DateTimeHelper {
         return FMT.parse(date, Instant::from);
     }
 
+    public static String format(Instant date, String format) {
+
+          DateTimeFormatter FMT = new DateTimeFormatterBuilder()
+                .appendPattern(format)
+                .parseDefaulting(ChronoField.NANO_OF_DAY, 0)
+                .toFormatter()
+                .withZone(ZoneOffset.UTC);
+        return FMT.format(date);
+    }
+
     public static Instant format(String date) {
         DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneOffset.UTC);
         return FMT.parse(date, Instant::from);
+    }
+
+    public static String format(Instant date) {
+        return format(date,"yyyy-MM-dd" );
     }
 
 

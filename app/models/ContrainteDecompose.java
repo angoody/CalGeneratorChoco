@@ -1,9 +1,14 @@
 package models;
 
 public class ContrainteDecompose {
-    private Boolean isRespeced = false;
-    private Integer priority = 0;
+    private Boolean isRespeced  = true;
+    private Integer priority    = 0;
 
+    public ContrainteDecompose(Boolean isRespected, Integer priority )
+    {
+        this.isRespeced = isRespected;
+        this.priority = priority;
+    }
     public Boolean getRespeced() {
         return isRespeced;
     }

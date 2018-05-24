@@ -18,6 +18,7 @@ public class PropagatorContrainteLieu extends PropMemberEnum {
     int lieuPrefere;
     public static  List<Integer> autreLieuPossible = null;
     private Boolean alternatif = false;
+    private Boolean noLieuPrefere = false;
 
     public PropagatorContrainteLieu(IntVar var, Integer lieuPrefere, List<Integer> lieuxPossible) {
         super(var, new int[] {lieuPrefere});
@@ -33,6 +34,8 @@ public class PropagatorContrainteLieu extends PropMemberEnum {
             this.lieuxDuModule.add(valueIterator.next());
         }
 
+        if (!lieuxDuModule.contains(lieuPrefere))
+            noLieuPrefere = true;
         if (lieuxDuModule.size() > 1)
             autreLieuPossible = autreLieuPossible.stream().filter(al -> lieuxDuModule.contains(al)).collect(Collectors.toList());
     }
@@ -40,6 +43,11 @@ public class PropagatorContrainteLieu extends PropMemberEnum {
     public void searchAternatif(Boolean alternatif)
     {
         this.alternatif = alternatif;
+    }
+
+    public Boolean isAternatifSearch()
+    {
+        return alternatif || noLieuPrefere;
     }
 
     @Override
@@ -73,7 +81,7 @@ public class PropagatorContrainteLieu extends PropMemberEnum {
                 }
             }
         }
-        else if (alternatif) {
+        else if (alternatif || noLieuPrefere) {
             for (IntVar var : getVars())
                 for (Integer integer : lieuxDuModule)
                     if (!autreLieuPossible.contains(integer))

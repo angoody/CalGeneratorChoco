@@ -13,11 +13,11 @@ public class Cours implements Serializable, Comparable<Cours> {
     }
 
     public Cours(Periode periode, String idCours, Integer idModule, Integer lieu, Integer nbHeureReel) {
-        this.periode = periode;
-        this.idCours = idCours;
-        this.idModule = idModule;
-        this.lieu = lieu;
-        this.nbHeureReel = nbHeureReel;
+        this.periode        = periode;
+        this.idCours        = idCours;
+        this.idModule       = idModule;
+        this.lieu           = lieu;
+        this.nbHeureReel    = nbHeureReel;
     }
 
     public Periode getPeriode() {

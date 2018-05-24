@@ -14,12 +14,27 @@ public class Periode extends ContrainteDecompose {
     private String format = "yyyy-MM-dd" ;  // valeur par défaut utilisé par le from json
 
     // Utilisé uniquement pour le test, n'est jamais appelé par le from json
+    public Periode()
+    {
+        this(DateTimeHelper.format(Instant.now()), DateTimeHelper.format(Instant.now()));
+    }
+
     public Periode(String debut, String fin) {
-        this.format = "yyyy-MM-dd";
-        this.debut = debut;
-        this.fin = fin;
-        this.instantDebut = DateTimeHelper.format(this.debut, format);
-        this.instantFin = DateTimeHelper.format(this.fin, format);
+        super(true, 0);
+        this.format         = "yyyy-MM-dd";
+        this.debut          = debut;
+        this.fin            = fin;
+        this.instantDebut   = DateTimeHelper.format(this.debut, format);
+        this.instantFin     = DateTimeHelper.format(this.fin, format);
+    }
+
+    public Periode(Periode periode, Boolean isRespected) {
+        super(isRespected, periode.getPriority());
+        this.format         = periode.format;
+        this.debut          = periode.getDebut();
+        this.fin            = periode.getFin();
+        this.instantDebut   = periode.getInstantDebut();
+        this.instantFin     = periode.getInstantFin();
     }
 
     public String getFin() {

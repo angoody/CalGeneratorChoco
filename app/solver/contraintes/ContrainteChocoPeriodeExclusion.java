@@ -4,35 +4,35 @@ import models.ContrainteDecompose;
 import models.Periode;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
-import org.chocosolver.solver.variables.IntVar;
+import solver.modelChoco.ModuleChoco;
 import solver.modelChoco.PeriodeChoco;
 
-public class ContrainteChocoPeriodeExclusion extends ItemContrainteChoco {
+import java.util.List;
+
+public class ContrainteChocoPeriodeExclusion extends ItemContrainteChocoDecompose {
 
     private final PeriodeChoco periodExclusion;
 
-    public ContrainteChocoPeriodeExclusion(Model model, ContrainteDecompose contrainte, ListeContrainteChoco parent) {
-        super(model, contrainte, parent);
+    public ContrainteChocoPeriodeExclusion(Model model, ContrainteDecompose contrainte, List<ModuleChoco> modulesIncChoco, ListeContrainteChoco parent) {
+        super(model, contrainte, modulesIncChoco,  parent);
         this.periodExclusion = new PeriodeChoco((Periode) contrainte);
     }
 
     @Override
-    public Constraint createConstraint(IntVar... var) {
+    public Constraint createConstraint(ModuleChoco module) {
 
-        Constraint contrainte = model.and(
-                model.notMember(var[0], periodExclusion.getDebut(), periodExclusion.getFin()),
-                model.notMember(var[1], periodExclusion.getDebut(), periodExclusion.getFin()));
-
-        return contrainte;
+        return model.and(
+                model.notMember(module.getDebut(), periodExclusion.getDebut(), periodExclusion.getFin()),
+                model.notMember(module.getFin(), periodExclusion.getDebut(), periodExclusion.getFin()));
     }
 
     @Override
-    public void enableAlternateSearch(IntVar... var) {
-        unPost(var);
+    public void enableAlternateSearch(ModuleChoco module) {
+        unPost(module);
     }
 
     @Override
-    public void disableAlternateSearch(IntVar... var) {
-        post(var);
+    public void disableAlternateSearch(ModuleChoco module) {
+        post(module);
     }
 }

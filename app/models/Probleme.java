@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Probleme implements Serializable {
-    private Periode periodeFormation;
+    private Periode periodeFormation = new Periode();
     private List<Module> modulesFormation;
     private Contrainte contraintes;
 

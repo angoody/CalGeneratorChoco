@@ -3,12 +3,12 @@ package models;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class Module implements Serializable {
 
     private Integer idModule;
-    private List<Module> prerequis = new ArrayList<>();
+    private List<Integer> idModulePrerequis = new ArrayList<>();
+    private List<Integer> idModuleFacultatif;
     private List<Cours> cours = new ArrayList<>();
     private Integer nbSemainePrevu;
     private Integer nbHeurePrevu;
@@ -16,12 +16,13 @@ public class Module implements Serializable {
     public Module() {
     }
 
-    public Module(Integer idModule, List<Module> prerequis, List<Cours> cours, Integer nbSemainePrevu, Integer nbHeurePrevu) {
-        this.idModule = idModule;
-        this.prerequis = prerequis;
-        this.cours = cours;
-        this.nbSemainePrevu = nbSemainePrevu;
-        this.nbHeurePrevu = nbHeurePrevu;
+    public Module(Integer idModule, List<Integer> idModulePrerequis, List<Integer> idModuleFacultatif, List<Cours> cours, Integer nbSemainePrevu, Integer nbHeurePrevu) {
+        this.idModule           = idModule;
+        this.idModulePrerequis  = idModulePrerequis;
+        this.idModuleFacultatif = idModuleFacultatif;
+        this.cours              = cours;
+        this.nbSemainePrevu     = nbSemainePrevu;
+        this.nbHeurePrevu       = nbHeurePrevu;
     }
 
     public Integer getIdModule() {
@@ -32,12 +33,12 @@ public class Module implements Serializable {
         this.idModule = idModule;
     }
 
-    public List<Module> getPrerequis() {
-        return prerequis;
+    public List<Integer> getIdModulePrerequis() {
+        return idModulePrerequis;
     }
 
-    public void setPrerequis(List<Module> prerequis) {
-        this.prerequis = prerequis;
+    public void setIdModulePrerequis(List<Integer> idModulePrerequis) {
+        this.idModulePrerequis = idModulePrerequis;
     }
 
     public List<Cours> getCours() {
@@ -64,12 +65,12 @@ public class Module implements Serializable {
         this.nbHeurePrevu = nbHeurePrevu;
     }
 
-    /*libelle: String,
-    dureeEnHeures: Int,
-    dureeEnSemaines: Int,
-    prixPublicEnCours: Float,
-    libelleCourt: String,
-    idModule: Int,
-    archiver: Boolean,
-    typeModule: Int*/
+    public List<Integer> getIdModuleFacultatif() {
+        return idModuleFacultatif;
+    }
+
+    public void setIdModuleFacultatif(List<Integer> idModuleFacultatif) {
+        this.idModuleFacultatif = idModuleFacultatif;
+    }
+
 }

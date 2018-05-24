@@ -59,25 +59,25 @@ public class test {
 
 
         // SELECT 'Module m' + REPLACE(m.LibelleCourt, '-', '') + ' = new Module (' +  CAST(m.IdModule AS VARCHAR(10) ) +', new HashSet<Module>(), new TreeSet<Cours>());' from module m left join ModuleParUnite mpu on m.IdModule = mpu.IdModule left join UniteParFormation upf on mpu.IdUnite = upf.Id where upf.CodeFormation = '17CDI   '
-        Module mSTAGECDI2 = new Module(304, new ArrayList<Module>(), new ArrayList<Cours>(), 2, 70);
-        Module m16DLPOOJ = new Module(708, new ArrayList<Module>(), new ArrayList<Cours>(), 3, 105);
-        Module mSQL = new Module(20, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mPLSQL = new Module(21, new ArrayList<Module>(), new ArrayList<Cours>(), 2, 35);
-        Module mJAVA1DL17 = new Module(725, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mPRJ1DEV17 = new Module(730, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mDVWEBCL = new Module(541, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mDVWEBPH = new Module(544, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mJAVA2 = new Module(302, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mPRJ2DEV17 = new Module(727, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mMOB1DEV17 = new Module(728, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mPRJ3DEV17 = new Module(729, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mJ2EAV = new Module(34, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mAPACCDI17 = new Module(731, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mCPCOURS = new Module(36, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mDVWEBASPX = new Module(560, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mXAMARIN = new Module(566, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module mCONCDEV17 = new Module(734, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
-        Module m17BILAN_FINAL = new Module(817, new ArrayList<Module>(), new ArrayList<Cours>(), 1, 35);
+
+        Module m16DLPOOJ = new Module(708, new ArrayList<Integer>(), new ArrayList<Integer>(), new ArrayList<Cours>(), 3, 105);
+        Module mSQL = new Module(20, new ArrayList<Integer>(), new ArrayList<Integer>(),  new ArrayList<Cours>(), 1, 35);
+        Module mPLSQL = new Module(21, Arrays.asList(mSQL.getIdModule()), new ArrayList<Integer>(),  new ArrayList<Cours>(), 2, 35);
+        Module mJAVA1DL17 = new Module(725, Arrays.asList(m16DLPOOJ.getIdModule()), new ArrayList<Integer>(), new ArrayList<Cours>(), 1, 35);
+        Module mPRJ1DEV17 = new Module(730, Arrays.asList(mJAVA1DL17.getIdModule()), new ArrayList<Integer>(), new ArrayList<Cours>(), 1, 35);
+        Module mCONCDEV17 = new Module(734,Arrays.asList(m16DLPOOJ.getIdModule(), mJAVA1DL17.getIdModule()), new ArrayList<Integer>(), new ArrayList<Cours>(), 1, 35);
+        Module mDVWEBCL = new Module(541, new ArrayList<Integer>(),new ArrayList<Integer>(), new ArrayList<Cours>(), 1, 35);
+        Module mDVWEBPH = new Module(544, new ArrayList<Integer>(), Arrays.asList(mDVWEBCL.getIdModule()), new ArrayList<Cours>(), 1, 35);
+        Module mJAVA2 = new Module(302, Arrays.asList(mJAVA1DL17.getIdModule()), Arrays.asList(mDVWEBCL.getIdModule()), new ArrayList<Cours>(), 1, 35);
+        Module mPRJ2DEV17 = new Module(727, Arrays.asList(mJAVA2.getIdModule()),new ArrayList<Integer>(), new ArrayList<Cours>(), 1, 35);
+        Module mJ2EAV = new Module(34, Arrays.asList(mJAVA2.getIdModule()),new ArrayList<Integer>(), new ArrayList<Cours>(), 1, 35);
+        Module mAPACCDI17 = new Module(731, new ArrayList<Integer>(), Arrays.asList(mDVWEBPH.getIdModule()), new ArrayList<Cours>(), 1, 35);
+        Module mCPCOURS = new Module(36, new ArrayList<Integer>(), new ArrayList<Integer>(), new ArrayList<Cours>(), 1, 35);
+        Module mDVWEBASPX = new Module(560, new ArrayList<Integer>(),Arrays.asList(mDVWEBCL.getIdModule()), new ArrayList<Cours>(), 1, 35);
+        Module mMOB1DEV17 = new Module(728, Arrays.asList(mJAVA1DL17.getIdModule()), Arrays.asList(mJAVA2.getIdModule()), new ArrayList<Cours>(), 1, 35);
+        Module mPRJ3DEV17 = new Module(729, Arrays.asList(mMOB1DEV17.getIdModule()), new ArrayList<Integer>(), new ArrayList<Cours>(), 1, 35);
+        Module mXAMARIN = new Module(566, Arrays.asList(mDVWEBASPX.getIdModule()), Arrays.asList(mMOB1DEV17.getIdModule()), new ArrayList<Cours>(), 1, 35);
+        Module m17BILAN_FINAL = new Module(817,Arrays.asList(mSQL.getIdModule()), new ArrayList<Integer>(), new ArrayList<Cours>(), 1, 35);
 
 
 
@@ -138,12 +138,6 @@ public class test {
         mJAVA2.getCours().add(new Cours(new Periode("2019-01-14","2019-01-25"),"91A46A5E-F1B3-41BF-8B89-E56D82E1952D",302,1, 70));
         mJAVA2.getCours().add(new Cours(new Periode("2018-06-25","2018-07-06"),"2719B3A2-AB19-49C5-8BF2-FDB79C75A0E6",302,2, 70));
         mJAVA2.getCours().add(new Cours(new Periode("2018-09-17","2018-09-28"),"B9ACABF3-51FA-460B-9016-FE647A831F2D",302,11, 70));
-        mSTAGECDI2.getCours().add(new Cours(new Periode("2019-01-21","2019-03-15"),"A29FEEB6-4CD9-4F97-9922-F37C5315340C",304,11, 280));
-        mSTAGECDI2.getCours().add(new Cours(new Periode("2019-05-06","2019-06-28"),"D774AAB9-22F8-4747-BC50-CE108A7CEB56",304,1, 280));
-        mSTAGECDI2.getCours().add(new Cours(new Periode("2019-07-01","2019-08-23"),"93549FDE-A757-4630-8F3D-93DCD6154C73",304,1, 280));
-        mSTAGECDI2.getCours().add(new Cours(new Periode("2018-11-12","2018-12-21"),"1B040E3B-F71D-4A51-B408-7348746C1A9C",304,1, 280));
-        mSTAGECDI2.getCours().add(new Cours(new Periode("2018-10-15","2018-12-07"),"3E9B3F7A-7493-49EC-B490-5F5A98EAE186",304,2, 280));
-        mSTAGECDI2.getCours().add(new Cours(new Periode("2019-01-02","2019-01-11"),"10634E06-A6D8-4FE6-8500-1CD51D27DC13",304,1, 280));
         mDVWEBCL.getCours().add(new Cours(new Periode("2018-12-03","2018-12-07"),"7F6F1BEA-4AD3-409F-B7D4-1D8233BB72F9",541,1, 35));
         mDVWEBCL.getCours().add(new Cours(new Periode("2018-06-18","2018-06-22"),"1EFC4886-2EE8-4526-84CF-1DC2FCD3246F",541,10, 35));
         mDVWEBCL.getCours().add(new Cours(new Periode("2018-08-20","2018-08-24"),"B050CD0E-2390-45C0-918B-1EACB3EFF211",541,1, 35));
@@ -293,7 +287,6 @@ public class test {
         mCONCDEV17.getCours().add(new Cours(new Periode("2019-01-28","2019-02-08"),"B58AAB97-439E-4D58-9FE5-B392733F5E6B",734,1, 70));
         m17BILAN_FINAL.getCours().add(new Cours(new Periode("2018-11-19","2018-11-20"),"2CF00DDF-FB7B-4C16-8C36-6C23B776FD86",817,2, 14));
 
-        modules.add(mSTAGECDI2);
         modules.add(m16DLPOOJ);
         modules.add(mSQL);
         modules.add(mPLSQL);
@@ -319,7 +312,7 @@ public class test {
         probleme.setContraintes(
                         new Contrainte(
 
-                                new IntegerContrainte(2, 5),
+                                new IntegerContrainte(10, 5),
                                 new IntegerContrainte(1500, 4),
                                 new IntegerContrainte(3000, 3),
                                 new IntegerContrainte(20, 2),

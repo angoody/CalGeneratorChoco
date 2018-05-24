@@ -3,31 +3,33 @@ package models;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Contrainte implements Serializable {
-    private IntegerContrainte idLieux;
-    private IntegerContrainte nbHeureAnnuel;
-    private IntegerContrainte dureeMaxFormation;
-    private IntegerContrainte maxSemaineFormation;
-    private List<Periode> periodeFormationExclusion = new ArrayList<>();
-    private List<Periode> periodeFormationInclusion = new ArrayList<>();
-    private IntegerContrainte maxStagiaireEntrepriseEnFormation;
-    private List<Stagiaire> stagiairesEntreprise = new ArrayList<>();
-    private List<Stagiaire> stagiairesRecquis = new ArrayList<>();
+    private IntegerContrainte idLieux                           = new IntegerContrainte();
+    private IntegerContrainte nbHeureAnnuel                     = new IntegerContrainte();
+    private IntegerContrainte dureeMaxFormation                 = new IntegerContrainte();
+    private IntegerContrainte maxSemaineFormation               = new IntegerContrainte();
+    private List<Periode> periodeFormationExclusion             = new ArrayList<>();
+    private List<Periode> periodeFormationInclusion             = new ArrayList<>();
+    private IntegerContrainte maxStagiaireEntrepriseEnFormation = new IntegerContrainte();
+    private List<Stagiaire> stagiairesEntreprise                = new ArrayList<>();
+    private List<Stagiaire> stagiairesRecquis                   = new ArrayList<>();
+    private ContrainteDecompose prerequisModule                 = new ContrainteDecompose(true, 1);
 
     public Contrainte() {
     }
 
     public Contrainte(IntegerContrainte idLieux, IntegerContrainte nbHeureAnnuel, IntegerContrainte dureeMaxFormation, IntegerContrainte maxSemaineFormation, List<Periode> periodeFormationExclusion, List<Periode> periodeFormationInclusion, IntegerContrainte maxStagiaireEntrepriseEnFormation, List<Stagiaire> stagiairesEntreprise, List<Stagiaire> stagiairesRecquis) {
-        this.idLieux = idLieux;
-        this.nbHeureAnnuel = nbHeureAnnuel;
-        this.dureeMaxFormation = dureeMaxFormation;
-        this.maxSemaineFormation = maxSemaineFormation;
-        this.periodeFormationExclusion = periodeFormationExclusion;
-        this.periodeFormationInclusion = periodeFormationInclusion;
-        this.maxStagiaireEntrepriseEnFormation = maxStagiaireEntrepriseEnFormation;
-        this.stagiairesEntreprise = stagiairesEntreprise;
-        this.stagiairesRecquis = stagiairesRecquis;
+        this.idLieux                            = idLieux;
+        this.nbHeureAnnuel                      = nbHeureAnnuel;
+        this.dureeMaxFormation                  = dureeMaxFormation;
+        this.maxSemaineFormation                = maxSemaineFormation;
+        this.periodeFormationExclusion          = periodeFormationExclusion;
+        this.periodeFormationInclusion          = periodeFormationInclusion;
+        this.maxStagiaireEntrepriseEnFormation  = maxStagiaireEntrepriseEnFormation;
+        this.stagiairesEntreprise               = stagiairesEntreprise;
+        this.stagiairesRecquis                  = stagiairesRecquis;
     }
 
     public IntegerContrainte getIdLieux() {
@@ -102,4 +104,11 @@ public class Contrainte implements Serializable {
         this.stagiairesRecquis = stagiairesRecquis;
     }
 
+    public ContrainteDecompose getPrerequisModule() {
+        return prerequisModule;
+    }
+
+    public void setPrerequisModule(ContrainteDecompose prerequisModule) {
+        this.prerequisModule = prerequisModule;
+    }
 }

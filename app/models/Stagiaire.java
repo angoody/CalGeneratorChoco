@@ -6,14 +6,24 @@ import java.util.Set;
 
 public class Stagiaire extends ContrainteDecompose {
     private List<Cours> cours;
+    private Integer idStagiaire;
     private Boolean isRespected = false;
 
 
     public Stagiaire() {
+        super(true, 0);
     }
 
-    public Stagiaire(List<Cours> cours) {
+    public Stagiaire(Stagiaire stagiaire, Boolean isRespected) {
+        super(isRespected, stagiaire.getPriority());
+        this.cours          = stagiaire.getCours();
+        this.idStagiaire    = stagiaire.getIdStagiaire();
+    }
+
+    public Stagiaire(Integer idStagiaire, List<Cours> cours) {
+        super(true, 0);
         this.cours = cours;
+        this.idStagiaire = idStagiaire;
     }
 
     public List<Cours> getCours() {
@@ -30,5 +40,13 @@ public class Stagiaire extends ContrainteDecompose {
 
     public void setRespected(Boolean respected) {
         isRespected = respected;
+    }
+
+    public Integer getIdStagiaire() {
+        return idStagiaire;
+    }
+
+    public void setIdStagiaire(Integer idStagiaire) {
+        this.idStagiaire = idStagiaire;
     }
 }

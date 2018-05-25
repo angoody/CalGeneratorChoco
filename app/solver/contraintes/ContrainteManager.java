@@ -84,7 +84,8 @@ public class ContrainteManager {
 
         if (contrainte.getPeriodeFormationInclusion().size() > 0) {
             contraintePeriodeInclusion = new ListeContrainteChoco<ContrainteChocoPeriodeInclusion>(model, contrainte.getPeriodeFormationInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
-            moduleInChoco.forEach(m -> contraintePeriodeInclusion.post(m));
+            // TODO pb sur le unpost de contrainte
+            //moduleInChoco.forEach(m -> contraintePeriodeInclusion.post(m));
         }
 
         if (contrainte.getMaxSemaineFormation().getValue() > 0)

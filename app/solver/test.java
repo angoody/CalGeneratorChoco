@@ -1,6 +1,7 @@
 package solver;
 
 import models.*;
+import utils.DateTimeHelper;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -317,7 +318,7 @@ public class test {
                                 new IntegerContrainte(3000, 3),
                                 new IntegerContrainte(20, 2),
                                 Arrays.asList(new Periode("2018-03-19", "2018-03-23")),
-                                Arrays.asList(),
+                                Arrays.asList(new Periode("2019-04-01","2019-04-19")),
                                 new IntegerContrainte(3, 1),
                                 Arrays.asList(),
                                 Arrays.asList()
@@ -327,6 +328,9 @@ public class test {
         modules.stream().forEach(m -> m.setCours(m.getCours().stream().filter(d ->
                 d.getPeriode().getInstantDebut().isAfter(probleme.getPeriodeFormation().getInstantDebut()) &&
                         d.getPeriode().getInstantFin().isBefore(probleme.getPeriodeFormation().getInstantFin())).collect(Collectors.toList())));
+        probleme.getContrainte().setMinSemaineEntreprise(new IntegerContrainte(3));
+        probleme.getContrainte().setMaxSemaineFormation(new IntegerContrainte(3));
+
         return probleme;
     }
 

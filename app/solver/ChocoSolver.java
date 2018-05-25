@@ -10,6 +10,7 @@ import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
 import org.chocosolver.solver.search.strategy.strategy.IntStrategy;
+import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
 import solver.contraintes.ContrainteManager;
 import solver.modelChoco.CoursChoco;
@@ -156,6 +157,7 @@ public class ChocoSolver {
                 ).post();
             }
 
+
         }
 
 
@@ -227,13 +229,12 @@ public class ChocoSolver {
         int j = 0;
         int nbEssai = 0;
         int nbConstraintToFree = 1;
-        while ((calendriersTrouve.size() < nbCalendrier) & (nbEssai < 100))
+        while ((calendriersTrouve.size() < nbCalendrier) & (nbEssai < contrainteManager.maxAlternateSearch()))
         {
 
             if (solver.solve() == false) {
 
-                //contrainteManager.alternateSearch(nbEssai );
-                contrainteManager.alternateSearch(nbEssai % nbModules, (nbEssai / nbModules) + 1, (nbEssai / (nbModules * nbModules)) + 1);
+                contrainteManager.alternateSearch(nbEssai);
                 solver.reset();
             }
             nbEssai++;

@@ -26,13 +26,5 @@ public class ContrainteChocoPeriodeExclusion extends ItemContrainteChocoDecompos
                 model.notMember(module.getFin(), periodExclusion.getDebut(), periodExclusion.getFin()));
     }
 
-    @Override
-    public void enableAlternateSearch(ModuleChoco module) {
-        unPost(module);
-    }
 
-    @Override
-    public void disableAlternateSearch(ModuleChoco module) {
-        post(module);
-    }
 }

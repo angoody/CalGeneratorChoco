@@ -26,19 +26,5 @@ public class ContrainteChocoPrerequis extends ContrainteChoco {
     }
 
 
-    @Override
-    public void enableAlternateSearch(ModuleChoco module) {
-        propagators.get(module).searchAternatif((true));
-    }
-
-    @Override
-    public void disableAlternateSearch(ModuleChoco module) {
-        propagators.get(module).searchAternatif((false));
-    }
-
-    @Override
-    public Boolean isAlternateSearch() {
-        return (propagators.values().stream().filter(c -> c.isAternatifSearch()).count() == constraints.values().size());
-    }
 
 }

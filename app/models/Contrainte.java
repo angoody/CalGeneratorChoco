@@ -10,6 +10,7 @@ public class Contrainte implements Serializable {
     private IntegerContrainte nbHeureAnnuel                     = new IntegerContrainte();
     private IntegerContrainte dureeMaxFormation                 = new IntegerContrainte();
     private IntegerContrainte maxSemaineFormation               = new IntegerContrainte();
+    private IntegerContrainte minSemaineEntreprise              = new IntegerContrainte();
     private List<Periode> periodeFormationExclusion             = new ArrayList<>();
     private List<Periode> periodeFormationInclusion             = new ArrayList<>();
     private IntegerContrainte maxStagiaireEntrepriseEnFormation = new IntegerContrainte();
@@ -110,5 +111,13 @@ public class Contrainte implements Serializable {
 
     public void setPrerequisModule(ContrainteDecompose prerequisModule) {
         this.prerequisModule = prerequisModule;
+    }
+
+    public IntegerContrainte getMinSemaineEntreprise() {
+        return minSemaineEntreprise;
+    }
+
+    public void setMinSemaineEntreprise(IntegerContrainte minSemaineEntreprise) {
+        this.minSemaineEntreprise = minSemaineEntreprise;
     }
 }

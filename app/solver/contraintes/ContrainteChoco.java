@@ -55,7 +55,8 @@ public abstract class ContrainteChoco {
         if (constraint.getStatus() == Constraint.Status.REIFIED)
             model.unpost(constraint);
 
-        constraint.post();
+        if (constraint.getStatus() != Constraint.Status.POSTED)
+            constraint.post();
 
         // Si toutes les contraintes sont posté, alors la contrainte est respectée
         if (constraints.values().stream().filter(c -> c.getStatus() == Constraint.Status.POSTED).count() == constraints.values().size())
@@ -67,7 +68,8 @@ public abstract class ContrainteChoco {
     public Constraint unPost(ModuleChoco module)
     {
         Constraint constraint = constraints.get(module);
-        model.unpost(constraint);
+        if (constraint.getStatus() == Constraint.Status.POSTED)
+            model.unpost(constraint);
         //constraint.reify();
         contrainteModel.setRespeced(false);
 

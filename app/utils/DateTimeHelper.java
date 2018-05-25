@@ -40,8 +40,7 @@ public class DateTimeHelper {
     }
 
     public static Instant format(String date) {
-        DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneOffset.UTC);
-        return FMT.parse(date, Instant::from);
+        return format(date, "yyyy-MM-dd");
     }
 
     public static String format(Instant date) {

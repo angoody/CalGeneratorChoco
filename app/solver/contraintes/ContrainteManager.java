@@ -13,14 +13,13 @@ import java.util.stream.Collectors;
 
 public class ContrainteManager {
 
+    private ContrainteChocoPeriodeFormation contraintePeriodeFormation;
     private int idContrainte;
     private Contrainte contrainte;
     private Model model;
     private List<ModuleChoco> moduleInChoco;
 
 
-    private List<IntVar> lesContraintesDansChoco = new ArrayList<>();
-    private List<BoolVar> respectDesContraintes = new ArrayList<>();
     private List<PeriodeChoco> coursDesStagiairesRecquis;
     private List<PeriodeChoco> coursRefuse;
     private ContrainteChocoLieu contrainteLieu = null;
@@ -85,6 +84,13 @@ public class ContrainteManager {
 
         if (contrainte.getPeriodeFormationInclusion().size() > 0) {
             contraintePeriodeInclusion = new ListeContrainteChoco<ContrainteChocoPeriodeInclusion>(model, contrainte.getPeriodeFormationInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
+            moduleInChoco.forEach(m -> contraintePeriodeInclusion.post(m));
+        }
+
+        if (contrainte.getMaxSemaineFormation().getValue() > 0)
+        {
+            contraintePeriodeFormation = new ContrainteChocoPeriodeFormation(model, contrainte.getMaxSemaineFormation(), contrainte.getMinSemaineEntreprise(), moduleInChoco);
+            moduleInChoco.forEach(m -> contraintePeriodeFormation.post(m));
         }
 
         // les cours autorisés des stagiaires recquis
@@ -102,6 +108,8 @@ public class ContrainteManager {
 
         contrainteChocoDecomposeParPriorite.add(contrainteLieu);
         contrainteChocoDecomposeParPriorite.addAll(contraintePeriodeExclusion.getContraintesChoco());
+        contrainteChocoDecomposeParPriorite.addAll(contraintePeriodeInclusion.getContraintesChoco());
+        contrainteChocoDecomposeParPriorite.add(contraintePeriodeFormation);
 
         Collections.sort(contrainteChocoDecomposeParPriorite, (Comparator.comparing(o -> o.getContrainteModel().getPriority())));
         Collections.reverse(contrainteChocoDecomposeParPriorite);
@@ -114,6 +122,7 @@ public class ContrainteManager {
         contrainteRespecte.setIdLieux(new IntegerContrainte(this.contrainte.getIdLieux(), contrainteLieu.isAlternateSearch()));
         contrainteRespecte.setDureeMaxFormation(new IntegerContrainte(this.contrainte.getDureeMaxFormation(), true));
         contrainteRespecte.setMaxSemaineFormation(new IntegerContrainte(this.contrainte.getMaxSemaineFormation(), true));
+        contrainteRespecte.setMinSemaineEntreprise(new IntegerContrainte(this.contrainte.getMinSemaineEntreprise(), true));
         contrainteRespecte.setMaxStagiaireEntrepriseEnFormation(new IntegerContrainte(this.contrainte.getMaxStagiaireEntrepriseEnFormation(), true));
         contrainteRespecte.setNbHeureAnnuel(new IntegerContrainte(this.contrainte.getNbHeureAnnuel(), true));
         contrainteRespecte.setPrerequisModule ( new ContrainteDecompose(contraintePrerequis.isAlternateSearch(), this.contrainte.getPrerequisModule().getPriority()));
@@ -128,6 +137,8 @@ public class ContrainteManager {
                 .forEach( c -> contrainteRespecte.getPeriodeFormationInclusion().add(new Periode((Periode) c.getContrainteModel(), c.isAlternateSearch())));
         else
             contrainteRespecte.setPeriodeFormationInclusion(this.contrainte.getPeriodeFormationInclusion());
+
+
 
         // TODO stagiaires
         return contrainteRespecte;
@@ -180,9 +191,13 @@ public class ContrainteManager {
         }
     }
 
+    public Integer maxAlternateSearch() {
+        return (moduleInChoco.size()-1) * (moduleInChoco.size()-1) * (contrainteChocoDecomposeParPriorite.size()-1);
+
+    }
+
     public void alternateSearch(int nbEssai) {
-
-
+        alternateSearch(nbEssai % moduleInChoco.size(), (nbEssai / moduleInChoco.size()) + 1, (nbEssai / (moduleInChoco.size() * moduleInChoco.size()))) ;
     }
 
     public void alternateSearch(int start, int nbModuleToFree, int nbConstraintToFree) {

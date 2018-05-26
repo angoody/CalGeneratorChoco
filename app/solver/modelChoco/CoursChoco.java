@@ -1,6 +1,6 @@
 package solver.modelChoco;
 
-import models.Cours;
+import models.input.Cours;
 
 public class CoursChoco {
 

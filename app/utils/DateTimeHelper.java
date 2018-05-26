@@ -1,15 +1,10 @@
 package utils;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.FormatStyle;
 import java.time.temporal.ChronoField;
-import java.util.Locale;
 
 public class DateTimeHelper {
 
@@ -48,9 +43,12 @@ public class DateTimeHelper {
     }
 
 
+    public static int toDays(String string){
+        return (int) toDays(format(string));
+    }
 
 
-    public static int InstantToDays (Instant instant){
+    public static int toDays(Instant instant){
         //  convert an instant to an integer and back again
         long currentTime=instant.toEpochMilli();
         currentTime=currentTime/MAGIC;

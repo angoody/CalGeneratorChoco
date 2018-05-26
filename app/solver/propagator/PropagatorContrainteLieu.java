@@ -1,6 +1,5 @@
 package solver.propagator;
 
-import models.ContrainteDecompose;
 import org.chocosolver.solver.constraints.unary.PropMemberEnum;
 import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.variables.IntVar;

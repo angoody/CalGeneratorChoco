@@ -1,7 +1,7 @@
 package solver.modelChoco;
 
-import models.Cours;
-import models.Module;
+import models.input.Cours;
+import models.input.Module;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;
 

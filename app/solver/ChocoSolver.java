@@ -1,16 +1,15 @@
 package solver;
 
-import models.Calendrier;
-import models.Cours;
-import models.Probleme;
+import models.output.Calendrier;
+import models.input.Cours;
+import models.output.CoursCalendrier;
+import models.input.Probleme;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.extension.Tuples;
 import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
-import org.chocosolver.solver.search.strategy.strategy.IntStrategy;
-import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
 import solver.contraintes.ContrainteManager;
 import solver.modelChoco.CoursChoco;
@@ -57,19 +56,19 @@ public class ChocoSolver {
 
         List<Calendrier> calendriersTrouve = new ArrayList<>();
         model = new Model("Generer calendrier");
-        nbModules = probleme.getModulesFormation().size();
+
 
     // Création des modèles de données des modules pour Choco
         // Transforme les modules en objet préparé pour Choco
-        moduleInChoco = probleme.getModulesFormation().stream().map(m -> new ModuleChoco(m, model)).collect(Collectors.toList());
+        moduleInChoco = probleme.getModulesFormation().stream().filter(m -> m.getCours().size() >0).map(m -> new ModuleChoco(m, model)).collect(Collectors.toList());
         moduleInChoco.forEach(m -> m.setModule(moduleInChoco));
-
+        nbModules = moduleInChoco.size();
 
     //Traitement des contraintes
 
         //Période de formation
-        int debutFormation = DateTimeHelper.InstantToDays(probleme.getPeriodeFormation().getInstantDebut());
-        int finFormation = DateTimeHelper.InstantToDays(probleme.getPeriodeFormation().getInstantFin());
+        int debutFormation = DateTimeHelper.toDays(probleme.getPeriodeFormation().getInstantDebut());
+        int finFormation = DateTimeHelper.toDays(probleme.getPeriodeFormation().getInstantFin());
 
 
     // Création des jeux de données basé sur tous les cours pour Choco
@@ -177,19 +176,18 @@ public class ChocoSolver {
         // Permet de récupérer le calendrier trouvé, calendrier par calendrier
         ContrainteManager finalContrainteManager = contrainteManager;
         solver.plugMonitor((IMonitorSolution) () -> {
-            List<Cours> lesCoursChoisi = new ArrayList<>();
+            Calendrier calendrierTrouve = new Calendrier();
             for (int i = 0; i < nbModules; i++) {
                 // La valeur dans le modulesID... correspond à la valeur sélectionné par Choco
                 Cours coursTrouve = moduleInChoco.get(i).getCoursDuModule().get(moduleInChoco.get(i).getCoursId().getValue()).getCours();
-
-                lesCoursChoisi.add(coursTrouve);
+                afficheCours(coursTrouve);
                 listeners.forEach(l -> l.foundCours(coursTrouve));
+                calendrierTrouve.addCours(new CoursCalendrier(coursTrouve, finalContrainteManager.getContraintes(moduleInChoco.get(i))));
             }
-            Calendrier calendrierTrouve = new Calendrier(lesCoursChoisi.stream().sorted(Comparator.comparing(o -> o.getPeriode().getInstantDebut())).map(c -> c.getIdCours()).collect(Collectors.toList()));
-            calendrierTrouve.setContrainte(finalContrainteManager.getContraintes());
+            calendrierTrouve.setConstraint(finalContrainteManager.getContraintes());
             calendriersTrouve.add(calendrierTrouve);
 
-            lesCoursChoisi.stream().sorted(Comparator.comparing(o -> o.getPeriode().getInstantDebut())).forEach(c -> afficheCours(c));
+            //Collections.sort(calendrierTrouve.getCours(), Comparator.comparing(o -> o.) );
             listeners.forEach(l -> l.foundCalendar(calendrierTrouve));
         });
 
@@ -225,6 +223,8 @@ public class ChocoSolver {
                 DecisionOperatorFactory.makeIntEq(),
                 coursIdentifier
         ));
+
+        System.out.println("Choco max : " + contrainteManager.maxAlternateSearch());
 
         int j = 0;
         int nbEssai = 0;

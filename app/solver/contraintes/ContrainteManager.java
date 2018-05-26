@@ -1,9 +1,10 @@
 package solver.contraintes;
 
-import models.*;
+import models.input.Constrainte;
+import models.input.Periode;
+import models.input.Probleme;
+import models.output.ConstraintRespected;
 import org.chocosolver.solver.Model;
-import org.chocosolver.solver.variables.BoolVar;
-import org.chocosolver.solver.variables.IntVar;
 import solver.modelChoco.ModuleChoco;
 import solver.modelChoco.PeriodeChoco;
 
@@ -11,48 +12,54 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ContrainteManager {
-
-    private ContrainteChocoPeriodeFormation contraintePeriodeFormation;
-    private int idContrainte;
-    private Contrainte contrainte;
-    private Model model;
-    private List<ModuleChoco> moduleInChoco;
+public class ContrainteManager
+{
 
 
-    private List<PeriodeChoco> coursDesStagiairesRecquis;
-    private List<PeriodeChoco> coursRefuse;
-    private ContrainteChocoLieu contrainteLieu = null;
-    private ContrainteChocoPrerequis contraintePrerequis = null;
-    private ListeContrainteChoco<ContrainteChocoPeriodeExclusion> contraintePeriodeExclusion = null;
+    private int                   oldStart                            = 0;
+    private int                   oldNbModuleToFree                   = 0;
+    private int                   oldNbConstraintToFree               = 0;
+    private Constrainte           constrainte                         = null;
+    private Model                 model                               = null;
+    private List<ModuleChoco>     moduleInChoco                       = new ArrayList<>();
+    private List<PeriodeChoco>    coursDesStagiairesRecquis           = new ArrayList<>();
+    private List<PeriodeChoco>    coursRefuse                         = new ArrayList<>();
     private List<ContrainteChoco> contrainteChocoDecomposeParPriorite = new ArrayList<>();
-    private int oldStart = 0;
-    private int oldNbModuleToFree = 0;
-    private int oldNbConstraintToFree = 0;
-    private ListeContrainteChoco<ContrainteChocoPeriodeInclusion> contraintePeriodeInclusion;
+
+    private ContrainteChocoLieu                                   contrainteLieu             = null;
+    private ContrainteChocoPrerequis                              contraintePrerequis        = null;
+    private ContrainteChocoPeriodeFormation                       contraintePeriodeFormation = null;
+    private ListeContrainteChoco<ContrainteChocoPeriodeExclusion> contraintePeriodeExclusion = null;
+    private ListeContrainteChoco<ContrainteChocoPeriodeInclusion> contraintePeriodeInclusion = null;
 
 
-    public ContrainteManager(Model model, Probleme probleme, List<ModuleChoco> moduleInChoco) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public ContrainteManager(Model model, Probleme probleme, List<ModuleChoco> moduleInChoco) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException
+    {
 
-        this.contrainte = probleme.getContrainte();
+        this.constrainte = probleme.getContrainte();
         this.model = model;
         this.moduleInChoco = moduleInChoco;
 
 
-        contraintePrerequis = new ContrainteChocoPrerequis(model, contrainte.getPrerequisModule(), moduleInChoco);
+        contraintePrerequis = new ContrainteChocoPrerequis(model, constrainte.getPrerequisModule(), moduleInChoco);
+        moduleInChoco.forEach(m -> contraintePrerequis.post(m));
+        contrainteChocoDecomposeParPriorite.add(contraintePrerequis);
 
-        if (contrainte.getIdLieux().getValue() > -1) {
+        if (constrainte.getIdLieu().getValue() > -1)
+        {
 
             Map<Integer, Long> lieuxPossibleGroupe = probleme.getModulesFormation().stream()
                     .flatMap(m -> m.getCours().stream())
                     .map(c -> new Integer(c.getLieu()))
-                    .filter(l -> l != contrainte.getIdLieux().getValue())
+                    .filter(l -> l != constrainte.getIdLieu().getValue())
                     .collect(Collectors.groupingBy(e -> e, Collectors.counting()));
 
-            Comparator<Map.Entry<Integer, Long>> valueComparator = new Comparator<Map.Entry<Integer, Long>>() {
+            Comparator<Map.Entry<Integer, Long>> valueComparator = new Comparator<Map.Entry<Integer, Long>>()
+            {
 
                 @Override
-                public int compare(Map.Entry<Integer, Long> e1, Map.Entry<Integer, Long> e2) {
+                public int compare(Map.Entry<Integer, Long> e1, Map.Entry<Integer, Long> e2)
+                {
                     Long v1 = e1.getValue();
                     Long v2 = e2.getValue();
                     return v1.compareTo(v2);
@@ -70,119 +77,90 @@ public class ContrainteManager {
 
             contrainteLieu = new ContrainteChocoLieu(
                     model,
-                    contrainte.getIdLieux(),
+                    constrainte.getIdLieu(),
                     moduleInChoco,
                     lieuxPossible);
             moduleInChoco.forEach(m -> contrainteLieu.post(m));
+            contrainteChocoDecomposeParPriorite.add(contrainteLieu);
 
         }
 
-        if (contrainte.getPeriodeFormationExclusion().size() > 0){
-            contraintePeriodeExclusion = new ListeContrainteChoco<ContrainteChocoPeriodeExclusion>(model,contrainte.getPeriodeFormationExclusion(), ContrainteChocoPeriodeExclusion.class, moduleInChoco, ListeContrainteChoco.AND );
-            moduleInChoco.forEach(m -> contraintePeriodeExclusion.post(m));
-        }
-
-        if (contrainte.getPeriodeFormationInclusion().size() > 0) {
-            contraintePeriodeInclusion = new ListeContrainteChoco<ContrainteChocoPeriodeInclusion>(model, contrainte.getPeriodeFormationInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
-            // TODO pb sur le unpost de contrainte
-            //moduleInChoco.forEach(m -> contraintePeriodeInclusion.post(m));
-        }
-
-        if (contrainte.getMaxSemaineFormation().getValue() > 0)
+        if (constrainte.getPeriodeFormationExclusion().size() > 0)
         {
-            contraintePeriodeFormation = new ContrainteChocoPeriodeFormation(model, contrainte.getMaxSemaineFormation(), contrainte.getMinSemaineEntreprise(), moduleInChoco);
+            contraintePeriodeExclusion = new ListeContrainteChoco<ContrainteChocoPeriodeExclusion>(model, constrainte.getPeriodeFormationExclusion(), ContrainteChocoPeriodeExclusion.class, moduleInChoco, ListeContrainteChoco.AND);
+            contraintePeriodeExclusion.post();
+            contrainteChocoDecomposeParPriorite.addAll(contraintePeriodeExclusion.getContraintesChoco());
+
+        }
+
+        if (constrainte.getPeriodeFormationInclusion().size() > 0)
+        {
+            contraintePeriodeInclusion = new ListeContrainteChoco<ContrainteChocoPeriodeInclusion>(model, constrainte.getPeriodeFormationInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
+            contraintePeriodeInclusion.post();
+            contrainteChocoDecomposeParPriorite.addAll(contraintePeriodeInclusion.getContraintesChoco());
+        }
+
+        if (constrainte.getFrequenceFormation().getValue().getMaxSemaineFormation() > 0)
+        {
+            contraintePeriodeFormation = new ContrainteChocoPeriodeFormation(model, constrainte.getFrequenceFormation(), moduleInChoco);
             moduleInChoco.forEach(m -> contraintePeriodeFormation.post(m));
+            contrainteChocoDecomposeParPriorite.add(contraintePeriodeFormation);
         }
 
         // les cours autorisés des stagiaires recquis
-        if (contrainte.getStagiairesRecquis().size() > 0)
-            coursDesStagiairesRecquis = contrainte.getStagiairesRecquis().stream().flatMap(stagiaire -> stagiaire.getCours().stream().map(cr -> new PeriodeChoco(cr.getPeriode()))).collect(Collectors.toList());
+        if (constrainte.getStagiairesRecquis().size() > 0)
+        {
+            coursDesStagiairesRecquis = constrainte.getStagiairesRecquis().stream().flatMap(stagiaire -> stagiaire.getValue().getCours().stream().map(cr -> new PeriodeChoco(cr))).collect(Collectors.toList());
+        }
 
         // les cours dont le nombre de stagiaire a atteint le nombre maximum
-        if (contrainte.getMaxStagiaireEntrepriseEnFormation().getValue() > 0)
-            coursRefuse = contrainte.getStagiairesEntreprise().stream()
-                    .flatMap(stagiaire -> stagiaire.getCours().stream())
-                    .collect(Collectors.groupingBy(e->e, Collectors.counting()))
+        if (constrainte.getMaxStagiaireEntrepriseEnFormation().getValue() > 0)
+        {
+            coursRefuse = constrainte.getStagiairesEntreprise().stream()
+                    .flatMap(stagiaire -> stagiaire.getValue().getCours().stream())
+                    .collect(Collectors.groupingBy(e -> e, Collectors.counting()))
                     .entrySet().stream()
-                    .filter(c -> c.getValue() >= contrainte.getMaxStagiaireEntrepriseEnFormation().getValue() )
-                    .map(Map.Entry::getKey).map(c -> new PeriodeChoco(c.getPeriode())).collect(Collectors.toList());
+                    .filter(c -> c.getValue() >= constrainte.getMaxStagiaireEntrepriseEnFormation().getValue())
+                    .map(Map.Entry::getKey).map(c -> new PeriodeChoco(c)).collect(Collectors.toList());
+        }
 
-        contrainteChocoDecomposeParPriorite.add(contrainteLieu);
-        contrainteChocoDecomposeParPriorite.addAll(contraintePeriodeExclusion.getContraintesChoco());
-        contrainteChocoDecomposeParPriorite.addAll(contraintePeriodeInclusion.getContraintesChoco());
-        contrainteChocoDecomposeParPriorite.add(contraintePeriodeFormation);
+        // Les contraintes décomposé retirable sont ajoutée dans la liste des contrainteChocoDecomposeParPriorite décroissante
 
-        Collections.sort(contrainteChocoDecomposeParPriorite, (Comparator.comparing(o -> o.getContrainteModel().getPriority())));
+        Collections.sort(contrainteChocoDecomposeParPriorite, (Comparator.comparing(o -> o.getConstrainteRespected().getPriority())));
         Collections.reverse(contrainteChocoDecomposeParPriorite);
 
     }
 
-    public Contrainte getContraintes()
+    public List<ConstraintRespected> getContraintes(ModuleChoco module)
     {
-        Contrainte contrainteRespecte = new Contrainte();
-        contrainteRespecte.setIdLieux(new IntegerContrainte(this.contrainte.getIdLieux(), contrainteLieu.isAlternateSearch()));
-        contrainteRespecte.setDureeMaxFormation(new IntegerContrainte(this.contrainte.getDureeMaxFormation(), true));
-        contrainteRespecte.setMaxSemaineFormation(new IntegerContrainte(this.contrainte.getMaxSemaineFormation(), true));
-        contrainteRespecte.setMinSemaineEntreprise(new IntegerContrainte(this.contrainte.getMinSemaineEntreprise(), true));
-        contrainteRespecte.setMaxStagiaireEntrepriseEnFormation(new IntegerContrainte(this.contrainte.getMaxStagiaireEntrepriseEnFormation(), true));
-        contrainteRespecte.setNbHeureAnnuel(new IntegerContrainte(this.contrainte.getNbHeureAnnuel(), true));
-        contrainteRespecte.setPrerequisModule ( new ContrainteDecompose(contraintePrerequis.isAlternateSearch(), this.contrainte.getPrerequisModule().getPriority()));
-        if (contraintePeriodeExclusion != null)
-            contraintePeriodeExclusion.getContraintesChoco().stream()
-                .forEach( c -> contrainteRespecte.getPeriodeFormationExclusion().add(new Periode((Periode) c.getContrainteModel(), c.isAlternateSearch())));
-        else
-            contrainteRespecte.setPeriodeFormationExclusion(this.contrainte.getPeriodeFormationExclusion());
-
-        if (contraintePeriodeInclusion != null)
-            contraintePeriodeInclusion.getContraintesChoco().stream()
-                .forEach( c -> contrainteRespecte.getPeriodeFormationInclusion().add(new Periode((Periode) c.getContrainteModel(), c.isAlternateSearch())));
-        else
-            contrainteRespecte.setPeriodeFormationInclusion(this.contrainte.getPeriodeFormationInclusion());
-
-
-
-        // TODO stagiaires
-        return contrainteRespecte;
+        return contrainteChocoDecomposeParPriorite.stream().map(c -> c.calculateRespectOfConstraint(module)).collect(Collectors.toList());
     }
 
-    private void respawnConstraint(int start, int nbModuleToFree, int nbConstraintToFree) {
+
+    public List<ConstraintRespected> getContraintes()
+    {
+        return contrainteChocoDecomposeParPriorite.stream().map(c -> c.calculateRespectOfConstraint()).collect(Collectors.toList());
+    }
+
+    private void disableAlternateSearch(int start, int nbModuleToFree, int nbConstraintToFree)
+    {
+
         for (int i = 0; i < nbConstraintToFree; i++)
         {
-            if (start + nbModuleToFree <= moduleInChoco.size()) {
-                for (int j = start; j < start + nbModuleToFree; j++) {
-                    contrainteChocoDecomposeParPriorite.get(i).post(moduleInChoco.get(j));
-                }
-            }
-            else
+            if (start + nbModuleToFree <= moduleInChoco.size())
             {
-                for (int j = start; j < moduleInChoco.size(); j++) {
-                    contrainteChocoDecomposeParPriorite.get(i).post(moduleInChoco.get(j));
-                }
-                for (int j = 0; j < (start + nbModuleToFree - moduleInChoco.size()); j++ )
+                for (int j = start; j < start + nbModuleToFree; j++)
                 {
-                    contrainteChocoDecomposeParPriorite.get(i).post(moduleInChoco.get(j));
-                }
-            }
-
-
-        }
-    }
-
-    private void disableAlternateSearch(int start, int nbModuleToFree, int nbConstraintToFree) {
-
-        for (int i = 0; i < nbConstraintToFree; i++)
-        {
-            if (start + nbModuleToFree <= moduleInChoco.size()) {
-                for (int j = start; j < start + nbModuleToFree; j++) {
                     contrainteChocoDecomposeParPriorite.get(i).disableAlternateSearch(moduleInChoco.get(j));
                 }
             }
             else
             {
-                for (int j = start; j < moduleInChoco.size(); j++) {
+                for (int j = start; j < moduleInChoco.size(); j++)
+                {
                     contrainteChocoDecomposeParPriorite.get(i).disableAlternateSearch(moduleInChoco.get(j));
                 }
-                for (int j = 0; j < (start + nbModuleToFree - moduleInChoco.size()); j++ )
+                for (int j = 0; j < (start + nbModuleToFree - moduleInChoco.size()); j++)
                 {
                     contrainteChocoDecomposeParPriorite.get(i).disableAlternateSearch(moduleInChoco.get(j));
                 }
@@ -192,31 +170,37 @@ public class ContrainteManager {
         }
     }
 
-    public Integer maxAlternateSearch() {
-        return (moduleInChoco.size()-1) * (moduleInChoco.size()-1) * (contrainteChocoDecomposeParPriorite.size()-1);
+    public Integer maxAlternateSearch()
+    {
+        return (moduleInChoco.size()) * (moduleInChoco.size()) * contrainteChocoDecomposeParPriorite.size();
 
     }
 
-    public void alternateSearch(int nbEssai) {
-        alternateSearch(nbEssai % moduleInChoco.size(), (nbEssai / moduleInChoco.size()) + 1, (nbEssai / (moduleInChoco.size() * moduleInChoco.size()))) ;
+    public void alternateSearch(int nbEssai)
+    {
+        alternateSearch(nbEssai % moduleInChoco.size(), (nbEssai / moduleInChoco.size()) % moduleInChoco.size(), (nbEssai / (moduleInChoco.size() * moduleInChoco.size() + 1)));
     }
 
-    public void alternateSearch(int start, int nbModuleToFree, int nbConstraintToFree) {
-        disableAlternateSearch(oldStart,oldNbModuleToFree, oldNbConstraintToFree);
+    public void alternateSearch(int start, int nbModuleToFree, int nbConstraintToFree)
+    {
+        disableAlternateSearch(oldStart, oldNbModuleToFree, oldNbConstraintToFree);
 
         for (int i = 0; i < nbConstraintToFree; i++)
         {
-            if (start + nbModuleToFree <= moduleInChoco.size()) {
-                for (int j = start; j < start + nbModuleToFree; j++) {
+            if (start + nbModuleToFree <= moduleInChoco.size())
+            {
+                for (int j = start; j < start + nbModuleToFree; j++)
+                {
                     contrainteChocoDecomposeParPriorite.get(i).enableAlternateSearch(moduleInChoco.get(j));
                 }
             }
             else
             {
-                for (int j = start; j < moduleInChoco.size(); j++) {
+                for (int j = start; j < moduleInChoco.size(); j++)
+                {
                     contrainteChocoDecomposeParPriorite.get(i).enableAlternateSearch(moduleInChoco.get(j));
                 }
-                for (int j = 0; j < (start + nbModuleToFree - moduleInChoco.size()); j++ )
+                for (int j = 0; j < (start + nbModuleToFree - moduleInChoco.size()); j++)
                 {
                     contrainteChocoDecomposeParPriorite.get(i).enableAlternateSearch(moduleInChoco.get(j));
                 }
@@ -230,33 +214,4 @@ public class ContrainteManager {
 
     }
 
-    public void freeConstraint(int start, int nbModuleToFree, int nbConstraintToFree) {
-        respawnConstraint(oldStart,oldNbModuleToFree, oldNbConstraintToFree);
-
-        for (int i = 0; i < nbConstraintToFree; i++)
-        {
-            if (start + nbModuleToFree <= moduleInChoco.size()) {
-                for (int j = start; j < start + nbModuleToFree; j++) {
-                    contrainteChocoDecomposeParPriorite.get(i).unPost(moduleInChoco.get(j));
-                }
-            }
-            else
-            {
-                for (int j = start; j < moduleInChoco.size(); j++) {
-                    contrainteChocoDecomposeParPriorite.get(i).unPost(moduleInChoco.get(j));
-                }
-                for (int j = 0; j < (start + nbModuleToFree - moduleInChoco.size()); j++ )
-                {
-                    contrainteChocoDecomposeParPriorite.get(i).unPost(moduleInChoco.get(j));
-                }
-            }
-
-
-        }
-
-        oldStart = start;
-        oldNbModuleToFree = nbModuleToFree;
-        oldNbConstraintToFree = nbConstraintToFree;
-
-    }
 }

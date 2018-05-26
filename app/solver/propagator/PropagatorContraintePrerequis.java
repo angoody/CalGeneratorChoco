@@ -11,7 +11,7 @@ import java.util.OptionalInt;
 public class PropagatorContraintePrerequis extends Propagator<IntVar> {
 
     private ModuleChoco module;
-    private Boolean alternatif;
+    private Boolean alternatif = false;
     private Boolean noPossibility = false;
 
     public PropagatorContraintePrerequis(ModuleChoco module)
@@ -28,7 +28,7 @@ public class PropagatorContraintePrerequis extends Propagator<IntVar> {
 
     public Boolean isAternatifSearch()
     {
-        return alternatif || noPossibility;
+        return alternatif || noPossibility ;
     }
 
     @Override
@@ -37,15 +37,23 @@ public class PropagatorContraintePrerequis extends Propagator<IntVar> {
         int dateMax;
         int finalDateMax = getVar(0).getUB();
 
-        if (module.getModuleRequis().stream().mapToInt(m -> m.getFin().getUB()).filter(ub -> ub > finalDateMax).count() > 0)
+        if (module.getModuleRequis().stream().mapToInt(m -> m.getFin().getLB()).filter(lb -> lb > finalDateMax).count() > 0)
             noPossibility = true;
 
-        if (!noPossibility && module.getModuleFacultatif().stream().mapToInt(m -> m.getFin().getUB()).filter(ub -> ub > finalDateMax).count() > 0)
+        if (!noPossibility && module.getModuleFacultatif().stream().mapToInt(m -> m.getFin().getLB()).filter(lb -> lb > finalDateMax).count() > 0)
             noPossibility = true;
 
         if (!alternatif) {
-            OptionalInt LBFort = module.getModuleRequis().stream().mapToInt(m -> m.getFin().getUB()).filter(ub -> ub < finalDateMax).max();
-            OptionalInt LBFaible = module.getModuleRequis().stream().mapToInt(m -> m.getFin().getUB()).filter(ub -> ub < finalDateMax).max();
+            /*for (ModuleChoco moduleRequis: module.getModuleRequis() ) {
+                moduleRequis.getFin().updateUpperBound(getVar(0).getValue(), this);
+            }
+
+            for (ModuleChoco moduleFacultatif: module.getModuleRequis() ) {
+                moduleFacultatif.getFin().updateUpperBound(getVar(0).getValue(), this);
+            }*/
+
+            OptionalInt LBFort = module.getModuleRequis().stream().mapToInt(m -> m.getFin().getValue()).max();
+            OptionalInt LBFaible = module.getModuleRequis().stream().mapToInt(m -> m.getFin().getValue()).max();
 
             if (LBFort.isPresent() && LBFaible.isPresent())
                 dateMax = LBFort.getAsInt() > LBFaible.getAsInt() ? LBFort.getAsInt() : LBFaible.getAsInt();
@@ -56,7 +64,12 @@ public class PropagatorContraintePrerequis extends Propagator<IntVar> {
             else
                 dateMax = getVar(0).getLB();
 
-            getVar(0).updateLowerBound(dateMax,this);
+            if (dateMax > getVar(0).getUB()) {
+                getVar(0).updateUpperBound(dateMax, this);
+
+            }
+            getVar(0).updateLowerBound(dateMax, this);
+
         }
 
     }

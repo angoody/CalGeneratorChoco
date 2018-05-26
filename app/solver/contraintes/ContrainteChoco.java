@@ -1,25 +1,29 @@
 package solver.contraintes;
 
-import models.ContrainteDecompose;
+import models.input.ConstraintPriority;
+import models.output.ConstraintRespected;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
-import org.chocosolver.solver.exception.ContradictionException;
-import org.chocosolver.solver.variables.IntVar;
 import solver.modelChoco.ModuleChoco;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class ContrainteChoco {
-    protected Map<ModuleChoco, Constraint> constraints  = new HashMap<>();
-    private ContrainteDecompose contrainteModel;
-    private List<ModuleChoco> modulesInChoco;
-    protected Model model;
+public abstract class ContrainteChoco  <T> {
 
-    public ContrainteChoco(Model model, ContrainteDecompose contrainte, List<ModuleChoco> modulesInChoco)
+    protected static ResourceBundle language = ResourceBundle.getBundle("language", Locale.getDefault());
+
+    protected Map<ModuleChoco, Constraint> constraints  = new HashMap<>();
+    private   ConstraintRespected   constrainteRespected;
+    private   ConstraintPriority<T> contrainteModel;
+    private   List<ModuleChoco>     modulesInChoco;
+    protected Model                 model;
+
+    public ContrainteChoco(Model model, ConstraintPriority<T> contrainteModel, List<ModuleChoco> modulesInChoco)
     {
         this.model = model;
-        this.contrainteModel = contrainte;
+        this.contrainteModel = contrainteModel;
+        this.constrainteRespected = new ConstraintRespected(getConstraintName(), contrainteModel);
         this.modulesInChoco = modulesInChoco;
 
     }
@@ -28,10 +32,21 @@ public abstract class ContrainteChoco {
     // Toute class héritant de cette class doit implémenter la méthode createContraints
     public abstract Constraint createConstraint(ModuleChoco module);
 
-    public ContrainteDecompose getContrainteModel() {
-        return contrainteModel;
+    public abstract String getConstraintName();
+
+    public ConstraintRespected getConstrainteRespected() {
+        return constrainteRespected;
     }
 
+    public ConstraintRespected calculateRespectOfConstraint()
+    {
+        return new ConstraintRespected(constrainteRespected, !isAlternateSearch());
+    }
+
+    public ConstraintRespected calculateRespectOfConstraint(ModuleChoco module)
+    {
+        return new ConstraintRespected(constrainteRespected, !isAlternateSearch(module));
+    }
 
     public void enableAlternateSearch(ModuleChoco module){
         unPost(module);
@@ -41,9 +56,14 @@ public abstract class ContrainteChoco {
         post(module);
     }
 
+    public Boolean isAlternateSearch(ModuleChoco module)
+    {
+        return (constraints.get(module).getStatus() != Constraint.Status.POSTED);
+    }
+
     public Boolean isAlternateSearch()
     {
-        return (constraints.values().stream().filter(c -> c.getStatus() == Constraint.Status.POSTED).count() == constraints.values().size());
+        return modulesInChoco.stream().filter(m -> isAlternateSearch(m)).count() > 0 ;
     }
 
     public Constraint post(ModuleChoco module) {
@@ -52,7 +72,7 @@ public abstract class ContrainteChoco {
             constraint = createConstraint(module);
             constraints.put(module, constraint);
         }
-        if (constraint.getStatus() == Constraint.Status.REIFIED)
+        if (constraint.getStatus() != Constraint.Status.FREE)
             model.unpost(constraint);
 
         if (constraint.getStatus() != Constraint.Status.POSTED)
@@ -60,7 +80,7 @@ public abstract class ContrainteChoco {
 
         // Si toutes les contraintes sont posté, alors la contrainte est respectée
         if (constraints.values().stream().filter(c -> c.getStatus() == Constraint.Status.POSTED).count() == constraints.values().size())
-            contrainteModel.setRespeced(true);
+            constrainteRespected.setRespected(true);
 
         return constraint;
     }
@@ -71,7 +91,7 @@ public abstract class ContrainteChoco {
         if (constraint.getStatus() == Constraint.Status.POSTED)
             model.unpost(constraint);
         //constraint.reify();
-        contrainteModel.setRespeced(false);
+        constrainteRespected.setRespected(false);
 
         return constraint;
     }
@@ -93,5 +113,16 @@ public abstract class ContrainteChoco {
 
     public List<ModuleChoco> getModulesInChoco() {
         return modulesInChoco;
+    }
+
+
+    public ConstraintPriority<T> getContraintePriority()
+    {
+        return contrainteModel;
+    }
+
+    public void setContraintePriority(ConstraintPriority<T> contrainteModel)
+    {
+        this.contrainteModel = contrainteModel;
     }
 }

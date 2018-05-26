@@ -37,6 +37,8 @@ public class PropagatorContraintePrerequis extends Propagator<IntVar> {
         int dateMax;
         int finalDateMax = getVar(0).getUB();
 
+        noPossibility = false;
+
         if (module.getModuleRequis().stream().mapToInt(m -> m.getFin().getLB()).filter(lb -> lb > finalDateMax).count() > 0)
             noPossibility = true;
 

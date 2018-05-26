@@ -1,18 +1,21 @@
-package models;
+package models.input;
 
 import java.io.Serializable;
 
-public class Cours implements Serializable, Comparable<Cours> {
+public class Cours
+{
     private Periode periode;
-    private String idCours;
+    private String  idCours;
     private Integer idModule;
     private Integer lieu;
     private Integer nbHeureReel;
 
-    public Cours() {
+    public Cours()
+    {
     }
 
-    public Cours(Periode periode, String idCours, Integer idModule, Integer lieu, Integer nbHeureReel) {
+    public Cours(Periode periode, String idCours, Integer idModule, Integer lieu, Integer nbHeureReel)
+    {
         this.periode = periode;
         this.idCours = idCours;
         this.idModule = idModule;
@@ -20,48 +23,53 @@ public class Cours implements Serializable, Comparable<Cours> {
         this.nbHeureReel = nbHeureReel;
     }
 
-    public Periode getPeriode() {
+    public Periode getPeriode()
+    {
         return periode;
     }
 
-    public void setPeriode(Periode periode) {
+    public void setPeriode(Periode periode)
+    {
         this.periode = periode;
     }
 
-    public String getIdCours() {
+    public String getIdCours()
+    {
         return idCours;
     }
 
-    public void setIdCours(String idCours) {
+    public void setIdCours(String idCours)
+    {
         this.idCours = idCours;
     }
 
-    public Integer getIdModule() {
+    public Integer getIdModule()
+    {
         return idModule;
     }
 
-    public void setIdModule(Integer idModule) {
+    public void setIdModule(Integer idModule)
+    {
         this.idModule = idModule;
     }
 
-    public Integer getLieu() {
+    public Integer getLieu()
+    {
         return lieu;
     }
 
-    public void setLieu(Integer lieu) {
+    public void setLieu(Integer lieu)
+    {
         this.lieu = lieu;
     }
 
-    @Override
-    public int compareTo(Cours o) {
-        return o.getPeriode().getInstantDebut().compareTo(this.getPeriode().getInstantDebut());
-    }
-
-    public Integer getNbHeureReel() {
+    public Integer getNbHeureReel()
+    {
         return nbHeureReel;
     }
 
-    public void setNbHeureReel(Integer nbHeureReel) {
+    public void setNbHeureReel(Integer nbHeureReel)
+    {
         this.nbHeureReel = nbHeureReel;
     }
 

@@ -1,7 +1,7 @@
 package solver;
 
-import models.Calendrier;
-import models.Cours;
+import models.output.Calendrier;
+import models.input.Cours;
 
 public interface ChocoSolverListener {
     public void foundCours(Cours cours);

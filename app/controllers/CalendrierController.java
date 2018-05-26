@@ -1,12 +1,10 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import models.Probleme;
+import models.input.Probleme;
 import play.libs.Json;
-import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.With;
 import solver.ChocoSolver;
 import solver.test;
 

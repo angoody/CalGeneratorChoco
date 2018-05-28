@@ -9,8 +9,8 @@ import utils.DateTimeHelper;
 
 import java.util.List;
 
-public class ContrainteChocoPeriodeInclusion extends ItemContrainteChocoDecompose<Periode> {
-    private Boolean isAlternateSearch = false;
+public class ContrainteChocoPeriodeInclusion extends ItemContrainteChoco<Periode>
+{
     private int debut;
     private int fin;
 
@@ -22,7 +22,7 @@ public class ContrainteChocoPeriodeInclusion extends ItemContrainteChocoDecompos
 
     @Override
     public Boolean isAlternateSearch(ModuleChoco module) {
-        return getIsAlternateSearch() ? module.getFin().getValue() > debut && module.getDebut().getValue() < fin : getIsAlternateSearch();
+        return getIsAlternateSearch() ? module.getFin().getValue() < debut || module.getDebut().getValue() > fin : getIsAlternateSearch();
     }
 
     @Override

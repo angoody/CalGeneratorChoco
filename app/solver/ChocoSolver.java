@@ -192,7 +192,7 @@ public class ChocoSolver {
         });
 
         // Si aucune solution n'est trouvée, permet de savoir pourquoi
-        solver.showContradiction();
+        //solver.showContradiction();
 
         // Lorsqu'une solution est trouvé, permet de comprendre le cheminement
         //solver.showDecisions();

@@ -6,16 +6,14 @@ import java.util.List;
 
 public class Constrainte implements Serializable
 {
-    private ConstraintPriority<Integer>            idLieu                            = new ConstraintPriority<>(-1, -1);
-    private ConstraintPriority<Integer>            heureAnnuel                       = new ConstraintPriority<>(-1, -1);
-    private ConstraintPriority<Integer>            heureAnnuelpriorite               = new ConstraintPriority<>(-1, -1);
-    private ConstraintPriority<Integer>            dureeMaxFormation                 = new ConstraintPriority<>(-1, -1);
-    private ConstraintPriority<FrequenceFormation> frequenceFormation                = new ConstraintPriority<>(-1, new FrequenceFormation());
-    private ConstraintPriority<Integer>            maxStagiaireEntrepriseEnFormation = new ConstraintPriority<>(-1, -1);
-    private List<ConstraintPriority<Stagiaire>>    stagiairesEntreprise              = new ArrayList<>();
-    private List<ConstraintPriority<Stagiaire>>    stagiairesRecquis                 = new ArrayList<>();
-    private List<ConstraintPriority<Periode>>      periodeFormationExclusion         = new ArrayList<>();
-    private List<ConstraintPriority<Periode>>      periodeFormationInclusion         = new ArrayList<>();
+    private ConstraintPriority<Integer>             idLieu                    = new ConstraintPriority<>(-1, -1);
+    private ConstraintPriority<Integer>             heureAnnuel               = new ConstraintPriority<>(-1, -1);
+    private ConstraintPriority<Integer>             dureeMaxFormation         = new ConstraintPriority<>(-1, -1);
+    private ConstraintPriority<FrequenceFormation>  frequenceFormation        = new ConstraintPriority<>(-1, new FrequenceFormation());
+    private ConstraintPriority<StagiaireEntreprise> maxStagiaireEnFormation   = new ConstraintPriority<>(-1, new StagiaireEntreprise());
+    private List<ConstraintPriority<Stagiaire>>     stagiairesRecquis         = new ArrayList<>();
+    private List<ConstraintPriority<Periode>>       periodeFormationExclusion = new ArrayList<>();
+    private List<ConstraintPriority<Periode>>       periodeFormationInclusion = new ArrayList<>();
 
 
     public Constrainte()
@@ -43,15 +41,6 @@ public class Constrainte implements Serializable
         this.heureAnnuel = heureAnnuel;
     }
 
-    public ConstraintPriority<Integer> getHeureAnnuelpriorite()
-    {
-        return heureAnnuelpriorite;
-    }
-
-    public void setHeureAnnuelpriorite(ConstraintPriority<Integer> heureAnnuelpriorite)
-    {
-        this.heureAnnuelpriorite = heureAnnuelpriorite;
-    }
 
     public ConstraintPriority<Integer> getDureeMaxFormation()
     {
@@ -61,16 +50,6 @@ public class Constrainte implements Serializable
     public void setDureeMaxFormation(ConstraintPriority<Integer> dureeMaxFormation)
     {
         this.dureeMaxFormation = dureeMaxFormation;
-    }
-
-    public ConstraintPriority<Integer> getMaxStagiaireEntrepriseEnFormation()
-    {
-        return maxStagiaireEntrepriseEnFormation;
-    }
-
-    public void setMaxStagiaireEntrepriseEnFormation(ConstraintPriority<Integer> maxStagiaireEntrepriseEnFormation)
-    {
-        this.maxStagiaireEntrepriseEnFormation = maxStagiaireEntrepriseEnFormation;
     }
 
 
@@ -84,15 +63,6 @@ public class Constrainte implements Serializable
         this.frequenceFormation = frequenceFormation;
     }
 
-    public List<ConstraintPriority<Stagiaire>> getStagiairesEntreprise()
-    {
-        return stagiairesEntreprise;
-    }
-
-    public void setStagiairesEntreprise(List<ConstraintPriority<Stagiaire>> stagiairesEntreprise)
-    {
-        this.stagiairesEntreprise = stagiairesEntreprise;
-    }
 
     public List<ConstraintPriority<Stagiaire>> getStagiairesRecquis()
     {
@@ -127,5 +97,15 @@ public class Constrainte implements Serializable
     public ConstraintPriority<Boolean> getPrerequisModule()
     {
         return new ConstraintPriority<Boolean>(-1, true);
+    }
+
+    public ConstraintPriority<StagiaireEntreprise> getMaxStagiaireEnFormation()
+    {
+        return maxStagiaireEnFormation;
+    }
+
+    public void setMaxStagiaireEnFormation(ConstraintPriority<StagiaireEntreprise> maxStagiaireEnFormation)
+    {
+        this.maxStagiaireEnFormation = maxStagiaireEnFormation;
     }
 }

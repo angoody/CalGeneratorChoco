@@ -1,7 +1,6 @@
 package solver.contraintes;
 
 import models.input.ConstraintPriority;
-import models.output.ConstraintRespected;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import solver.modelChoco.ModuleChoco;
@@ -15,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-public class ListeContrainteChoco<T extends ItemContrainteChocoDecompose> {
+public class ListeContrainteChoco<T extends ItemContrainteChoco> {
 
     public final static int OR = 1;
     public final static int AND = 2;

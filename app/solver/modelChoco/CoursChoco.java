@@ -15,17 +15,22 @@ public class CoursChoco {
     private int lieu;
     private int idCours;
 
-    public CoursChoco(Cours cours, Integer idModule, Integer nbSemaine, Integer nbHeure) {
+    public CoursChoco(Cours cours, Integer nbSemaine, Integer nbHeure) {
         this.cours = cours;
         this.idCours = idCours;
         this.periode = new PeriodeChoco(cours.getPeriode());
-        this.idModule = idModule;
+        this.idModule = cours.getIdModule();
         this.nbSemaine = nbSemaine;
         this.nbHeure = nbHeure;
         this.coursIdentifier = (periode.getDebut() + periode.getFin()) / 2;
         this.duration = cours.getNbHeureReel();
         this.lieu = cours.getLieu();
     }
+
+    public CoursChoco(Cours cours) {
+        this(cours, -1, -1);
+    }
+
 
     public int getDebut() {
         return periode.getDebut();

@@ -9,7 +9,7 @@ import utils.DateTimeHelper;
 
 import java.util.List;
 
-public class ContrainteChocoPeriodeExclusion extends ItemContrainteChocoDecompose<Periode>
+public class ContrainteChocoPeriodeExclusion extends ItemContrainteChoco<Periode>
 {
 
     private int debut;

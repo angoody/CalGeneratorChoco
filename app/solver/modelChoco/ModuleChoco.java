@@ -35,7 +35,7 @@ public class ModuleChoco {
         List<Cours> lesCours = module.getCours().stream()
                 .sorted(Comparator.comparing(o -> o.getPeriode().getInstantDebut())).collect(Collectors.toList());
 
-        coursDuModule = lesCours.stream().map(c -> new CoursChoco(c, module.getIdModule(), module.getNbSemainePrevu(), module.getNbHeurePrevu()) ).collect(Collectors.toList());
+        coursDuModule = lesCours.stream().map(c -> new CoursChoco(c, module.getNbSemainePrevu(), module.getNbHeurePrevu()) ).collect(Collectors.toList());
         IntStream.range(0, coursDuModule.size()).forEach(i -> coursDuModule.get(i).setIdCours(i));
 
         debut = model.intVar("Debut " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getDebut()).toArray());

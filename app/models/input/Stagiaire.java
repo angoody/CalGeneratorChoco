@@ -4,16 +4,16 @@ import java.util.List;
 
 public class Stagiaire
 {
-    private List<Periode> cours;
+    private List<Cours> cours;
     private Integer     idStagiaire;
 
-    public Stagiaire(Integer idStagiaire, List<Periode> cours)
+    public Stagiaire(Integer idStagiaire, List<Cours> cours)
     {
         this.cours = cours;
         this.idStagiaire = idStagiaire;
     }
 
-    public List<Periode> getCours()
+    public List<Cours> getCours()
     {
         return cours;
     }

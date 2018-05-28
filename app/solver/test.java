@@ -340,7 +340,7 @@ public class test
         probleme.getContrainte().setMaxSemaineFormation(new IntegerConstrainte(3, 1));
 */
 
-        probleme.getContrainte().setIdLieu(new ConstraintPriority<Integer>(7, 1));
+        probleme.getContrainte().setIdLieu(new ConstraintPriority<Integer>(7, 2));
         ConstraintPriority<FrequenceFormation> frequence = new ConstraintPriority<>(1, new FrequenceFormation());
         frequence.getValue().setMinSemaineEntreprise(3);
         frequence.getValue().setMaxSemaineFormation(3);

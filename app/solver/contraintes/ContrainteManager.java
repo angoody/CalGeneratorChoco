@@ -1,7 +1,6 @@
 package solver.contraintes;
 
 import models.input.Constrainte;
-import models.input.Module;
 import models.input.Probleme;
 import models.output.ConstraintRespected;
 import org.chocosolver.solver.Model;
@@ -12,20 +11,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.lang.Math.pow;
-
 public class ContrainteManager
 {
 
 
-    private int                   oldStart              = 0;
-    private int                   oldNbModuleToFree     = 0;
-    private int                   oldNbConstraintToFree = 0;
-    private int                   maxCombinaison        = 0;
-    private Constrainte           constrainte           = null;
-    private List<ModuleChoco>     moduleInChoco         = new ArrayList<>();
-    private List<ContrainteChoco> contrainteParPriorite = new ArrayList<>();
-
+    private int                   oldStart                            = 0;
+    private int                   oldNbModuleToFree                   = 0;
+    private int                   oldNbConstraintToFree     = 0;
+    private Constrainte           constrainte               = null;
+    private Model                 model                     = null;
+    private List<ModuleChoco>     moduleInChoco             = new ArrayList<>();
+    private List<PeriodeChoco>    coursDesStagiairesRecquis = new ArrayList<>();
+    private List<PeriodeChoco>    coursRefuse               = new ArrayList<>();
+    private List<ContrainteChoco> contrainteParPriorite     = new ArrayList<>();
 
     private ContrainteChocoLieu                                   contrainteLieu              = null;
     private ContrainteChocoPrerequis                              contraintePrerequis         = null;
@@ -39,6 +37,7 @@ public class ContrainteManager
     {
 
         this.constrainte = probleme.getContrainte();
+        this.model = model;
         this.moduleInChoco = moduleInChoco;
 
 
@@ -117,40 +116,78 @@ public class ContrainteManager
         return contrainteParPriorite.stream().map(c -> c.calculateRespectOfConstraint()).collect(Collectors.toList());
     }
 
+    private void disableAlternateSearch(int start, int nbModuleToFree, int nbConstraintToFree)
+    {
+
+        for (int i = 0; i < nbConstraintToFree; i++)
+        {
+            if (start + nbModuleToFree <= moduleInChoco.size())
+            {
+                for (int j = start; j < start + nbModuleToFree; j++)
+                {
+                    contrainteParPriorite.get(i).disableAlternateSearch(moduleInChoco.get(j));
+                }
+            }
+            else
+            {
+                for (int j = start; j < moduleInChoco.size(); j++)
+                {
+                    contrainteParPriorite.get(i).disableAlternateSearch(moduleInChoco.get(j));
+                }
+                for (int j = 0; j < (start + nbModuleToFree - moduleInChoco.size()); j++)
+                {
+                    contrainteParPriorite.get(i).disableAlternateSearch(moduleInChoco.get(j));
+                }
+            }
+
+
+        }
+    }
 
     public Integer maxAlternateSearch()
     {
-        return getMaxCombinaison() * contrainteParPriorite.size();
+        return (moduleInChoco.size()) * (moduleInChoco.size()) * contrainteParPriorite.size();
 
-    }
-
-    private int getMaxCombinaison()
-    {
-        if (maxCombinaison == 0)
-        {
-            maxCombinaison = (int) pow(moduleInChoco.size(), moduleInChoco.size());
-        }
-        return maxCombinaison;
     }
 
     public void alternateSearch(int nbEssai)
     {
-        // Converti le modulo du nombre d'essai sur le maximum de possibilités en nombre de base de la taille de moduleInChoco, ce qui permet d'avoir toutes les combinaisons des modules à désactiver
-        // Pour optimiser on peut repenser à traiter les doublons : le nombre 21 désactive les même modules que le 12, et le 22 désactive 2 fois le module 2
-        String listModules = Integer.toString(nbEssai % getMaxCombinaison(), moduleInChoco.size());
+        alternateSearch(nbEssai % moduleInChoco.size(), (nbEssai / moduleInChoco.size()) % moduleInChoco.size(), (nbEssai / (moduleInChoco.size() * moduleInChoco.size() + 1)));
 
-        for (int i = 0; i <= (nbEssai / getMaxCombinaison()); i++)
+        
+    }
+
+    public void alternateSearch(int start, int nbModuleToFree, int nbConstraintToFree)
+    {
+        disableAlternateSearch(oldStart, oldNbModuleToFree, oldNbConstraintToFree);
+
+        for (int i = 0; i < nbConstraintToFree; i++)
         {
-            int finalI = i;
-            // On réactive toutes les contraintes
-            moduleInChoco.stream().forEach(m -> contrainteParPriorite.get(finalI).disableAlternateSearch(m));
-
-            // on ne désactive que les contraintes correspondant au nombre d'essai
-            for (char a : listModules.toCharArray())
+            if (start + nbModuleToFree <= moduleInChoco.size())
             {
-                contrainteParPriorite.get(i).enableAlternateSearch(moduleInChoco.get(Character.getNumericValue(a)));
+                for (int j = start; j < start + nbModuleToFree; j++)
+                {
+                    contrainteParPriorite.get(i).enableAlternateSearch(moduleInChoco.get(j));
+                }
             }
+            else
+            {
+                for (int j = start; j < moduleInChoco.size(); j++)
+                {
+                    contrainteParPriorite.get(i).enableAlternateSearch(moduleInChoco.get(j));
+                }
+                for (int j = 0; j < (start + nbModuleToFree - moduleInChoco.size()); j++)
+                {
+                    contrainteParPriorite.get(i).enableAlternateSearch(moduleInChoco.get(j));
+                }
+            }
+
+
         }
+        oldStart = start;
+        oldNbModuleToFree = nbModuleToFree;
+        oldNbConstraintToFree = nbConstraintToFree;
+
     }
 
 }

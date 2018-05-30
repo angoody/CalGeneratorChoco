@@ -7,9 +7,13 @@ import models.input.Probleme;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.extension.Tuples;
+import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
+import org.chocosolver.solver.search.strategy.decision.Decision;
+import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
+import org.chocosolver.solver.search.strategy.strategy.ConflictOrderingSearch;
 import org.chocosolver.solver.variables.IntVar;
 import solver.contraintes.ContrainteManager;
 import solver.modelChoco.CoursChoco;
@@ -177,17 +181,28 @@ public class ChocoSolver {
         ContrainteManager finalContrainteManager = contrainteManager;
         solver.plugMonitor((IMonitorSolution) () -> {
             Calendrier calendrierTrouve = new Calendrier();
+            List<Cours> lesCoursTrouve = new ArrayList<>();
             for (int i = 0; i < nbModules; i++) {
                 // La valeur dans le modulesID... correspond à la valeur sélectionné par Choco
                 Cours coursTrouve = moduleInChoco.get(i).getCoursDuModule().get(moduleInChoco.get(i).getCoursId().getValue()).getCours();
-                afficheCours(coursTrouve);
-                listeners.forEach(l -> l.foundCours(coursTrouve));
+
+                lesCoursTrouve.add(coursTrouve);
                 calendrierTrouve.addCours(new CoursCalendrier(coursTrouve, finalContrainteManager.getContraintes(moduleInChoco.get(i))));
+
+                listeners.forEach(l -> l.foundCours(coursTrouve));
             }
+
+            // tri des cours par date de début
+            Collections.sort(lesCoursTrouve, Comparator.comparing(o -> o.getPeriode().getInstantDebut()) );
+            for (Cours cours:lesCoursTrouve)
+            {
+                afficheCours(cours);
+            }
+            calendrierTrouve.getCours().sort(Comparator.comparing(o -> lesCoursTrouve.indexOf(lesCoursTrouve.stream().filter( c -> c.getIdCours().contentEquals(o.getIdCours())))));
+
             calendrierTrouve.setConstraint(finalContrainteManager.getContraintes());
             calendriersTrouve.add(calendrierTrouve);
 
-            //Collections.sort(calendrierTrouve.getCours(), Comparator.comparing(o -> o.) );
             listeners.forEach(l -> l.foundCalendar(calendrierTrouve));
         });
 
@@ -210,19 +225,23 @@ public class ChocoSolver {
         Map<IntVar, Integer> map = IntStream
                 .range(0, nbModules)
                 .boxed()
-                .collect(Collectors.toMap(i -> moduleInChoco.get(i).getCoursIdentifier(), i -> moduleInChoco.get(i).getCoursIdentifier().getValue()));
+                .collect(Collectors.toMap(i -> moduleInChoco.get(i).getLieu(), i -> moduleInChoco.get(i).getLieu().getValue()));
 
         IntVar[] coursIdentifier = IntStream.range(0, nbModules).mapToObj( i -> moduleInChoco.get(i).getCoursIdentifier()).toArray(IntVar[]::new);
+        IntVar[] lieux = IntStream.range(0, nbModules).mapToObj( i -> moduleInChoco.get(i).getLieu()).toArray(IntVar[]::new);
 
-        solver.setSearch(Search.intVarSearch(
-                variables -> Arrays.stream(coursIdentifier)
+        solver.setSearch(Search.conflictOrderingSearch(Search.intVarSearch(
+                variables -> Arrays.stream(lieux)
                         .filter(v -> !v.isInstantiated())
-                        .min((v1, v2) -> closest(v2, map) - closest(v1, map))
+                        .filter(v -> v.getValue() == probleme.getContrainte().getIdLieu().getValue())
+                        .findFirst()
                         .orElse(null),
-                var -> closest(var, map),
+                var -> var.getValue(),
                 DecisionOperatorFactory.makeIntEq(),
                 coursIdentifier
-        ));
+        )));
+
+
 
         System.out.println("Choco max : " + contrainteManager.maxAlternateSearch());
 
@@ -245,7 +264,8 @@ public class ChocoSolver {
     }
 
     private void afficheCours(Cours c) {
-        System.out.printf("Module d'id %s à %d le %s au %s\n",
+        System.out.printf("Cours d'id %s du Module d'id %s à %d le %s au %s\n",
+                c.getIdCours(),
                 c.getIdModule(),
                 c.getLieu(),
                 c.getPeriode().getDebut(),

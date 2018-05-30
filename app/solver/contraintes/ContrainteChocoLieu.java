@@ -49,8 +49,11 @@ public class ContrainteChocoLieu extends ContrainteChoco<Integer>
     public Constraint createConstraint(ModuleChoco module)
     {
         PropagatorContrainteLieu prop       = new PropagatorContrainteLieu(module.getLieu(), getContraintePriority().getValue(), lieuxPossible);
-        Constraint               constraint = new Constraint("Lieu " + module.getIdModule(), prop);
+        Constraint constraint = new Constraint("Lieu " + module.getIdModule(), prop);
         propagators.put(module, prop);
+
+
+
         return constraint;
     }
 

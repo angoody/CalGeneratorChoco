@@ -12,8 +12,8 @@ import java.util.List;
 public class ContrainteChocoPeriodeExclusion extends ItemContrainteChoco<Periode>
 {
 
-    private int debut;
-    private int fin;
+    private Integer debut;
+    private Integer fin;
 
     public ContrainteChocoPeriodeExclusion(Model model, ConstraintPriority<Periode> contrainte, List<ModuleChoco> modulesIncChoco, ListeContrainteChoco parent)
     {
@@ -26,7 +26,7 @@ public class ContrainteChocoPeriodeExclusion extends ItemContrainteChoco<Periode
     @Override
     public Boolean isAlternateSearch(ModuleChoco module)
     {
-        return getIsAlternateSearch() ? module.getFin().getValue() < debut || module.getDebut().getValue() > fin : getIsAlternateSearch();
+        return getIsAlternateSearch() ? debut.compareTo(module.getFin().getValue()) >= 0 && fin.compareTo(module.getDebut().getValue()) <= 0 : getIsAlternateSearch();
     }
 
     @Override

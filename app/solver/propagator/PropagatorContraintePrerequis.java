@@ -23,8 +23,6 @@ public class PropagatorContraintePrerequis extends Propagator<IntVar>
 
         this.module = module;
 
-        finDateMinPrerequis = module.getModuleRequis().stream().mapToInt(m -> m.getFin().getLB()).max();
-        finDateMinFacultatif = module.getModuleFacultatif().stream().mapToInt(m -> m.getFin().getLB()).max();
 
     }
 
@@ -42,17 +40,21 @@ public class PropagatorContraintePrerequis extends Propagator<IntVar>
     public void propagate(int evtmask) throws ContradictionException
     {
 
-        int dateMax;
-        int finalDateMax = getVar(0).getUB();
+        int dateEnCours   = getVar(0).getValue();
+        int dateMaxFort   = 0;
+        int dateMaxFaible = 0;
+        int finalDateMax  = getVar(0).getUB();
 
-        noPossibility = false;
 
-        if (finDateMinPrerequis.getAsInt() > finalDateMax)
+        finDateMinPrerequis = module.getModuleRequis().stream().mapToInt(m -> m.getFin().getLB()).max();
+        finDateMinFacultatif = module.getModuleFacultatif().stream().mapToInt(m -> m.getFin().getLB()).max();
+
+        if (finDateMinPrerequis.isPresent() && finDateMinPrerequis.getAsInt() > finalDateMax)
         {
             noPossibility = true;
         }
 
-        if (!noPossibility && finDateMinFacultatif.getAsInt() > finalDateMax)
+        if (!noPossibility && finDateMinFacultatif.isPresent() && finDateMinFacultatif.getAsInt() > finalDateMax)
         {
             noPossibility = true;
         }
@@ -68,31 +70,22 @@ public class PropagatorContraintePrerequis extends Propagator<IntVar>
             }*/
 
             OptionalInt LBFort   = module.getModuleRequis().stream().mapToInt(m -> m.getFin().getValue()).max();
-            OptionalInt LBFaible = module.getModuleRequis().stream().mapToInt(m -> m.getFin().getValue()).max();
+            OptionalInt LBFaible = module.getModuleFacultatif().stream().mapToInt(m -> m.getFin().getValue()).max();
 
-            if (LBFort.isPresent() && LBFaible.isPresent())
+            if (LBFort.isPresent())
             {
-                dateMax = LBFort.getAsInt() > LBFaible.getAsInt() ? LBFort.getAsInt() : LBFaible.getAsInt();
+                dateMaxFort = LBFort.getAsInt();
             }
-            else if (LBFort.isPresent())
+            if (LBFaible.isPresent())
             {
-                dateMax = LBFort.getAsInt();
-            }
-            else if (LBFaible.isPresent())
-            {
-                dateMax = LBFaible.getAsInt();
-            }
-            else
-            {
-                dateMax = getVar(0).getLB();
+                dateMaxFaible = LBFaible.getAsInt();
             }
 
-            if (dateMax > getVar(0).getUB())
+            if (dateMaxFort > 0 || dateMaxFaible > 0)
             {
-                getVar(0).updateUpperBound(dateMax, this);
-
+                getVar(0).removeInterval(0, (dateMaxFort < dateMaxFaible && dateMaxFaible > dateEnCours) ? dateMaxFort : dateMaxFaible == 0 ? dateMaxFort : dateMaxFaible, this);
+                //getVar(0).updateLowerBound((dateMaxFort < dateMaxFaible && dateMaxFaible > dateEnCours) ? dateMaxFort : dateMaxFaible == 0 ? dateMaxFort : dateMaxFaible, this);
             }
-            getVar(0).updateLowerBound(dateMax, this);
 
         }
 
@@ -102,6 +95,24 @@ public class PropagatorContraintePrerequis extends Propagator<IntVar>
     public ESat isEntailed()
     {
 
+        OptionalInt LBFort        = module.getModuleRequis().stream().mapToInt(m -> m.getFin().getValue()).max();
+        OptionalInt LBFaible      = module.getModuleFacultatif().stream().mapToInt(m -> m.getFin().getValue()).max();
+        int         dateMaxFort   = 0;
+        int         dateMaxFaible = 0;
+
+        if (LBFort.isPresent())
+        {
+            dateMaxFort = LBFort.getAsInt();
+        }
+        if (LBFaible.isPresent())
+        {
+            dateMaxFaible = LBFaible.getAsInt();
+        }
+
+        if (getVar(0).getValue() > dateMaxFort && getVar(0).getValue() > dateMaxFaible)
+        {
+            return ESat.TRUE;
+        }
         return ESat.UNDEFINED;
     }
 }

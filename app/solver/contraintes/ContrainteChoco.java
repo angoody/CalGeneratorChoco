@@ -58,7 +58,7 @@ public abstract class ContrainteChoco  <T> {
 
     public Boolean isAlternateSearch(ModuleChoco module)
     {
-        return (constraints.get(module).getStatus() != Constraint.Status.POSTED);
+        return constraints.get(module) == null ? true : (constraints.get(module).getStatus() != Constraint.Status.POSTED);
     }
 
     public Boolean isAlternateSearch()

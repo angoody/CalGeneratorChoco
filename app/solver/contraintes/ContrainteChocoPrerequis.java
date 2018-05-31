@@ -7,13 +7,15 @@ import org.chocosolver.solver.constraints.Constraint;
 import solver.modelChoco.ModuleChoco;
 import solver.propagator.PropagatorContraintePrerequis;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ContrainteChocoPrerequis extends ContrainteChoco<Boolean>
 {
-    private Map<ModuleChoco, PropagatorContraintePrerequis> propagators    = new HashMap<>();
+    private Map<ModuleChoco, PropagatorContraintePrerequis> propagators = new HashMap<>();
 
 
     public ContrainteChocoPrerequis(Model model, ConstraintPriority<Boolean> prerequis, List<ModuleChoco> modulesInChoco)
@@ -24,10 +26,20 @@ public class ContrainteChocoPrerequis extends ContrainteChoco<Boolean>
     @Override
     public Constraint createConstraint(ModuleChoco module)
     {
-        PropagatorContraintePrerequis prop       = new PropagatorContraintePrerequis(module);
+        List<Constraint> contraintes = new ArrayList<>();
+        if (module.getModuleRequis().size() > 0)
+        {
+            contraintes.addAll(module.getModuleRequis().stream().map(m -> model.arithm(module.getDebut(), ">", m.getFin())).collect(Collectors.toList()));
+        }
+        if (module.getModuleFacultatif().size() > 0 )
+        {
+            contraintes.addAll(module.getModuleFacultatif().stream().map(m -> model.arithm(module.getDebut(), ">", m.getFin())).collect(Collectors.toList()));
+        }
+
+        /*PropagatorContraintePrerequis prop       = new PropagatorContraintePrerequis(module);
         Constraint                    constraint = new Constraint("Prerequis " + module.getIdModule(), prop);
-        propagators.put(module, prop);
-        return constraint;
+        propagators.put(module, prop);*/
+        return model.and(contraintes.stream().toArray(Constraint[]::new));
     }
 
     @Override
@@ -37,7 +49,7 @@ public class ContrainteChocoPrerequis extends ContrainteChoco<Boolean>
     }
 
 
-    @Override
+    /*@Override
     public void enableAlternateSearch(ModuleChoco module)
     {
         propagators.get(module).searchAternatif((true));
@@ -53,6 +65,6 @@ public class ContrainteChocoPrerequis extends ContrainteChoco<Boolean>
     public Boolean isAlternateSearch(ModuleChoco module)
     {
         return propagators.get(module).isAternatifSearch();
-    }
+    }*/
 
 }

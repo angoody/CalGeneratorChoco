@@ -7,13 +7,17 @@ import java.util.List;
 
 public class CoursCalendrier
 {
-    private String                    idCours;
+    private final String debut;
+    private final String fin;
+    private String idCours;
     private List<ConstraintRespected> constraint = new ArrayList<>();
 
 
     public CoursCalendrier(Cours cours, List<ConstraintRespected> constraint)
     {
         this.idCours = cours.getIdCours();
+        this.debut = cours.getPeriode().getDebut();
+        this.fin = cours.getPeriode().getFin();
         this.constraint = constraint;
     }
 
@@ -39,4 +43,13 @@ public class CoursCalendrier
     }
 
 
+    public String getDebut()
+    {
+        return debut;
+    }
+
+    public String getFin()
+    {
+        return fin;
+    }
 }

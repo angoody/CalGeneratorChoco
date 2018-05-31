@@ -42,7 +42,7 @@ public class ContrainteManager
 
 
         contraintePrerequis = new ContrainteChocoPrerequis(model, constrainte.getPrerequisModule(), moduleInChoco);
-        moduleInChoco.forEach(m -> contraintePrerequis.post(m));
+        moduleInChoco.stream().filter(m -> m.getModuleRequis().size() > 0).forEach(m -> contraintePrerequis.post(m));
         contrainteParPriorite.add(contraintePrerequis);
 
         if (constrainte.getIdLieu().getValue() > -1)

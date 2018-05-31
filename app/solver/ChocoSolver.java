@@ -198,7 +198,8 @@ public class ChocoSolver {
             {
                 afficheCours(cours);
             }
-            calendrierTrouve.getCours().sort(Comparator.comparing(o -> lesCoursTrouve.indexOf(lesCoursTrouve.stream().filter( c -> c.getIdCours().contentEquals(o.getIdCours())))));
+            Collections.sort(calendrierTrouve.getCours(), Comparator.comparing(o -> DateTimeHelper.format(o.getDebut())));
+                                     //.sort(Comparator.comparing(o -> lesCoursTrouve.indexOf(lesCoursTrouve.stream().filter( c -> c.getIdCours().contentEquals(o.getIdCours())))));
 
             calendrierTrouve.setConstraint(finalContrainteManager.getContraintes());
             calendriersTrouve.add(calendrierTrouve);
@@ -230,7 +231,10 @@ public class ChocoSolver {
         IntVar[] coursIdentifier = IntStream.range(0, nbModules).mapToObj( i -> moduleInChoco.get(i).getCoursIdentifier()).toArray(IntVar[]::new);
         IntVar[] lieux = IntStream.range(0, nbModules).mapToObj( i -> moduleInChoco.get(i).getLieu()).toArray(IntVar[]::new);
 
-        solver.setSearch(Search.conflictOrderingSearch(Search.intVarSearch(
+        solver.setSearch(Search.conflictOrderingSearch(Search.defaultSearch(model)));
+
+
+                /*Search.intVarSearch(
                 variables -> Arrays.stream(lieux)
                         .filter(v -> !v.isInstantiated())
                         .filter(v -> v.getValue() == probleme.getContrainte().getIdLieu().getValue())
@@ -239,7 +243,10 @@ public class ChocoSolver {
                 var -> var.getValue(),
                 DecisionOperatorFactory.makeIntEq(),
                 coursIdentifier
-        )));
+        ));*/
+        //Search.conflictOrderingSearch(Search.defaultSearch(model)));
+        //
+        //                                                               /*
 
 
 
@@ -251,6 +258,10 @@ public class ChocoSolver {
         while ((calendriersTrouve.size() < nbCalendrier) & (nbEssai < contrainteManager.maxAlternateSearch()))
         {
 
+            if (nbEssai == 430)
+            {
+                j = -1;
+            }
             if (solver.solve() == false) {
 
                 contrainteManager.alternateSearch(nbEssai);
@@ -264,12 +275,17 @@ public class ChocoSolver {
     }
 
     private void afficheCours(Cours c) {
-        System.out.printf("Cours d'id %s du Module d'id %s à %d le %s au %s\n",
-                c.getIdCours(),
-                c.getIdModule(),
-                c.getLieu(),
-                c.getPeriode().getDebut(),
-                c.getPeriode().getFin());
+        System.out.printf("Cours d'id %s du Module d'id %s > %s à %d le %s au %s\n",
+                          c.getIdCours(),
+                          c.getIdModule(),
+                          String.join(",", moduleInChoco.stream()
+                                  .filter(m -> m.getIdModule().compareTo(c.getIdModule()) == 0)
+                                  .flatMap(m -> m.getModuleRequis().stream())
+                                  .map(m -> String.valueOf(m.getIdModule()))
+                                  .collect(Collectors.toList())),
+                          c.getLieu(),
+                          c.getPeriode().getDebut(),
+                          c.getPeriode().getFin());
 
     }
 

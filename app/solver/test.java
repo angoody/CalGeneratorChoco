@@ -86,7 +86,7 @@ public class test
         Module mMOB1DEV17     = new Module(728, Arrays.asList(mJAVA1DL17.getIdModule()), Arrays.asList(mJAVA2.getIdModule()), new ArrayList<Cours>(), 1, 35);
         Module mPRJ3DEV17     = new Module(729, Arrays.asList(mMOB1DEV17.getIdModule()), new ArrayList<Integer>(), new ArrayList<Cours>(), 1, 35);
         Module mXAMARIN       = new Module(566, Arrays.asList(mDVWEBASPX.getIdModule()), Arrays.asList(mMOB1DEV17.getIdModule()), new ArrayList<Cours>(), 1, 35);
-        Module m17BILAN_FINAL = new Module(817, Arrays.asList(mSQL.getIdModule(), mXAMARIN.getIdModule(), mMOB1DEV17.getIdModule(), mJ2EAV.getIdModule()), new ArrayList<Integer>(), new ArrayList<Cours>(), 1, 35);
+        Module m17BILAN_FINAL = new Module(817, Arrays.asList(mSQL.getIdModule(), mXAMARIN.getIdModule(), mMOB1DEV17.getIdModule(), mJ2EAV.getIdModule(), mPRJ3DEV17.getIdModule(), mDVWEBPH.getIdModule(), 232, 727, 36, 731 ) , new ArrayList<Integer>(), new ArrayList<Cours>(), 1, 35);
 
 
         // SELECT 'm' + REPLACE(m.LibelleCourt, '-', '') + '.getCours().add(new Cours(new Periode("' + CONVERT(varchar, c.debut, 103) + '","' + CONVERT(varchar, c.fin, 103) + '", "dd/MM/yyyy HH:mm:ss"),"' + CAST(c.IdCours AS VARCHAR(40)) + '",' + CAST (m.IdModule AS VARCHAR(10))+ ','+ CAST (c.CodeLieu AS VARCHAR(10)) +'));' from cours c left join module m on c.IdModule = m.IdModule left join ModuleParUnite mpu on m.IdModule = mpu.IdModule left join UniteParFormation upf on mpu.IdUnite = upf.Id where upf.CodeFormation = '17CDI   '  order by m.IdModule
@@ -294,6 +294,7 @@ public class test
         mCONCDEV17.getCours().add(new Cours(new Periode("2018-06-04", "2018-06-15"), "D820AA47-D8B8-47AA-91DE-D864EB65C4EA", 734, 10, 70));
         mCONCDEV17.getCours().add(new Cours(new Periode("2019-01-28", "2019-02-08"), "B58AAB97-439E-4D58-9FE5-B392733F5E6B", 734, 1, 70));
         m17BILAN_FINAL.getCours().add(new Cours(new Periode("2018-11-19", "2018-11-20"), "2CF00DDF-FB7B-4C16-8C36-6C23B776FD86", 817, 2, 14));
+        m17BILAN_FINAL.getCours().add(new Cours(new Periode("2019-11-19", "2019-11-20"), "2DDD0DDF-FB7B-4C16-8C36-6C23B776FD86", 817, 2, 14));
 
         modules.add(m16DLPOOJ);
         modules.add(mSQL);
@@ -316,7 +317,7 @@ public class test
 
 
         probleme.setModulesFormation(modules);
-        probleme.setPeriodeFormation(new Periode("2017-01-02", "2019-08-11"));
+        probleme.setPeriodeFormation(new Periode("2017-01-02", "2019-11-24"));
         probleme.setContraintes(new Constrainte());
         modules.stream().forEach(m -> m.setCours(m.getCours().stream().filter(d ->
                                                                                       d.getPeriode().getInstantDebut().isAfter(probleme.getPeriodeFormation().getInstantDebut()) &&

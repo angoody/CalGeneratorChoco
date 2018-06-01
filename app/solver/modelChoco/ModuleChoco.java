@@ -1,9 +1,10 @@
 package solver.modelChoco;
 
-import models.input.Cours;
+import models.input.Classes;
 import models.input.Module;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;
+import utils.DateTimeHelper;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -32,10 +33,10 @@ public class ModuleChoco {
         // Initialisation des variables
         this.module = module;
 
-        List<Cours> lesCours = module.getCours().stream()
-                .sorted(Comparator.comparing(o -> o.getPeriode().getInstantDebut())).collect(Collectors.toList());
+        List<Classes> lesCours = module.getListClasses().stream()
+                .sorted(Comparator.comparing(o -> DateTimeHelper.toDays(o.getPeriod().getStart()))).collect(Collectors.toList());
 
-        coursDuModule = lesCours.stream().map(c -> new CoursChoco(c, module.getNbSemainePrevu(), module.getNbHeurePrevu()) ).collect(Collectors.toList());
+        coursDuModule = lesCours.stream().map(c -> new CoursChoco(c, this) ).collect(Collectors.toList());
         IntStream.range(0, coursDuModule.size()).forEach(i -> coursDuModule.get(i).setIdCours(i));
 
         debut = model.intVar("Debut " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getDebut()).toArray());
@@ -95,8 +96,8 @@ public class ModuleChoco {
     }
 
     public void setModule(List<ModuleChoco> moduleInChoco) {
-        moduleRequis = moduleInChoco.stream().filter(mc -> module.getIdModulePrerequis().contains(mc.getIdModule())).collect(Collectors.toList());
-        moduleFacultatif = moduleInChoco.stream().filter(mc -> module.getIdModuleFacultatif().contains(mc.getIdModule())).collect(Collectors.toList());
+        moduleRequis = moduleInChoco.stream().filter(mc -> module.getListIdModulePrerequisite().contains(mc.getIdModule())).collect(Collectors.toList());
+        moduleFacultatif = moduleInChoco.stream().filter(mc -> module.getListIdModuleOptional().contains(mc.getIdModule())).collect(Collectors.toList());
     }
 
     public List<ModuleChoco> getModuleRequis() {

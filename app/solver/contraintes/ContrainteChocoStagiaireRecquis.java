@@ -1,24 +1,23 @@
 package solver.contraintes;
 
 import models.input.ConstraintPriority;
-import models.input.Cours;
-import models.input.Stagiaire;
+import models.input.Student;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
-import solver.modelChoco.CoursChoco;
+import solver.modelChoco.CoursChocoStagiaire;
 import solver.modelChoco.ModuleChoco;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ContrainteChocoStagiaireRecquis extends ItemContrainteChoco<Stagiaire>
+public class ContrainteChocoStagiaireRecquis extends ItemContrainteChoco<Student>
 {
-    private final List<CoursChoco> cours;
+    private final List<CoursChocoStagiaire> cours;
 
-    public ContrainteChocoStagiaireRecquis(Model model, ConstraintPriority<Stagiaire> contrainte, List<ModuleChoco> modulesInChoco, ListeContrainteChoco parent)
+    public ContrainteChocoStagiaireRecquis(Model model, ConstraintPriority<Student> contrainte, List<ModuleChoco> modulesInChoco, ListeContrainteChoco parent)
     {
         super(model, contrainte, modulesInChoco, parent);
-        cours = contrainte.getValue().getCours().stream().map(c -> new CoursChoco(c)).collect(Collectors.toList());
+        cours = contrainte.getValue().getListClassees().stream().map(c -> new CoursChocoStagiaire(c)).collect(Collectors.toList());
     }
 
     @Override

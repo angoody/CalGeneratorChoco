@@ -1,7 +1,7 @@
 package solver.contraintes;
 
-import models.input.Constrainte;
-import models.input.Probleme;
+import models.input.Constraint;
+import models.input.Problem;
 import models.output.ConstraintRespected;
 import org.chocosolver.solver.Model;
 import solver.modelChoco.ModuleChoco;
@@ -15,10 +15,10 @@ public class ContrainteManager
 {
 
 
-    private int                   oldStart                            = 0;
-    private int                   oldNbModuleToFree                   = 0;
+    private int                   oldStart                  = 0;
+    private int                   oldNbModuleToFree         = 0;
     private int                   oldNbConstraintToFree     = 0;
-    private Constrainte           constrainte               = null;
+    private Constraint            constraint                = null;
     private Model                 model                     = null;
     private List<ModuleChoco>     moduleInChoco             = new ArrayList<>();
     private List<PeriodeChoco>    coursDesStagiairesRecquis = new ArrayList<>();
@@ -33,67 +33,67 @@ public class ContrainteManager
     private ContrainteChocoMaxStagiaire                           contrainteChocoMaxStagiaire = null;
 
 
-    public ContrainteManager(Model model, Probleme probleme, List<ModuleChoco> moduleInChoco) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException
+    public ContrainteManager(Model model, Problem problem, List<ModuleChoco> moduleInChoco) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException
     {
 
-        this.constrainte = probleme.getContrainte();
+        this.constraint = problem.getConstraints();
         this.model = model;
         this.moduleInChoco = moduleInChoco;
 
 
-        contraintePrerequis = new ContrainteChocoPrerequis(model, constrainte.getPrerequisModule(), moduleInChoco);
+        contraintePrerequis = new ContrainteChocoPrerequis(model, constraint.getPrerequisModule(), moduleInChoco);
         moduleInChoco.stream().filter(m -> m.getModuleRequis().size() > 0).forEach(m -> contraintePrerequis.post(m));
         contrainteParPriorite.add(contraintePrerequis);
 
-        if (constrainte.getIdLieu().getValue() > -1)
+        if (constraint.getPlace().getValue() > -1)
         {
 
 
             contrainteLieu = new ContrainteChocoLieu(
                     model,
-                    constrainte.getIdLieu(),
+                    constraint.getPlace(),
                     moduleInChoco);
             moduleInChoco.forEach(m -> contrainteLieu.post(m));
             contrainteParPriorite.add(contrainteLieu);
 
         }
 
-        if (constrainte.getPeriodeFormationExclusion().size() > 0)
+        if (constraint.getListPeriodeOfTrainingExclusion().size() > 0)
         {
-            contraintePeriodeExclusion = new ListeContrainteChoco<ContrainteChocoPeriodeExclusion>(model, constrainte.getPeriodeFormationExclusion(), ContrainteChocoPeriodeExclusion.class, moduleInChoco, ListeContrainteChoco.AND);
+            contraintePeriodeExclusion = new ListeContrainteChoco<ContrainteChocoPeriodeExclusion>(model, constraint.getListPeriodeOfTrainingExclusion(), ContrainteChocoPeriodeExclusion.class, moduleInChoco, ListeContrainteChoco.AND);
             contraintePeriodeExclusion.post();
             contrainteParPriorite.addAll(contraintePeriodeExclusion.getContraintesChoco());
 
         }
 
-        if (constrainte.getPeriodeFormationInclusion().size() > 0)
+        if (constraint.getListPeriodeOfTrainingInclusion().size() > 0)
         {
-            contraintePeriodeInclusion = new ListeContrainteChoco<ContrainteChocoPeriodeInclusion>(model, constrainte.getPeriodeFormationInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
+            contraintePeriodeInclusion = new ListeContrainteChoco<ContrainteChocoPeriodeInclusion>(model, constraint.getListPeriodeOfTrainingInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
             contraintePeriodeInclusion.post();
             contrainteParPriorite.addAll(contraintePeriodeInclusion.getContraintesChoco());
         }
 
-        if (constrainte.getFrequenceFormation().getValue().getMaxSemaineFormation() > 0)
+        if (constraint.getTrainingFrequency().getValue().getMaxWeekInTraining() > 0)
         {
-            contraintePeriodeFormation = new ContrainteChocoPeriodeFormation(model, constrainte.getFrequenceFormation(), moduleInChoco);
+            contraintePeriodeFormation = new ContrainteChocoPeriodeFormation(model, constraint.getTrainingFrequency(), moduleInChoco);
             moduleInChoco.forEach(m -> contraintePeriodeFormation.post(m));
             contrainteParPriorite.add(contraintePeriodeFormation);
         }
 
         // les cours autorisés des stagiaires recquis
-        if (constrainte.getStagiairesRecquis().size() > 0)
+        if (constraint.getListStudentRequired().size() > 0)
         {
-            //coursDesStagiairesRecquis = constrainte.getStagiairesRecquis().stream().flatMap(stagiaire -> stagiaire.getValue().getCours().stream().map(cr -> new PeriodeChoco(cr))).collect(Collectors.toList());
-            contraintePeriodeInclusion = new ListeContrainteChoco<ContrainteChocoPeriodeInclusion>(model, constrainte.getPeriodeFormationInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
+            //coursDesStagiairesRecquis = constraint.getListStudentRequired().stream().flatMap(stagiaire -> stagiaire.getValue().getListClasses().stream().map(cr -> new PeriodeChoco(cr))).collect(Collectors.toList());
+            contraintePeriodeInclusion = new ListeContrainteChoco<ContrainteChocoPeriodeInclusion>(model, constraint.getListPeriodeOfTrainingInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
             contraintePeriodeInclusion.post();
             contrainteParPriorite.addAll(contraintePeriodeInclusion.getContraintesChoco());
         }
 
         // les cours dont le nombre de stagiaire a atteint le nombre maximum
-        if (constrainte.getMaxStagiaireEnFormation().getValue().getMaxStagiaireEnFormation() > 0)
+        if (constraint.getMaxStudentInTraining().getValue().getMaxStudentInTraining() > 0)
 
         {
-            contrainteChocoMaxStagiaire = new ContrainteChocoMaxStagiaire(model, constrainte.getMaxStagiaireEnFormation(), moduleInChoco);
+            contrainteChocoMaxStagiaire = new ContrainteChocoMaxStagiaire(model, constraint.getMaxStudentInTraining(), moduleInChoco);
             moduleInChoco.forEach(m -> contrainteChocoMaxStagiaire.post(m));
             contrainteParPriorite.add(contrainteChocoMaxStagiaire);
         }

@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Calendrier implements Serializable
+public class Calendar implements Serializable
 {
 
-    private List<CoursCalendrier> listCours = new ArrayList<>();
+    private List<ClassesCalendar> listClasses = new ArrayList<>();
 
     private List<ConstraintRespected> constraint;
 
@@ -16,9 +16,9 @@ public class Calendrier implements Serializable
         return constraint;
     }
 
-    public List<CoursCalendrier> getCours()
+    public List<ClassesCalendar> getCours()
     {
-        return listCours;
+        return listClasses;
     }
 
     public void setConstraint(List<ConstraintRespected> constraints)
@@ -26,13 +26,13 @@ public class Calendrier implements Serializable
         this.constraint = constraints;
     }
 
-    public void setCours(List<CoursCalendrier> cours)
+    public void setCours(List<ClassesCalendar> cours)
     {
-        this.listCours = cours;
+        this.listClasses = cours;
     }
 
-    public void addCours(CoursCalendrier cours)
+    public void addCours(ClassesCalendar cours)
     {
-        this.listCours.add(cours);
+        this.listClasses.add(cours);
     }
 }

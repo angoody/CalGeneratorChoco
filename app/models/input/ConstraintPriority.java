@@ -5,6 +5,10 @@ public class ConstraintPriority<T>
     private Integer priority = -1;
     private T value;
 
+    public ConstraintPriority()
+    {
+
+    }
 
     public ConstraintPriority(Integer priority, T contrainte)
     {

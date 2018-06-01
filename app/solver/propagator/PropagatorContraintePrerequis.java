@@ -62,11 +62,11 @@ public class PropagatorContraintePrerequis extends Propagator<IntVar>
         if (!alternatif)
         {
             /*for (ModuleChoco moduleRequis: module.getModuleRequis() ) {
-                moduleRequis.getFin().updateUpperBound(getVar(0).getValue(), this);
+                moduleRequis.getEnd().updateUpperBound(getVar(0).getValue(), this);
             }
 
             for (ModuleChoco moduleFacultatif: module.getModuleRequis() ) {
-                moduleFacultatif.getFin().updateUpperBound(getVar(0).getValue(), this);
+                moduleFacultatif.getEnd().updateUpperBound(getVar(0).getValue(), this);
             }*/
 
             OptionalInt LBFort   = module.getModuleRequis().stream().mapToInt(m -> m.getFin().getValue()).max();

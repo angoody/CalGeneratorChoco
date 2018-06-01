@@ -19,8 +19,8 @@ public class ContrainteChocoLieu extends ContrainteChoco<Integer>
     {
         super(model, lieu, modulesInChoco);
         Map<Integer, Long> lieuxPossibleGroupe = modulesInChoco.stream()
-                .flatMap(m -> m.getModule().getCours().stream())
-                .map(c -> new Integer(c.getLieu()))
+                .flatMap(m -> m.getModule().getListClasses().stream())
+                .map(c -> new Integer(c.getIdPlace()))
                 .filter(l -> l != lieu.getValue())
                 .collect(Collectors.groupingBy(e -> e, Collectors.counting()));
 

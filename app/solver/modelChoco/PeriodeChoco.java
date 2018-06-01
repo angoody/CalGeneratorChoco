@@ -1,6 +1,6 @@
 package solver.modelChoco;
 
-import models.input.Periode;
+import models.input.Period;
 import utils.DateTimeHelper;
 
 public class PeriodeChoco {
@@ -8,9 +8,9 @@ public class PeriodeChoco {
     private int debut;
     private int fin;
 
-    public PeriodeChoco(Periode periode) {
-        this.debut = DateTimeHelper.toDays(periode.getInstantDebut());
-        this.fin = DateTimeHelper.toDays(periode.getInstantFin());
+    public PeriodeChoco(Period period) {
+        this.debut = DateTimeHelper.toDays(period.getStart());
+        this.fin = DateTimeHelper.toDays(period.getEnd());
     }
 
     public int getDebut() {

@@ -1,91 +1,42 @@
 package solver.modelChoco;
 
-import models.input.Cours;
+import models.input.Classes;
 
-public class CoursChoco {
+public class CoursChoco extends CoursChocoStagiaire
+{
 
-    private final Cours cours;
-    private PeriodeChoco periode ;
-    private int idModule;
-    private int nbSemaine;
-    private int nbHeure;
-    private int coursIdentifier;
-    private int duration;
+    private final ModuleChoco moduleChoco;
 
-    private int lieu;
-    private int idCours;
-
-    public CoursChoco(Cours cours, Integer nbSemaine, Integer nbHeure) {
-        this.cours = cours;
-        this.idCours = idCours;
-        this.periode = new PeriodeChoco(cours.getPeriode());
-        this.idModule = cours.getIdModule();
-        this.nbSemaine = nbSemaine;
-        this.nbHeure = nbHeure;
-        this.coursIdentifier = (periode.getDebut() + periode.getFin()) / 2;
-        this.duration = cours.getNbHeureReel();
-        this.lieu = cours.getLieu();
+    public CoursChoco(Classes classes, ModuleChoco moduleChoco)
+    {
+        super(classes);
+        this.moduleChoco = moduleChoco;
     }
 
-    public CoursChoco(Cours cours) {
-        this(cours, -1, -1);
+    public int getIdModule()
+    {
+        return moduleChoco.getIdModule();
+    }
+
+    public int getNbHeure()
+    {
+        return moduleChoco.getModule().getNbHourOfModule();
+    }
+
+    public int getNbSemaine()
+    {
+        return moduleChoco.getModule().getNbWeekOfModule();
     }
 
 
-    public int getDebut() {
-        return periode.getDebut();
+    public ModuleChoco getModuleChoco()
+    {
+        return moduleChoco;
     }
 
-    public int getFin() {
-        return periode.getFin();
+    @Override
+    public int[] getInt()
+    {
+        return new int[]{getIdModule(), getIdCours(), getDebut(), getFin(), getCoursIdentifier(), getLieu(), getDuration(), getNbHeure(), getNbSemaine()};
     }
-
-    public int getCoursIdentifier() {
-        return coursIdentifier;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public int getLieu() {
-        return lieu;
-    }
-
-    public int getIdModule() {
-        return idModule;
-    }
-
-    public int getNbHeure() {
-        return nbHeure;
-    }
-
-    public void setNbHeure(int nbHeure) {
-        this.nbHeure = nbHeure;
-    }
-
-    public int getNbSemaine() {
-        return nbSemaine;
-    }
-
-    public void setNbSemaine(int nbSemaine) {
-        this.nbSemaine = nbSemaine;
-    }
-
-    public void setIdCours(int idCours) {
-        this.idCours = idCours;
-    }
-
-    public Cours getCours() {
-        return cours;
-    }
-
-    public int getIdCours() {
-        return idCours;
-    }
-
-    public int[] getInt() {
-        return new int[] { idModule, idCours, periode.getDebut(), periode.getFin(), coursIdentifier, lieu, duration, nbHeure, nbSemaine};
-    }
-
 }

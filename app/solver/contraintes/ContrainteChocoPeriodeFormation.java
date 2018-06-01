@@ -1,17 +1,17 @@
 package solver.contraintes;
 
 import models.input.ConstraintPriority;
-import models.input.FrequenceFormation;
+import models.input.TrainingFrequency;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import solver.modelChoco.ModuleChoco;
 
 import java.util.List;
 
-public class ContrainteChocoPeriodeFormation extends ContrainteChoco<FrequenceFormation>  {
+public class ContrainteChocoPeriodeFormation extends ContrainteChoco<TrainingFrequency>  {
 
 
-    public ContrainteChocoPeriodeFormation(Model model, ConstraintPriority<FrequenceFormation> contrainteMaxSemaineFormation, List<ModuleChoco> modulesInChoco) {
+    public ContrainteChocoPeriodeFormation(Model model, ConstraintPriority<TrainingFrequency> contrainteMaxSemaineFormation, List<ModuleChoco> modulesInChoco) {
         super(model, contrainteMaxSemaineFormation, modulesInChoco);
     }
 
@@ -21,10 +21,10 @@ public class ContrainteChocoPeriodeFormation extends ContrainteChoco<FrequenceFo
                     model.or(
                             model.arithm(
                                     module.getFin(),"-", m.getDebut(),
-                                    "<", getContraintePriority().getValue().getMaxSemaineFormation()*7 ),
+                                    "<", getContraintePriority().getValue().getMaxWeekInTraining() * 7 ),
                             model.arithm(
                                     module.getDebut(),"-", m.getFin(),
-                                    ">", getContraintePriority().getValue().getMinSemaineEntreprise() * 7 + 1)
+                                    ">", getContraintePriority().getValue().getMinWeekInCompany() * 7 + 1)
                     )).toArray(Constraint[]::new));
 
     }
@@ -32,7 +32,7 @@ public class ContrainteChocoPeriodeFormation extends ContrainteChoco<FrequenceFo
     @Override
     public String getConstraintName()
     {
-        return String.format(language.getString("contrainte.frequence.formation"), getContraintePriority().getValue().getMaxSemaineFormation(), getContraintePriority().getValue().getMinSemaineEntreprise());
+        return String.format(language.getString("contrainte.frequence.formation"), getContraintePriority().getValue().getMaxWeekInTraining(), getContraintePriority().getValue().getMinWeekInCompany());
     }
 
 }

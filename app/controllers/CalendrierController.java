@@ -1,12 +1,12 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import models.input.Probleme;
+import models.input.Problem;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import solver.ChocoSolver;
-import solver.test;
+import solver.Test;
 
 public class CalendrierController  extends Controller {
 
@@ -15,9 +15,12 @@ public class CalendrierController  extends Controller {
         JsonNode json = request().body().asJson();
         if (json == null)
             return badRequest();
-        final Probleme probleme = Json.fromJson(json, Probleme.class);
-        return ok(Json.toJson(new ChocoSolver(probleme).resoudre(5)));
+        final Problem problem = Json.fromJson(json, Problem.class);
+        return ok(Json.toJson(new ChocoSolver(problem).solve()));
     }
 
-    public Result test() { return ok(Json.toJson(test.main(new String[] {"test"})));}
+    public Result test() { return ok(Json.toJson(Test.solve()));}
+
+
+    public Result inputExample() { return ok(Json.toJson(Test.getInput()));}
 }

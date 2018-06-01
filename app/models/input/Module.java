@@ -1,6 +1,5 @@
 package models.input;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,24 +7,25 @@ public class Module
 {
 
     private Integer idModule;
-    private List<Integer> idModulePrerequis = new ArrayList<>();
-    private List<Integer> idModuleFacultatif;
-    private List<Cours> cours = new ArrayList<>();
-    private Integer nbSemainePrevu;
-    private Integer nbHeurePrevu;
+    private Integer nbWeekOfModule;
+    private Integer nbHourOfModule;
+    private List<Integer> listIdModulePrerequisite = new ArrayList<>();
+    private List<Integer> listIdModuleOptional;
+    private List<Classes> listClasses = new ArrayList<>();
+
 
     public Module()
     {
     }
 
-    public Module(Integer idModule, List<Integer> idModulePrerequis, List<Integer> idModuleFacultatif, List<Cours> cours, Integer nbSemainePrevu, Integer nbHeurePrevu)
+    public Module(Integer idModule, List<Integer> listIdModulePrerequisite, List<Integer> listIdModuleOptional, List<Classes> listClasses, Integer nbSemainePrevu, Integer nbHourOfModule)
     {
         this.idModule = idModule;
-        this.idModulePrerequis = idModulePrerequis;
-        this.idModuleFacultatif = idModuleFacultatif;
-        this.cours = cours;
-        this.nbSemainePrevu = nbSemainePrevu;
-        this.nbHeurePrevu = nbHeurePrevu;
+        this.listIdModulePrerequisite = listIdModulePrerequisite;
+        this.listIdModuleOptional = listIdModuleOptional;
+        this.listClasses = listClasses;
+        this.nbWeekOfModule = nbSemainePrevu;
+        this.nbHourOfModule = nbHourOfModule;
     }
 
     public Integer getIdModule()
@@ -38,54 +38,54 @@ public class Module
         this.idModule = idModule;
     }
 
-    public List<Integer> getIdModulePrerequis()
+    public List<Integer> getListIdModulePrerequisite()
     {
-        return idModulePrerequis;
+        return listIdModulePrerequisite;
     }
 
-    public void setIdModulePrerequis(List<Integer> idModulePrerequis)
+    public void setListIdModulePrerequisite(List<Integer> listIdModulePrerequisite)
     {
-        this.idModulePrerequis = idModulePrerequis;
+        this.listIdModulePrerequisite = listIdModulePrerequisite;
     }
 
-    public List<Cours> getCours()
+    public List<Classes> getListClasses()
     {
-        return cours;
+        return listClasses;
     }
 
-    public void setCours(List<Cours> cours)
+    public void setListClasses(List<Classes> listClasses)
     {
-        this.cours = cours;
+        this.listClasses = listClasses;
     }
 
-    public Integer getNbSemainePrevu()
+    public Integer getNbWeekOfModule()
     {
-        return nbSemainePrevu;
+        return nbWeekOfModule;
     }
 
-    public void setNbSemainePrevu(Integer nbSemainePrevu)
+    public void setNbWeekOfModule(Integer nbWeekOfModule)
     {
-        this.nbSemainePrevu = nbSemainePrevu;
+        this.nbWeekOfModule = nbWeekOfModule;
     }
 
-    public Integer getNbHeurePrevu()
+    public Integer getNbHourOfModule()
     {
-        return nbHeurePrevu;
+        return nbHourOfModule;
     }
 
-    public void setNbHeurePrevu(Integer nbHeurePrevu)
+    public void setNbHourOfModule(Integer nbHourOfModule)
     {
-        this.nbHeurePrevu = nbHeurePrevu;
+        this.nbHourOfModule = nbHourOfModule;
     }
 
-    public List<Integer> getIdModuleFacultatif()
+    public List<Integer> getListIdModuleOptional()
     {
-        return idModuleFacultatif;
+        return listIdModuleOptional;
     }
 
-    public void setIdModuleFacultatif(List<Integer> idModuleFacultatif)
+    public void setListIdModuleOptional(List<Integer> listIdModuleOptional)
     {
-        this.idModuleFacultatif = idModuleFacultatif;
+        this.listIdModuleOptional = listIdModuleOptional;
     }
 
 }

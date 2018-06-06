@@ -13,7 +13,7 @@ public class DateTimeHelper {
     // 1000 * 60 * 60 * 24 = 86400000
     public static final long MAGIC=86400000L;
 
-    public static Instant format(String date, String format) {
+    public static Instant toInstant(String date, String format) {
 
 
         DateTimeFormatter FMT = new DateTimeFormatterBuilder()
@@ -24,7 +24,7 @@ public class DateTimeHelper {
         return FMT.parse(date, Instant::from);
     }
 
-    public static String format(Instant date, String format) {
+    public static String toString(Instant date, String format) {
 
           DateTimeFormatter FMT = new DateTimeFormatterBuilder()
                 .appendPattern(format)
@@ -34,17 +34,20 @@ public class DateTimeHelper {
         return FMT.format(date);
     }
 
-    public static Instant format(String date) {
-        return format(date, "yyyy-MM-dd");
+    public static Instant toInstant(String date) {
+        return toInstant(date, "yyyy-MM-dd");
     }
 
-    public static String format(Instant date) {
-        return format(date,"yyyy-MM-dd" );
+    public static String toString(Instant date) {
+        return toString(date,"yyyy-MM-dd" );
     }
 
+    public static String toString(int date) {
+        return toString(toInstant(date));
+    }
 
     public static int toDays(String string){
-        return (int) toDays(format(string));
+        return (int) toDays(toInstant(string));
     }
 
 
@@ -55,7 +58,7 @@ public class DateTimeHelper {
         return (int) currentTime;
     }
 
-    public static Instant DaysToInstant(int days) {
+    public static Instant toInstant(int days) {
         //  convert integer back again to an instant
         long currentTime=(long) days*MAGIC;
         return Instant.ofEpochMilli(currentTime);

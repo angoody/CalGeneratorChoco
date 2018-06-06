@@ -144,14 +144,35 @@ Exemple des paramètres en entrée :
           "nbHourOfModule":14
        }
     ],
-    "contraintes":[
- 
-    ]
+    "contraintes": [
+        {
+          "idLieux": [
+            2,
+            1
+          ],
+          "nbHeureAnnuel": 1500,
+          "dureeMaxFormation": 3000,
+          "maxSemaineFormation": 20,
+          "periodeFormationExclusion": [
+            {
+              "debut": "2018-03-19 00:00:00",
+              "fin": "2018-03-23 00:00:00",
+              "instantDebut": 1521414000,
+              "instantFin": 1521759600,
+              "format": "yyyy-MM-dd HH:mm:ss"
+            }
+          ],
+          "periodeFormationInclusion": [],
+          "maxStagiaireEntrepriseEnFormation": 3,
+          "stagiairesEntreprise": [],
+          "stagiairesRecquis": []
+        }
+      ]
  }
 ]
 ```
 
-Exemple des paramètres en entrée :
+Exemple des paramètres en sortie :
 
 ```json
 [

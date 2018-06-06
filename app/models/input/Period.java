@@ -13,7 +13,7 @@ public class Period
     // Utilisé uniquement pour le Test, n'est jamais appelé par le from json
     public Period()
     {
-        this(DateTimeHelper.format(Instant.now()), DateTimeHelper.format(Instant.now()));
+        this(DateTimeHelper.toString(Instant.now()), DateTimeHelper.toString(Instant.now()));
     }
 
     public Period(String start, String end)

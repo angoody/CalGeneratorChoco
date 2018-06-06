@@ -327,8 +327,8 @@ public class Test
         problem.setPeriodOfTraining(new Period("2017-01-02", "2019-11-24"));
         problem.setConstraints(new Constraint());
         modules.stream().forEach(m -> m.setListClasses(m.getListClasses().stream().filter(d ->
-                                                                                                  DateTimeHelper.format(d.getPeriod().getStart()).isAfter(DateTimeHelper.format(problem.getPeriodOfTraining().getStart())) &&
-                                                                                                  DateTimeHelper.format(d.getPeriod().getEnd()).isBefore(DateTimeHelper.format(problem.getPeriodOfTraining().getEnd()))).collect(Collectors.toList())));
+                                                                                                  DateTimeHelper.toInstant(d.getPeriod().getStart()).isAfter(DateTimeHelper.toInstant(problem.getPeriodOfTraining().getStart())) &&
+                                                                                                  DateTimeHelper.toInstant(d.getPeriod().getEnd()).isBefore(DateTimeHelper.toInstant(problem.getPeriodOfTraining().getEnd()))).collect(Collectors.toList())));
 
         /*
         new IntegerConstrainte(1, 5),
@@ -348,8 +348,8 @@ public class Test
         problem.getContraintes().setMaxWeekInTraining(new IntegerConstrainte(3, 1));
 */
 
-        problem.getConstraints().setPlace(new ConstraintPriority<Integer>(7, 2));
-        ConstraintPriority<TrainingFrequency> frequence = new ConstraintPriority<>(1, new TrainingFrequency());
+        problem.getConstraints().setPlace(new ConstraintPriority<Integer>(7, 10));
+        ConstraintPriority<TrainingFrequency> frequence = new ConstraintPriority<>(8, new TrainingFrequency());
         frequence.getValue().setMinWeekInCompany(3);
         frequence.getValue().setMaxWeekInTraining(3);
         problem.getConstraints().setTrainingFrequency(frequence);

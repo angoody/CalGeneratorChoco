@@ -103,6 +103,37 @@ Ce projet expose une API REST permettant la génération d'un calendar par contr
 |realDuration|Integer|Oui|Non|
 
 
+
+### Objet Calendar (Objet de sortie)
+
+| Atribut | Type | 
+|---------|------|
+|listClasses|Liste de ClassesCalendar|
+|constraint|Liste de ConstraintRespected|
+
+### Objet ClassesCalendar
+   
+| Atribut | Type | 
+|---------|------|
+|start|String|
+|end|String|
+|idModule|int|
+|idClasses|String|
+|constraints|Liste de ConstraintRespected par ordre de priorité décroissante|
+
+### Objet ConstraintRespected
+   
+| Atribut | Type | Valeur possible |
+|---------|------|-------------|
+|isRespected|Boolean| |
+|name|String|Fréquence de formation de %d semaines et de %d semaines en entreprise|
+|||Lieu|
+|||Modules prérequis|
+|||Périodes exclues du "date de début" au "date de fin"|
+|||Périodes inclues du "date de début" au "date de fin"|
+|||"Nombre de stagiaire" stagiaires de la même entreprise|
+|||Stagiaires recquis|
+
 Exemple des paramètres en entrée :
 
 ```json

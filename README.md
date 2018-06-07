@@ -12,6 +12,17 @@ Ce projet expose une API REST permettant la génération d'un calendar par contr
 |---------|-------|-----------|------- |---------|
 | Get | /solve | Objet Problem | Renvoi les calendars répondant au problème | 1 |
 
+### Objet problem
+
+| Atribut | Type | Obligatoire | Valeur par défaut |
+|---------|------|-------------|
+| periodOfTraining | Period  | Non | Non |
+| numberOfCalendarToFound | Integer | Non | Oui (5) |
+| constraints | Constraint | Non |  Non |
+| moduleOfTraining| List<Module> |  Non | Non | 
+
+
+
 
 Exemple des paramètres en entrée :
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Problem implements Serializable
 {
-    private Period  periodOfTraining        = new Period();
+    private Period  periodOfTraining;
     private Integer numberOfCalendarToFound = 5;
     private Constraint   constraints;
     private List<Module> moduleOfTraining;

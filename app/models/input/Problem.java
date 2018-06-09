@@ -7,7 +7,7 @@ public class Problem implements Serializable
 {
     private Period  periodOfTraining;
     private Integer numberOfCalendarToFound = 5;
-    private Constraint   constraints;
+    private Constraint   constraints = new Constraint();
     private List<Module> moduleOfTraining;
 
 

@@ -18,7 +18,7 @@ Ce projet expose une API REST permettant la génération d'un calendar par contr
 |---------|------|-------------|-------------------|
 | periodOfTraining | Period  | Oui | Non |
 | numberOfCalendarToFound | Integer | Oui | Oui (5) |
-| constraints | Constraint | Oui |  Non |
+| constraints | Constraint | Non |  Oui (uniquement constraintPrerequisite) |
 | moduleOfTraining| List<Module> |  Oui | Non | 
 
 ### Objet Period

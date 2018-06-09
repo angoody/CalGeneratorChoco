@@ -9,6 +9,7 @@ import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.extension.Tuples;
 import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
+import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
 import org.chocosolver.solver.variables.IntVar;
 import solver.contraintes.ContrainteManager;
 import solver.modelChoco.CoursChoco;
@@ -217,13 +218,21 @@ public class ChocoSolver {
         Map<IntVar, Integer> map = IntStream
                 .range(0, nbModules)
                 .boxed()
-                .collect(Collectors.toMap(i -> moduleInChoco.get(i).getLieu(), i -> moduleInChoco.get(i).getLieu().getValue()));
+                .collect(Collectors.toMap(i -> moduleInChoco.get(i).getCoursIdentifier(), i -> moduleInChoco.get(i).getCoursIdentifier().getValue()));
 
         IntVar[] coursIdentifier = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getCoursIdentifier()).toArray(IntVar[]::new);
         IntVar[] lieux = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getLieu()).toArray(IntVar[]::new);
 
         solver.setSearch(Search.conflictOrderingSearch(Search.defaultSearch(model)));
-
+        solver.setSearch(Search.conflictOrderingSearch(Search.intVarSearch(
+                variables -> Arrays.stream(coursIdentifier)
+                        .filter(v -> !v.isInstantiated())
+                        .min((v1, v2) -> closest(v2, map) - closest(v1, map))
+                        .orElse(null),
+                var -> closest(var, map),
+                DecisionOperatorFactory.makeIntEq(),
+                coursIdentifier
+        )));
 
                 /*Search.intVarSearch(
                 variables -> Arrays.stream(lieux)

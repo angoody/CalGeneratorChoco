@@ -348,7 +348,7 @@ public class Test
         problem.getContraintes().setMaxWeekInTraining(new IntegerConstrainte(3, 1));
 */
 
-        problem.getConstraints().setPlace(new ConstraintPriority<Integer>(7, 10));
+        problem.getConstraints().setPlace(new ConstraintPriority<Integer>(7, 2));
         ConstraintPriority<TrainingFrequency> frequence = new ConstraintPriority<>(8, new TrainingFrequency());
         frequence.getValue().setMinWeekInCompany(3);
         frequence.getValue().setMaxWeekInTraining(3);

@@ -1,10 +1,9 @@
 package solver.contraintes;
 
 import models.input.ConstraintPriority;
-import models.output.ConstraintRespected;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
-import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.ModuleDecomposeChoco;
 import solver.propagator.PropagatorContraintePrerequis;
 
 import java.util.ArrayList;
@@ -15,16 +14,16 @@ import java.util.stream.Collectors;
 
 public class ContrainteChocoPrerequis extends ContrainteChoco<Boolean>
 {
-    private Map<ModuleChoco, PropagatorContraintePrerequis> propagators = new HashMap<>();
+    private Map<ModuleDecomposeChoco, PropagatorContraintePrerequis> propagators = new HashMap<>();
 
 
-    public ContrainteChocoPrerequis(Model model, ConstraintPriority<Boolean> prerequis, List<ModuleChoco> modulesInChoco)
+    public ContrainteChocoPrerequis(Model model, ConstraintPriority<Boolean> prerequis, List<ModuleDecomposeChoco> modulesInChoco)
     {
         super(model, prerequis, modulesInChoco);
     }
 
     @Override
-    public Constraint createConstraint(ModuleChoco module)
+    public Constraint createConstraint(ModuleDecomposeChoco module)
     {
         List<Constraint> contraintes = new ArrayList<>();
         if (module.getModuleRequis().size() > 0)
@@ -50,19 +49,19 @@ public class ContrainteChocoPrerequis extends ContrainteChoco<Boolean>
 
 
     /*@Override
-    public void enableAlternateSearch(ModuleChoco module)
+    public void enableAlternateSearch(ModuleDecomposeChoco module)
     {
         propagators.get(module).searchAternatif((true));
     }
 
     @Override
-    public void disableAlternateSearch(ModuleChoco module)
+    public void disableAlternateSearch(ModuleDecomposeChoco module)
     {
         propagators.get(module).searchAternatif((false));
     }
 
     @Override
-    public Boolean isAlternateSearch(ModuleChoco module)
+    public Boolean isAlternateSearch(ModuleDecomposeChoco module)
     {
         return propagators.get(module).isAternatifSearch();
     }*/

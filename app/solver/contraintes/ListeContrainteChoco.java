@@ -3,7 +3,7 @@ package solver.contraintes;
 import models.input.ConstraintPriority;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
-import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.ModuleDecomposeChoco;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -30,11 +30,11 @@ public class ListeContrainteChoco<T extends ItemContrainteChoco> {
 
     // Model de Choco
     protected Model model;
-    private List<ModuleChoco> moduleInChoco = new ArrayList<>();
+    private List<ModuleDecomposeChoco> moduleInChoco = new ArrayList<>();
     private Integer operation;
 
 
-    public ListeContrainteChoco(Model model, List<? extends ConstraintPriority> contrainteDecomposeModele, Class<T> classContrainte, List<ModuleChoco> moduleInChoco, Integer operation ) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public ListeContrainteChoco(Model model, List<? extends ConstraintPriority> contrainteDecomposeModele, Class<T> classContrainte, List<ModuleDecomposeChoco> moduleInChoco, Integer operation ) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         this.model = model;
         this.moduleInChoco = moduleInChoco;
         this.operation = operation;
@@ -105,7 +105,7 @@ public class ListeContrainteChoco<T extends ItemContrainteChoco> {
         return contraintesChoco.stream().map(c -> post(c)).collect(Collectors.toList());
     }
 
-    /*public void addConstraintInEngine(T item, ModuleChoco module)
+    /*public void addConstraintInEngine(T item, ModuleDecomposeChoco module)
     {
         List<T> contraintesRemoved = constraintsRemovedInEngine.get(module);
         if (contraintesRemoved == null)

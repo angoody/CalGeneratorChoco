@@ -6,16 +6,18 @@ public class CoursChoco extends CoursChocoStagiaire
 {
 
     private final ModuleChoco moduleChoco;
+    private ModuleDecomposeChoco moduleDecomposeChoco;
 
-    public CoursChoco(Classes classes, ModuleChoco moduleChoco)
+    public CoursChoco(Classes classes, ModuleChoco moduleChoco, ModuleDecomposeChoco moduleDecomposeChoco)
     {
         super(classes);
         this.moduleChoco = moduleChoco;
+        this.moduleDecomposeChoco = moduleDecomposeChoco;
     }
 
     public int getIdModule()
     {
-        return moduleChoco.getIdModule();
+        return moduleChoco.getModule().getIdModule();
     }
 
     public int getNbHeure()
@@ -34,9 +36,16 @@ public class CoursChoco extends CoursChocoStagiaire
         return moduleChoco;
     }
 
+    public ModuleDecomposeChoco getModuleDecomposeChoco()
+    {
+        return moduleDecomposeChoco;
+    }
+
     @Override
     public int[] getInt()
     {
-        return new int[]{getIdModule(), getIdCours(), getDebut(), getFin(), getCoursIdentifier(), getLieu(), getDuration(), getNbHeure(), getNbSemaine()};
+        return new int[]{getIdModule(), moduleDecomposeChoco.getIdModuleDecompose(), getIdCours(), getDebut(), getFin(), getCoursIdentifier(), getLieu(), getDuration(), getNbHeure(), getNbSemaine()};
     }
+
+
 }

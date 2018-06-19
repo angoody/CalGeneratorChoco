@@ -5,7 +5,7 @@ import models.input.Student;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import solver.modelChoco.CoursChocoStagiaire;
-import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.ModuleDecomposeChoco;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,14 +14,14 @@ public class ContrainteChocoStagiaireRecquis extends ItemContrainteChoco<Student
 {
     private final List<CoursChocoStagiaire> cours;
 
-    public ContrainteChocoStagiaireRecquis(Model model, ConstraintPriority<Student> contrainte, List<ModuleChoco> modulesInChoco, ListeContrainteChoco parent)
+    public ContrainteChocoStagiaireRecquis(Model model, ConstraintPriority<Student> contrainte, List<ModuleDecomposeChoco> modulesInChoco, ListeContrainteChoco parent)
     {
         super(model, contrainte, modulesInChoco, parent);
         cours = contrainte.getValue().getListClassees().stream().map(c -> new CoursChocoStagiaire(c)).collect(Collectors.toList());
     }
 
     @Override
-    public Constraint createConstraint(ModuleChoco module)
+    public Constraint createConstraint(ModuleDecomposeChoco module)
     {
         return model.or(cours.stream()
                                 .map(c -> model.and(
@@ -38,7 +38,7 @@ public class ContrainteChocoStagiaireRecquis extends ItemContrainteChoco<Student
     }
 
     @Override
-    public Boolean isAlternateSearch(ModuleChoco module)
+    public Boolean isAlternateSearch(ModuleDecomposeChoco module)
     {
         return getIsAlternateSearch() ? !(cours.stream().filter(c -> module.getFin().getValue() > c.getDebut() && module.getDebut().getValue() < c.getFin()).count() > 0) : getIsAlternateSearch();
     }

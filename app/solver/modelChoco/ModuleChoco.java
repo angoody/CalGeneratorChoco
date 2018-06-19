@@ -7,104 +7,119 @@ import org.chocosolver.solver.variables.IntVar;
 import utils.DateTimeHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class ModuleChoco {
-
+public class ModuleChoco
+{
+    private final IntVar moduleDecomposeId;
     private Module module;
-    private List<CoursChoco> coursDuModule;
-    private IntVar debut;
-    private IntVar fin;
-    private IntVar lieux;
-    private IntVar coursIdentifier;
-    private IntVar id;
-    private IntVar coursId;
-    private IntVar modulesDuration;
-    private IntVar nbSemaine;
-    private IntVar nbHeure;
-    private List<ModuleChoco> moduleRequis = new ArrayList<>();
+    private ModuleDecomposeChoco       moduleEnUnCours;
+    private List<ModuleDecomposeChoco> moduleEnPlusieursCours;
+    private List<ModuleDecomposeChoco> moduleDecompose;
+    private List<ModuleChoco> moduleRequis     = new ArrayList<>();
     private List<ModuleChoco> moduleFacultatif = new ArrayList<>();
 
-    public ModuleChoco(Module module, Model model) {
+
+    public ModuleChoco(Module module, Model model)
+    {
 
         // Initialisation des variables
         this.module = module;
+        List<Integer> dureeCours = module.getListClasses().stream().mapToInt(c -> c.getRealDuration()).distinct().sorted().mapToObj(c -> new Integer(c)).collect(Collectors.toList());
+        moduleEnPlusieursCours = new ArrayList<ModuleDecomposeChoco>();
 
-        List<Classes> lesCours = module.getListClasses().stream()
-                .sorted(Comparator.comparing(o -> DateTimeHelper.toDays(o.getPeriod().getStart()))).collect(Collectors.toList());
+        if (dureeCours.size() == 1)
+        {
+            moduleEnUnCours = new ModuleDecomposeChoco(
+                    module,
+                    module.getListClasses().stream()
+                            .sorted(Comparator.comparing(o -> DateTimeHelper.toDays(o.getPeriod().getStart())))
+                            .collect(Collectors.toList()),
+                    this,
+                    model);
+            moduleDecompose.add(moduleEnUnCours);
+        }
+        else
+        {
+            if (dureeCours.contains(module.getNbHourOfModule()))
+            {
+                moduleEnUnCours = new ModuleDecomposeChoco(
+                        module,
+                        module.getListClasses().stream()
+                                .filter(c -> c.getWorkingDayDuration() == module.getNbHourOfModule())
+                                .sorted(Comparator.comparing(o -> DateTimeHelper.toDays(o.getPeriod().getStart())))
+                                .collect(Collectors.toList()),
+                        this,
+                        model);
+                dureeCours.remove(module.getNbHourOfModule());
+                moduleDecompose.add(moduleEnUnCours);
+            }
+            for (Integer duree : dureeCours)
+            {
+                moduleEnPlusieursCours.add(new ModuleDecomposeChoco(
+                        module,
+                        module.getListClasses().stream()
+                                .filter(c -> c.getWorkingDayDuration() == duree)
+                                .sorted(Comparator.comparing(o -> DateTimeHelper.toDays(o.getPeriod().getStart())))
+                                .collect(Collectors.toList()),
+                        this,
+                        model));
 
-        coursDuModule = lesCours.stream().map(c -> new CoursChoco(c, this) ).collect(Collectors.toList());
-        IntStream.range(0, coursDuModule.size()).forEach(i -> coursDuModule.get(i).setIdCours(i));
+            }
+            moduleDecompose.addAll(moduleEnPlusieursCours);
+        }
 
-        debut = model.intVar("Debut " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getDebut()).toArray());
-        fin = model.intVar("Fin " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getFin()).toArray());
-        lieux = model.intVar("Lieu " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getLieu()).toArray());
-        coursIdentifier = model.intVar("Module " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getCoursIdentifier()).toArray());
-        id = model.intVar("ID module " + getIdModule(), getIdModule());
-        coursId = model.intVar("ID module " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getIdCours()).toArray());
-
-        modulesDuration = model.intVar("Duration " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getDuration()).toArray());
-
-        nbSemaine = model.intVar("Nb Semaine " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getNbSemaine()).toArray());
-
-        nbHeure = model.intVar("Nb Heure " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getNbHeure()).toArray());
+        IntStream.range(0, moduleDecompose.size()).forEach(i -> moduleDecompose.get(i).setIdModuleDecompose(i));
+        moduleDecomposeId = model.intVar("ID moduleDecompose " + module.getIdModule(), moduleDecompose.stream().mapToInt(c -> c.getIdModuleDecompose()).toArray());
     }
 
-    public Integer getIdModule() { return module.getIdModule();}
-
-    public Module getModule() {
+    public Module getModule()
+    {
         return module;
     }
 
-    public List<CoursChoco> getCoursDuModule() {
-        return coursDuModule.stream().collect(Collectors.toList());
+    public ModuleDecomposeChoco getModuleEnUnCours()
+    {
+        return moduleEnUnCours;
     }
 
-    public IntVar getCoursIdentifier() {
-        return coursIdentifier;
+    public List<ModuleDecomposeChoco> getModuleEnPlusieursCours()
+    {
+        return moduleEnPlusieursCours;
     }
 
-    public IntVar getId() { return id;}
-
-    public IntVar getLieu() {
-        return lieux;
+    public void setModule(List<ModuleChoco> moduleInChoco)
+    {
+        moduleRequis = moduleInChoco.stream().filter(mc -> module.getListIdModulePrerequisite().contains(mc.getModule().getIdModule())).collect(Collectors.toList());
+        moduleFacultatif = moduleInChoco.stream().filter(mc -> module.getListIdModuleOptional().contains(mc.getModule().getIdModule())).collect(Collectors.toList());
     }
 
-    public IntVar getDuration() {
-        return modulesDuration;
-    }
-
-    public IntVar getDebut(){
-        return debut;
-    }
-
-    public IntVar getFin() {
-        return fin;
-    }
-
-    public IntVar getNbSemaine() { return nbSemaine;}
-
-    public IntVar getNbHeure() {
-        return nbHeure;
-    }
-
-    public IntVar getCoursId() {
-        return coursId;
-    }
-
-    public void setModule(List<ModuleChoco> moduleInChoco) {
-        moduleRequis = moduleInChoco.stream().filter(mc -> module.getListIdModulePrerequisite().contains(mc.getIdModule())).collect(Collectors.toList());
-        moduleFacultatif = moduleInChoco.stream().filter(mc -> module.getListIdModuleOptional().contains(mc.getIdModule())).collect(Collectors.toList());
-    }
-
-    public List<ModuleChoco> getModuleRequis() {
+    public List<ModuleChoco> getModuleRequis()
+    {
         return moduleRequis;
     }
 
-    public List<ModuleChoco> getModuleFacultatif() {
+    public List<ModuleChoco> getModuleFacultatif()
+    {
         return moduleFacultatif;
+    }
+
+    public List<CoursChoco> getCoursDuModule()
+    {
+        return getModuleDecompose().stream().flatMap(m -> m.getCoursDuModule().stream()).collect(Collectors.toList());
+    }
+
+    public List<ModuleDecomposeChoco> getModuleDecompose()
+    {
+        return moduleDecompose;
+    }
+
+    public CoursChoco getCours()
+    {
+        return getModuleDecompose().get(moduleDecomposeId.getValue()).getCoursDuModule().get(getModuleDecompose().get(moduleDecomposeId.getValue()).getCoursId().getValue());
     }
 }

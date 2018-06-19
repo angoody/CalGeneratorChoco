@@ -4,7 +4,7 @@ import models.input.ConstraintPriority;
 import models.input.Period;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
-import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.ModuleDecomposeChoco;
 import utils.DateTimeHelper;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class ContrainteChocoPeriodeExclusion extends ItemContrainteChoco<Period>
     private Integer debut;
     private Integer fin;
 
-    public ContrainteChocoPeriodeExclusion(Model model, ConstraintPriority<Period> contrainte, List<ModuleChoco> modulesIncChoco, ListeContrainteChoco parent)
+    public ContrainteChocoPeriodeExclusion(Model model, ConstraintPriority<Period> contrainte, List<ModuleDecomposeChoco> modulesIncChoco, ListeContrainteChoco parent)
     {
         super(model, contrainte, modulesIncChoco, parent);
 
@@ -24,13 +24,13 @@ public class ContrainteChocoPeriodeExclusion extends ItemContrainteChoco<Period>
     }
 
     @Override
-    public Boolean isAlternateSearch(ModuleChoco module)
+    public Boolean isAlternateSearch(ModuleDecomposeChoco module)
     {
         return getIsAlternateSearch() ? debut.compareTo(module.getFin().getValue()) >= 0 && fin.compareTo(module.getDebut().getValue()) <= 0 : getIsAlternateSearch();
     }
 
     @Override
-    public Constraint createConstraint(ModuleChoco module)
+    public Constraint createConstraint(ModuleDecomposeChoco module)
     {
 
         return model.and(

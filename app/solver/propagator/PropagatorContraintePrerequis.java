@@ -4,20 +4,20 @@ import org.chocosolver.solver.constraints.Propagator;
 import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.util.ESat;
-import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.ModuleDecomposeChoco;
 
 import java.util.OptionalInt;
 
 public class PropagatorContraintePrerequis extends Propagator<IntVar>
 {
 
-    private ModuleChoco module;
+    private ModuleDecomposeChoco module;
     private Boolean alternatif    = false;
     private Boolean noPossibility = false;
     OptionalInt finDateMinPrerequis;
     OptionalInt finDateMinFacultatif;
 
-    public PropagatorContraintePrerequis(ModuleChoco module)
+    public PropagatorContraintePrerequis(ModuleDecomposeChoco module)
     {
         super(module.getDebut());
 
@@ -61,11 +61,11 @@ public class PropagatorContraintePrerequis extends Propagator<IntVar>
 
         if (!alternatif)
         {
-            /*for (ModuleChoco moduleRequis: module.getModuleRequis() ) {
+            /*for (ModuleDecomposeChoco moduleRequis: module.getModuleRequis() ) {
                 moduleRequis.getEnd().updateUpperBound(getVar(0).getValue(), this);
             }
 
-            for (ModuleChoco moduleFacultatif: module.getModuleRequis() ) {
+            for (ModuleDecomposeChoco moduleFacultatif: module.getModuleRequis() ) {
                 moduleFacultatif.getEnd().updateUpperBound(getVar(0).getValue(), this);
             }*/
 

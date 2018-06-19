@@ -4,19 +4,19 @@ import models.input.ConstraintPriority;
 import models.input.TrainingFrequency;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
-import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.ModuleDecomposeChoco;
 
 import java.util.List;
 
 public class ContrainteChocoPeriodeFormation extends ContrainteChoco<TrainingFrequency>  {
 
 
-    public ContrainteChocoPeriodeFormation(Model model, ConstraintPriority<TrainingFrequency> contrainteMaxSemaineFormation, List<ModuleChoco> modulesInChoco) {
+    public ContrainteChocoPeriodeFormation(Model model, ConstraintPriority<TrainingFrequency> contrainteMaxSemaineFormation, List<ModuleDecomposeChoco> modulesInChoco) {
         super(model, contrainteMaxSemaineFormation, modulesInChoco);
     }
 
     @Override
-    public Constraint createConstraint(ModuleChoco module) {
+    public Constraint createConstraint(ModuleDecomposeChoco module) {
         return model.and( getModulesInChoco().stream().filter(m -> m != module).map( m ->
                     model.or(
                             model.arithm(

@@ -3,7 +3,7 @@ package solver.contraintes;
 import models.input.ConstraintPriority;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
-import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.ModuleDecomposeChoco;
 import solver.propagator.PropagatorContrainteLieu;
 
 import java.util.*;
@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 public class ContrainteChocoLieu extends ContrainteChoco<Integer>
 {
 
-    private List<Integer>                              lieuxPossible = new ArrayList<>();
-    private Map<ModuleChoco, PropagatorContrainteLieu> propagators   = new HashMap<>();
+    private List<Integer>                                       lieuxPossible = new ArrayList<>();
+    private Map<ModuleDecomposeChoco, PropagatorContrainteLieu> propagators   = new HashMap<>();
 
-    public ContrainteChocoLieu(Model model, ConstraintPriority<Integer> lieu, List<ModuleChoco> modulesInChoco)
+    public ContrainteChocoLieu(Model model, ConstraintPriority<Integer> lieu, List<ModuleDecomposeChoco> modulesInChoco)
     {
         super(model, lieu, modulesInChoco);
         Map<Integer, Long> lieuxPossibleGroupe = modulesInChoco.stream()
@@ -46,7 +46,7 @@ public class ContrainteChocoLieu extends ContrainteChoco<Integer>
     }
 
     @Override
-    public Constraint createConstraint(ModuleChoco module)
+    public Constraint createConstraint(ModuleDecomposeChoco module)
     {
         PropagatorContrainteLieu prop       = new PropagatorContrainteLieu(module.getLieu(), getContraintePriority().getValue(), lieuxPossible);
         Constraint constraint = new Constraint("Lieu " + module.getIdModule(), prop);
@@ -64,19 +64,19 @@ public class ContrainteChocoLieu extends ContrainteChoco<Integer>
     }
 
     @Override
-    public void enableAlternateSearch(ModuleChoco module)
+    public void enableAlternateSearch(ModuleDecomposeChoco module)
     {
         propagators.get(module).searchAternatif((true));
     }
 
     @Override
-    public void disableAlternateSearch(ModuleChoco module)
+    public void disableAlternateSearch(ModuleDecomposeChoco module)
     {
         propagators.get(module).searchAternatif((false));
     }
 
     @Override
-    public Boolean isAlternateSearch(ModuleChoco module)
+    public Boolean isAlternateSearch(ModuleDecomposeChoco module)
     {
         return propagators.get(module).isAternatifSearch();
     }

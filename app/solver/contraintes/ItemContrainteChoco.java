@@ -1,9 +1,8 @@
 package solver.contraintes;
 
 import models.input.ConstraintPriority;
-import models.output.ConstraintRespected;
 import org.chocosolver.solver.Model;
-import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.ModuleDecomposeChoco;
 
 import java.util.List;
 import java.util.Locale;
@@ -14,7 +13,7 @@ public abstract class ItemContrainteChoco<T> extends ContrainteChoco<T> {
     private ListeContrainteChoco parent;
     private Boolean isAlternateSearch = false;
 
-    public ItemContrainteChoco(Model model, ConstraintPriority<T> contrainte, List<ModuleChoco> modulesInChoco, ListeContrainteChoco parent) {
+    public ItemContrainteChoco(Model model, ConstraintPriority<T> contrainte, List<ModuleDecomposeChoco> modulesInChoco, ListeContrainteChoco parent) {
         super(model, contrainte, modulesInChoco);
         this.parent = parent;
     }
@@ -25,14 +24,14 @@ public abstract class ItemContrainteChoco<T> extends ContrainteChoco<T> {
     }
 
     @Override
-    public void enableAlternateSearch(ModuleChoco module) {
+    public void enableAlternateSearch(ModuleDecomposeChoco module) {
         getParent().unPost(this);
         isAlternateSearch = true;
 
     }
 
     @Override
-    public void disableAlternateSearch(ModuleChoco module) {
+    public void disableAlternateSearch(ModuleDecomposeChoco module) {
         getParent().post(this);
         isAlternateSearch = false;
 
@@ -44,5 +43,5 @@ public abstract class ItemContrainteChoco<T> extends ContrainteChoco<T> {
     }
 
     @Override
-    public abstract Boolean isAlternateSearch(ModuleChoco module);
+    public abstract Boolean isAlternateSearch(ModuleDecomposeChoco module);
 }

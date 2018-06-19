@@ -6,6 +6,7 @@ import models.input.Classes;
 import models.output.ClassesCalendar;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.constraints.extension.Tuples;
 import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
@@ -14,12 +15,15 @@ import org.chocosolver.solver.variables.IntVar;
 import solver.contraintes.ContrainteManager;
 import solver.modelChoco.CoursChoco;
 import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.ModuleDecomposeChoco;
 import utils.DateTimeHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static net.sf.ehcache.search.aggregator.Aggregators.count;
 
 public class ChocoSolver {
 
@@ -28,6 +32,7 @@ public class ChocoSolver {
     private Model model;
     private Set<ChocoSolverListener> listeners = new HashSet<>();
     List<ModuleChoco> moduleInChoco;
+    List<ModuleDecomposeChoco> moduleDecomposeChocos;
 
 
     public ChocoSolver(Problem problem) {
@@ -63,6 +68,9 @@ public class ChocoSolver {
         moduleInChoco = problem.getModuleOfTraining().stream().filter(m -> m.getListClasses().size() > 0).map(m -> new ModuleChoco(m, model)).collect(Collectors.toList());
         moduleInChoco.forEach(m -> m.setModule(moduleInChoco));
         nbModules = moduleInChoco.size();
+
+        moduleDecomposeChocos = moduleInChoco.stream().flatMap(m -> m.getModuleDecompose().stream()).collect(Collectors.toList());
+        Integer nbModulesDecompose = moduleDecomposeChocos.size();
 
         //Traitement des contraintes
 
@@ -103,7 +111,7 @@ public class ChocoSolver {
         // pour chaque module 'i'
 
         // Création des contraintes
-        IntVar[][] table = new IntVar[nbModules][];
+        IntVar[][] table = new IntVar[nbModulesDecompose][];
 
         // Liste blanche des cours
         Tuples tuple = new Tuples(coursListeBlanche, true);
@@ -121,26 +129,32 @@ public class ChocoSolver {
         }
 
 
-        for (int i = 0; i < nbModules; i++) {
+        for (int i = 0; i < nbModulesDecompose; i++)
+        {
 
             // La liste des cours à rechercher
+
             table[i] = new IntVar[]{
-                    moduleInChoco.get(i).getId(),
-                    moduleInChoco.get(i).getCoursId(),
-                    moduleInChoco.get(i).getDebut(),
-                    moduleInChoco.get(i).getFin(),
-                    moduleInChoco.get(i).getCoursIdentifier(),
-                    moduleInChoco.get(i).getLieu(),
-                    moduleInChoco.get(i).getDuration(),
-                    moduleInChoco.get(i).getNbHeure(),
-                    moduleInChoco.get(i).getNbSemaine()};
+                    moduleDecomposeChocos.get(i).getId(),
+                    moduleDecomposeChocos.get(i).getIdModuleDecomposeInChoco(),
+                    moduleDecomposeChocos.get(i).getCoursId(),
+                    moduleDecomposeChocos.get(i).getDebut(),
+                    moduleDecomposeChocos.get(i).getFin(),
+                    moduleDecomposeChocos.get(i).getCoursIdentifier(),
+                    moduleDecomposeChocos.get(i).getLieu(),
+                    moduleDecomposeChocos.get(i).getDuration(),
+                    moduleDecomposeChocos.get(i).getNbHeure(),
+                    moduleDecomposeChocos.get(i).getNbSemaine()};
             model.table(table[i], tuple).post();
 
             // Début et fin de la formation
-            moduleInChoco.get(i).getDebut().ge(debutFormation).post();
-            moduleInChoco.get(i).getFin().le(finFormation).post();
+            moduleDecomposeChocos.get(i).getDebut().ge(debutFormation).post();
+            moduleDecomposeChocos.get(i).getFin().le(finFormation).post();
 
+        }
 
+        for (int i = 0; i < nbModules; i++)
+        {
             //modulesLieu[i].eq(lieuxAutorise).post();
             // Pour chaque module qui n'a pas été traité
             // On ajoute une contrainte entre les modules,
@@ -148,9 +162,32 @@ public class ChocoSolver {
             // soit la fin du en cours est inférieur au début du suivant
             // Cette contraintes évite les chevauchements
             for (int j = i + 1; j < nbModules; j++) {
+
+                int finalJ = j;
+                int finalI = i;
                 model.or(
-                        model.arithm(moduleInChoco.get(i).getFin(), "<=", moduleInChoco.get(j).getDebut()),
-                        model.arithm(moduleInChoco.get(j).getFin(), "<=", moduleInChoco.get(i).getDebut())
+                        model.or(moduleInChoco.get(i)
+                                .getModuleDecompose()
+                                .stream()
+                                .map(m -> m.getFin())
+                                .map(
+                                        fin -> moduleInChoco.get(finalJ)
+                                                .getModuleDecompose()
+                                                .stream()
+                                                .map(
+                                                        m -> model.arithm( fin , "<=", m.getDebut()))).toArray(Constraint[]::new)
+                        ),
+                        model.or(moduleInChoco.get(j)
+                                 .getModuleDecompose()
+                                 .stream()
+                                 .map(m -> m.getFin())
+                                 .map(
+                                         fin -> moduleInChoco.get(finalI)
+                                                 .getModuleDecompose()
+                                                 .stream()
+                                                 .map(
+                                                         m -> model.arithm( fin , "<=", m.getDebut()))).toArray(Constraint[]::new)
+                        )
                 ).post();
             }
 
@@ -176,7 +213,7 @@ public class ChocoSolver {
             List<CoursChoco> lesCoursTrouve = new ArrayList<>();
             for (int i = 0; i < nbModules; i++) {
                 // La valeur dans le modulesID... correspond à la valeur sélectionné par Choco
-                CoursChoco coursTrouve = moduleInChoco.get(i).getCoursDuModule().get(moduleInChoco.get(i).getCoursId().getValue());
+                CoursChoco coursTrouve = moduleInChoco.get(i).getCours();
 
                 lesCoursTrouve.add(coursTrouve);
                 ClassesCalendar classesCalendar = new ClassesCalendar(coursTrouve, finalContrainteManager.getContraintes(moduleInChoco.get(i)));

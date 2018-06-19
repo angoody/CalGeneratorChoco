@@ -4,7 +4,7 @@ import models.input.ConstraintPriority;
 import models.input.StudentCompany;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
-import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.ModuleDecomposeChoco;
 import solver.modelChoco.PeriodeChoco;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class ContrainteChocoMaxStagiaire extends ContrainteChoco<StudentCompany>
 {
     private final List<PeriodeChoco> coursRefuse;
 
-    public ContrainteChocoMaxStagiaire(Model model, ConstraintPriority<StudentCompany> contrainteModel, List<ModuleChoco> modulesInChoco)
+    public ContrainteChocoMaxStagiaire(Model model, ConstraintPriority<StudentCompany> contrainteModel, List<ModuleDecomposeChoco> modulesInChoco)
     {
         super(model, contrainteModel, modulesInChoco);
 
@@ -29,7 +29,7 @@ public class ContrainteChocoMaxStagiaire extends ContrainteChoco<StudentCompany>
     }
 
     @Override
-    public Constraint createConstraint(ModuleChoco module)
+    public Constraint createConstraint(ModuleDecomposeChoco module)
     {
         return model.and(coursRefuse.stream()
                                  .map(c -> model.and(

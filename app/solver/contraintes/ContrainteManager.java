@@ -5,6 +5,7 @@ import models.input.Problem;
 import models.output.ConstraintRespected;
 import org.chocosolver.solver.Model;
 import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.ModuleDecomposeChoco;
 import solver.modelChoco.PeriodeChoco;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,15 +16,15 @@ public class ContrainteManager
 {
 
 
-    private int                   oldStart                  = 0;
-    private int                   oldNbModuleToFree         = 0;
-    private int                   oldNbConstraintToFree     = 0;
-    private Constraint            constraint                = null;
-    private Model                 model                     = null;
-    private List<ModuleChoco>     moduleInChoco             = new ArrayList<>();
-    private List<PeriodeChoco>    coursDesStagiairesRecquis = new ArrayList<>();
-    private List<PeriodeChoco>    coursRefuse               = new ArrayList<>();
-    private List<ContrainteChoco> contrainteParPriorite     = new ArrayList<>();
+    private int                        oldStart                  = 0;
+    private int                        oldNbModuleToFree         = 0;
+    private int                        oldNbConstraintToFree     = 0;
+    private Constraint                 constraint                = null;
+    private Model                      model                     = null;
+    private List<ModuleDecomposeChoco> moduleInChoco             = new ArrayList<>();
+    private List<PeriodeChoco>         coursDesStagiairesRecquis = new ArrayList<>();
+    private List<PeriodeChoco>         coursRefuse               = new ArrayList<>();
+    private List<ContrainteChoco>      contrainteParPriorite     = new ArrayList<>();
 
     private ContrainteChocoLieu                                   contrainteLieu              = null;
     private ContrainteChocoPrerequis                              contraintePrerequis         = null;

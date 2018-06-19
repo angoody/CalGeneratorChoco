@@ -4,7 +4,7 @@ import models.input.Constraint;
 import models.input.Problem;
 import models.output.ConstraintRespected;
 import org.chocosolver.solver.Model;
-import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.ModuleDecomposeChoco;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -16,13 +16,13 @@ public class ContrainteManagerV2
 {
 
 
-    private int                   oldStart              = 0;
-    private int                   oldNbModuleToFree     = 0;
-    private int                   oldNbConstraintToFree = 0;
-    private int                   maxCombinaison        = 0;
-    private Constraint            constraint            = null;
-    private List<ModuleChoco>     moduleInChoco         = new ArrayList<>();
-    private List<ContrainteChoco> contrainteParPriorite = new ArrayList<>();
+    private int                        oldStart              = 0;
+    private int                        oldNbModuleToFree     = 0;
+    private int                        oldNbConstraintToFree = 0;
+    private int                        maxCombinaison        = 0;
+    private Constraint                 constraint            = null;
+    private List<ModuleDecomposeChoco> moduleInChoco         = new ArrayList<>();
+    private List<ContrainteChoco>      contrainteParPriorite = new ArrayList<>();
 
 
     private ContrainteChocoLieu                                   contrainteLieu              = null;
@@ -33,7 +33,7 @@ public class ContrainteManagerV2
     private ContrainteChocoMaxStagiaire                           contrainteChocoMaxStagiaire = null;
 
 
-    public ContrainteManagerV2(Model model, Problem problem, List<ModuleChoco> moduleInChoco) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException
+    public ContrainteManagerV2(Model model, Problem problem, List<ModuleDecomposeChoco> moduleInChoco) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException
     {
 
         this.constraint = problem.getConstraints();
@@ -104,7 +104,7 @@ public class ContrainteManagerV2
 
     }
 
-    public List<ConstraintRespected> getContraintes(ModuleChoco module)
+    public List<ConstraintRespected> getContraintes(ModuleDecomposeChoco module)
     {
         return contrainteParPriorite.stream().map(c -> c.calculateRespectOfConstraint(module)).collect(Collectors.toList());
     }
@@ -146,17 +146,17 @@ public class ContrainteManagerV2
             moduleInChoco.stream().forEach(m -> contrainteParPriorite.get(finalI).disableAlternateSearch(m));
 
             // on ne désactive que les contraintes correspondant au nombre d'essai
-            for (ModuleChoco module : calculCombination(nbEssai % getMaxCombinaison()))
+            for (ModuleDecomposeChoco module : calculCombination(nbEssai % getMaxCombinaison()))
             {
                 contrainteParPriorite.get(i).enableAlternateSearch(module);
             }
         }
     }
 
-    private List<ModuleChoco> calculCombination(int nbEssai)
+    private List<ModuleDecomposeChoco> calculCombination(int nbEssai)
     {
 
-        List<ModuleChoco> modules = new ArrayList<>();
+        List<ModuleDecomposeChoco> modules = new ArrayList<>();
 
         if (nbEssai < moduleInChoco.size())
         {

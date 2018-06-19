@@ -13,11 +13,11 @@ public abstract class ContrainteChoco  <T> {
 
     protected static ResourceBundle language = ResourceBundle.getBundle("language", Locale.getDefault());
 
-    protected Map<ModuleChoco, Constraint> constraints  = new HashMap<>();
-    private   ConstraintRespected   constrainteRespected;
-    private   ConstraintPriority<T> contrainteModel;
-    private   List<ModuleChoco>     modulesInChoco;
-    protected Model                 model;
+    protected Map<ModuleChoco, Constraint> constraints = new HashMap<>();
+    private   ConstraintRespected        constrainteRespected;
+    private   ConstraintPriority<T>      contrainteModel;
+    private   List<ModuleChoco> modulesInChoco;
+    protected Model                      model;
 
     public ContrainteChoco(Model model, ConstraintPriority<T> contrainteModel, List<ModuleChoco> modulesInChoco)
     {

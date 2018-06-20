@@ -1,10 +1,10 @@
 package solver;
 
-import models.output.Calendar;
-import models.output.ClassesCalendar;
+import models.Calendrier;
+import models.Cours;
 
 public interface ChocoSolverListener {
-    public void foundCours(ClassesCalendar cours);
-    public void foundCalendar(Calendar calendar);
+    public void foundCours(Cours cours);
+    public void foundCalendar(Calendrier calendrier);
     public void finish();
 }

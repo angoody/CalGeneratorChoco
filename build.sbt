@@ -12,8 +12,8 @@ libraryDependencies ++= Seq(
   javaJdbc ,
   cache ,
   javaWs,
-  "org.choco-solver" % "choco-solver" % "4.0.6" withSources() withJavadoc())
+  "org.choco-solver" % "choco-solver" % "4.0.6")
 
-unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/Test" )
+unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )  
 
       

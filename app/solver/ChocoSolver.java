@@ -10,10 +10,12 @@ import org.chocosolver.solver.constraints.extension.Tuples;
 import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
+import org.chocosolver.solver.search.strategy.strategy.IntStrategy;
 import org.chocosolver.solver.variables.IntVar;
 import solver.contraintes.ContrainteManager;
 import solver.modelChoco.CoursChoco;
 import solver.modelChoco.ModuleChoco;
+import solver.modelChoco.PeriodeChoco;
 import utils.DateTimeHelper;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,6 +30,7 @@ public class ChocoSolver {
     private Model model;
     private Set<ChocoSolverListener> listeners = new HashSet<>();
     List<ModuleChoco> moduleInChoco;
+    private List<ModuleChoco> moduleInChocoDistinct;
 
 
     public ChocoSolver(Problem problem) {
@@ -60,7 +63,11 @@ public class ChocoSolver {
 
         // Création des modèles de données des modules pour Choco
         // Transforme les modules en objet préparé pour Choco
-        moduleInChoco = problem.getModuleOfTraining().stream().filter(m -> m.getListClasses().size() > 0).map(m -> new ModuleChoco(m, model)).collect(Collectors.toList());
+        moduleInChoco = problem.getModuleOfTraining().stream().filter(m -> m.getListClasses().size() > 0)
+                .flatMap(
+                        m -> IntStream.range(0, (m.getNbHourOfModule() / m.getListClasses().stream().mapToInt(c -> c.getWorkingDayDuration()).min().getAsInt()))
+                                .mapToObj(i -> new ModuleChoco(m, model))).collect(Collectors.toList());
+        moduleInChocoDistinct = moduleInChoco.stream().distinct().collect(Collectors.toList());
         moduleInChoco.forEach(m -> m.setModule(moduleInChoco));
         nbModules = moduleInChoco.size();
 
@@ -121,24 +128,24 @@ public class ChocoSolver {
         }
 
 
-        for (int i = 0; i < nbModules; i++) {
+        for (int i = 0; i < moduleInChocoDistinct.size(); i++) {
 
             // La liste des cours à rechercher
             table[i] = new IntVar[]{
-                    moduleInChoco.get(i).getId(),
-                    moduleInChoco.get(i).getCoursId(),
-                    moduleInChoco.get(i).getDebut(),
-                    moduleInChoco.get(i).getFin(),
-                    moduleInChoco.get(i).getCoursIdentifier(),
-                    moduleInChoco.get(i).getLieu(),
-                    moduleInChoco.get(i).getDuration(),
-                    moduleInChoco.get(i).getNbHeure(),
-                    moduleInChoco.get(i).getNbSemaine()};
+                    moduleInChocoDistinct.get(i).getId(),
+                    moduleInChocoDistinct.get(i).getCoursId(),
+                    moduleInChocoDistinct.get(i).getDebut(),
+                    moduleInChocoDistinct.get(i).getFin(),
+                    moduleInChocoDistinct.get(i).getCoursIdentifier(),
+                    moduleInChocoDistinct.get(i).getLieu(),
+                    moduleInChocoDistinct.get(i).getDuration(),
+                    moduleInChocoDistinct.get(i).getNbHeure(),
+                    moduleInChocoDistinct.get(i).getNbSemaine()};
             model.table(table[i], tuple).post();
 
             // Début et fin de la formation
-            moduleInChoco.get(i).getDebut().ge(debutFormation).post();
-            moduleInChoco.get(i).getFin().le(finFormation).post();
+            moduleInChocoDistinct.get(i).getDebut().ge(debutFormation).post();
+            moduleInChocoDistinct.get(i).getFin().le(finFormation).post();
 
 
             //modulesLieu[i].eq(lieuxAutorise).post();
@@ -149,14 +156,14 @@ public class ChocoSolver {
             // Cette contraintes évite les chevauchements
             for (int j = i + 1; j < nbModules; j++) {
                 model.or(
-                        model.arithm(moduleInChoco.get(i).getFin(), "<=", moduleInChoco.get(j).getDebut()),
-                        model.arithm(moduleInChoco.get(j).getFin(), "<=", moduleInChoco.get(i).getDebut())
+                        model.arithm(moduleInChocoDistinct.get(i).getFin(), "<=", moduleInChocoDistinct.get(j).getDebut()),
+                        model.arithm(moduleInChocoDistinct.get(j).getFin(), "<=", moduleInChocoDistinct.get(i).getDebut())
                 ).post();
             }
-
-
         }
 
+        moduleInChocoDistinct.forEach(m -> model.sum(moduleInChoco.stream().filter(m2 -> m2.getModule().getIdModule() == m.getModule().getIdModule())
+                .map(m2 -> m2.getModulesWorkingDayDuration()).toArray(IntVar[]::new), "=", m.getModule().getNbHourOfModule()).post());
 
         // Permet de ressortir la solution, non nécessaire pour le moment
         // Solution solution = new Solution(model);
@@ -177,12 +184,13 @@ public class ChocoSolver {
             for (int i = 0; i < nbModules; i++) {
                 // La valeur dans le modulesID... correspond à la valeur sélectionné par Choco
                 CoursChoco coursTrouve = moduleInChoco.get(i).getCoursDuModule().get(moduleInChoco.get(i).getCoursId().getValue());
+                if (coursTrouve.getWorkingDuration() > 0) {
+                    lesCoursTrouve.add(coursTrouve);
+                    ClassesCalendar classesCalendar = new ClassesCalendar(coursTrouve, finalContrainteManager.getContraintes(moduleInChoco.get(i)));
+                    calendarTrouve.addCours(classesCalendar);
 
-                lesCoursTrouve.add(coursTrouve);
-                ClassesCalendar classesCalendar = new ClassesCalendar(coursTrouve, finalContrainteManager.getContraintes(moduleInChoco.get(i)));
-                calendarTrouve.addCours(classesCalendar);
-
-                listeners.forEach(l -> l.foundCours(classesCalendar));
+                    listeners.forEach(l -> l.foundCours(classesCalendar));
+                }
             }
 
             // tri des cours par date de début
@@ -200,7 +208,7 @@ public class ChocoSolver {
         });
 
         // Si aucune solution n'est trouvée, permet de savoir pourquoi
-        //solver.showContradiction();
+        solver.showContradiction();
 
         // Lorsqu'une solution est trouvé, permet de comprendre le cheminement
         //solver.showDecisions();

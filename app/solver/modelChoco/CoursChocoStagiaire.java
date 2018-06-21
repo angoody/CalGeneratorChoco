@@ -2,13 +2,13 @@ package solver.modelChoco;
 
 import models.input.Classes;
 
-public class CoursChocoStagiaire
-{
+public class CoursChocoStagiaire {
 
     private final Classes      classes;
     private final PeriodeChoco periode ;
     private final int          coursIdentifier;
-    private final int          duration;
+    private       int          duration;
+    private       int          workingDuration;
     private final int          lieu;
     private       int          idCours;
 
@@ -19,6 +19,7 @@ public class CoursChocoStagiaire
 
         this.coursIdentifier = (periode.getDebut() + periode.getFin()) / 2;
         this.duration = classes.getRealDuration();
+        this.workingDuration = classes.getWorkingDayDuration();
         this.lieu = classes.getIdPlace();
     }
 
@@ -36,6 +37,11 @@ public class CoursChocoStagiaire
 
     public int getDuration() {
         return duration;
+    }
+
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public int getLieu() {
@@ -57,4 +63,14 @@ public class CoursChocoStagiaire
     public int[] getInt() {
         return new int[] { idCours, periode.getDebut(), periode.getFin(), coursIdentifier, lieu, duration};
     }
+
+    public int getWorkingDuration()
+    {
+        return workingDuration;
+    }
+
+    protected void setWorkingDayDuration(Integer duration) {
+        this.workingDuration = duration;
+    }
+
 }

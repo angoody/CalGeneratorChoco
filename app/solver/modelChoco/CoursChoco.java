@@ -13,6 +13,14 @@ public class CoursChoco extends CoursChocoStagiaire
         this.moduleChoco = moduleChoco;
     }
 
+    public CoursChoco(Classes classes, ModuleChoco moduleChoco, Integer duration)
+    {
+        super(classes);
+        this.moduleChoco = moduleChoco;
+        setWorkingDayDuration(duration);
+    }
+
+
     public int getIdModule()
     {
         return moduleChoco.getIdModule();

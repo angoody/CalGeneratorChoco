@@ -23,6 +23,7 @@ public class ModuleChoco {
     private IntVar id;
     private IntVar coursId;
     private IntVar modulesDuration;
+    private IntVar modulesWorkingDayDuration;
     private IntVar nbSemaine;
     private IntVar nbHeure;
     private List<ModuleChoco> moduleRequis = new ArrayList<>();
@@ -36,7 +37,15 @@ public class ModuleChoco {
         List<Classes> lesCours = module.getListClasses().stream()
                 .sorted(Comparator.comparing(o -> DateTimeHelper.toDays(o.getPeriod().getStart()))).collect(Collectors.toList());
 
+        Integer dureeMax = lesCours.stream().mapToInt(c -> c.getWorkingDayDuration()).max().getAsInt();
+
+        if (dureeMax > module.getNbHourOfModule())
+        {
+            module.setNbHourOfModule(dureeMax);
+        }
+
         coursDuModule = lesCours.stream().map(c -> new CoursChoco(c, this) ).collect(Collectors.toList());
+        coursDuModule.addAll( lesCours.stream().map(c -> new CoursChoco(c, this, 0) ).collect(Collectors.toList()));
         IntStream.range(0, coursDuModule.size()).forEach(i -> coursDuModule.get(i).setIdCours(i));
 
         debut = model.intVar("Debut " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getDebut()).toArray());
@@ -47,6 +56,8 @@ public class ModuleChoco {
         coursId = model.intVar("ID module " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getIdCours()).toArray());
 
         modulesDuration = model.intVar("Duration " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getDuration()).toArray());
+
+        modulesWorkingDayDuration =  model.intVar("Working day Duration " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getWorkingDuration()).toArray());
 
         nbSemaine = model.intVar("Nb Semaine " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getNbSemaine()).toArray());
 
@@ -106,5 +117,9 @@ public class ModuleChoco {
 
     public List<ModuleChoco> getModuleFacultatif() {
         return moduleFacultatif;
+    }
+
+    public IntVar getModulesWorkingDayDuration() {
+        return modulesWorkingDayDuration;
     }
 }

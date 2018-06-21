@@ -58,7 +58,9 @@ public class Classes
 
     public Integer getWorkingDayDuration()
     {
-        return DateTimeHelper.toHourBetweenDateWithoutHolydays(period);
+        Integer workingHour = DateTimeHelper.toHourBetweenDateWithoutHolydays(period);
+
+        return workingHour > realDuration ? realDuration : workingHour;
     }
 
     public void setRealDuration(Integer realDuration)

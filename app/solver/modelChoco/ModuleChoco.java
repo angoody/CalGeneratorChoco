@@ -3,6 +3,7 @@ package solver.modelChoco;
 import models.input.Classes;
 import models.input.Module;
 import org.chocosolver.solver.Model;
+import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.IntVar;
 import utils.DateTimeHelper;
 
@@ -14,6 +15,9 @@ import java.util.stream.IntStream;
 
 public class ModuleChoco {
 
+    private final Model model;
+    private final IntVar occurenceVar;
+    private final int occurence;
     private Module module;
     private List<CoursChoco> coursDuModule;
     private IntVar debut;
@@ -29,39 +33,43 @@ public class ModuleChoco {
     private List<ModuleChoco> moduleRequis = new ArrayList<>();
     private List<ModuleChoco> moduleFacultatif = new ArrayList<>();
 
-    public ModuleChoco(Module module, Model model) {
+    public ModuleChoco(Module module, Model model, int occurence) {
 
         // Initialisation des variables
         this.module = module;
-
+        this.model = model;
+        this.occurence = occurence;
         List<Classes> lesCours = module.getListClasses().stream()
                 .sorted(Comparator.comparing(o -> DateTimeHelper.toDays(o.getPeriod().getStart()))).collect(Collectors.toList());
 
-        Integer dureeMax = lesCours.stream().mapToInt(c -> c.getWorkingDayDuration()).max().getAsInt();
-
-        if (dureeMax > module.getNbHourOfModule())
-        {
-            module.setNbHourOfModule(dureeMax);
-        }
+        module.setNbHourOfModule(lesCours.stream().mapToInt(c -> c.getRealDuration()).max().getAsInt());
 
         coursDuModule = lesCours.stream().map(c -> new CoursChoco(c, this) ).collect(Collectors.toList());
         coursDuModule.addAll( lesCours.stream().map(c -> new CoursChoco(c, this, 0) ).collect(Collectors.toList()));
         IntStream.range(0, coursDuModule.size()).forEach(i -> coursDuModule.get(i).setIdCours(i));
 
-        debut = model.intVar("Debut " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getDebut()).toArray());
-        fin = model.intVar("Fin " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getFin()).toArray());
-        lieux = model.intVar("Lieu " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getLieu()).toArray());
-        coursIdentifier = model.intVar("Module " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getCoursIdentifier()).toArray());
-        id = model.intVar("ID module " + getIdModule(), getIdModule());
-        coursId = model.intVar("ID module " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getIdCours()).toArray());
+        debut = model.intVar("Debut " + getIdModule() + " occurence " + occurence, coursDuModule.stream().mapToInt(c -> c.getDebut()).toArray());
+        fin = model.intVar("Fin " + getIdModule() + " occurence " + occurence, coursDuModule.stream().mapToInt(c -> c.getFin()).toArray());
+        lieux = model.intVar("Lieu " + getIdModule() + " occurence " + occurence, coursDuModule.stream().mapToInt(c -> c.getLieu()).toArray());
+        coursIdentifier = model.intVar("Module " + getIdModule() + " occurence " + occurence, coursDuModule.stream().mapToInt(c -> c.getCoursIdentifier()).toArray());
+        id = model.intVar("ID module " + getIdModule() + " occurence " + occurence, getIdModule());
+        coursId = model.intVar("ID cours " + getIdModule() + " occurence " + occurence, coursDuModule.stream().mapToInt(c -> c.getIdCours()).toArray());
+        occurenceVar = model.intVar("Occurence cours " + getIdModule() + " occurence " + occurence, occurence);
 
-        modulesDuration = model.intVar("Duration " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getDuration()).toArray());
+        modulesDuration = model.intVar("Duration " + getIdModule() + " occurence " + occurence, coursDuModule.stream().mapToInt(c -> c.getDuration()).toArray());
 
-        modulesWorkingDayDuration =  model.intVar("Working day Duration " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getWorkingDuration()).toArray());
+        modulesWorkingDayDuration =  model.intVar("Working day Duration " + getIdModule() + " occurence " + occurence, coursDuModule.stream().mapToInt(c -> c.getWorkingDuration()).toArray());
 
-        nbSemaine = model.intVar("Nb Semaine " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getNbSemaine()).toArray());
+        nbSemaine = model.intVar("Nb Semaine " + getIdModule() + " occurence " + occurence, coursDuModule.stream().mapToInt(c -> c.getNbSemaine()).toArray());
 
-        nbHeure = model.intVar("Nb Heure " + getIdModule(), coursDuModule.stream().mapToInt(c -> c.getNbHeure()).toArray());
+        nbHeure = model.intVar("Nb Heure " + getIdModule() + " occurence " + occurence, coursDuModule.stream().mapToInt(c -> c.getNbHeure()).toArray());
+    }
+
+    public void addConstraint(Constraint contrainte)
+    {
+        model.ifThen(
+                model.arithm(getModulesWorkingDayDuration(), "!=", 0),
+                contrainte);
     }
 
     public Integer getIdModule() { return module.getIdModule();}
@@ -121,5 +129,15 @@ public class ModuleChoco {
 
     public IntVar getModulesWorkingDayDuration() {
         return modulesWorkingDayDuration;
+    }
+
+    public IntVar getOccurenceVar()
+    {
+        return occurenceVar;
+    }
+
+    public int getOccurence()
+    {
+        return occurence;
     }
 }

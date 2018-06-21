@@ -47,6 +47,8 @@ public class Test
         List<Calendar> calendars = solver.solve(5);
 
         compare(calendars);
+
+
         return calendars;
 
     }
@@ -65,6 +67,11 @@ public class Test
             autresCalendars.stream().filter(cal -> cal.getCours().containsAll(calendar.getCours())).forEach(c -> System.out.println("Doublon trouvé"));
 
         }
+    }
+
+    public static void calendarToCsv(List<Calendar> calendars)
+    {
+
     }
 
 

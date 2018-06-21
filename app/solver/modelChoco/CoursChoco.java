@@ -45,6 +45,6 @@ public class CoursChoco extends CoursChocoStagiaire
     @Override
     public int[] getInt()
     {
-        return new int[]{getIdModule(), getIdCours(), getDebut(), getFin(), getCoursIdentifier(), getLieu(), getDuration(), getNbHeure(), getNbSemaine()};
+        return new int[]{getIdModule(), getModuleChoco().getOccurence(), getIdCours(), getDebut(), getFin(), getCoursIdentifier(), getLieu(), getWorkingDuration(), getDuration(), getNbHeure(), getNbSemaine()};
     }
 }

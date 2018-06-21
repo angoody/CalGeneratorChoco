@@ -82,6 +82,13 @@ public class DateTimeHelper {
         return cal;
     }
 
+    public static Calendar toCalendar(int days)
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(toDate(toInstant(days)));
+        return cal;
+    }
+
     public static Integer toHourBetweenDateWithoutHolydays(Period period)
     {
         return toHourBetweenDateWithoutHolydays(toInstant(period.getStart()), toInstant(period.getEnd()));
@@ -94,7 +101,7 @@ public class DateTimeHelper {
 
         Calendar startDate = toCalendar(start);
         startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        return (getWorkingDaysBetweenTwoDates(startDate, endDate)+1) * 7;
+        return (getWorkingDaysBetweenTwoDates(startDate, endDate)) * 7;
     }
 
     public static int getWorkingDaysBetweenTwoDates(Calendar startCal, Calendar endCal) {
@@ -114,7 +121,7 @@ public class DateTimeHelper {
             }
         } while (startCal.getTimeInMillis() < endCal.getTimeInMillis()); //excluding end date
 
-        return workDays;
+        return workDays+1;
     }
 
 }

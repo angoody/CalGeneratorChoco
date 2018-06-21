@@ -69,10 +69,7 @@ public class Test
         }
     }
 
-    public static void calendarToCsv(List<Calendar> calendars)
-    {
 
-    }
 
 
     public static Problem initProblem()

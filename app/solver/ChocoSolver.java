@@ -213,21 +213,32 @@ public class ChocoSolver {
 
 
         // Permet de s'assurer que les solutions sont différentes les unes des autres
-        Map<IntVar, Integer> map = IntStream
+        /*Map<IntVar, ModuleChoco> map = IntStream
                 .range(0, nbModules)
                 .boxed()
-                .collect(Collectors.toMap(i -> moduleInChoco.get(i).getCoursIdentifier(), i -> moduleInChoco.get(i).getCoursIdentifier().getValue()));
+                .collect(Collectors.toMap(i -> moduleInChoco.get(i).getId(), i -> moduleInChoco.get(i)));
 
         IntVar[] coursIdentifier = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getCoursIdentifier()).toArray(IntVar[]::new);
-        IntVar moduleIdentifier = model.intVar("modules Id", moduleInChoco.stream().mapToInt(m -> m.getIdModule()).toArray());
+        IntVar[] moduleIdentifier = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getId()).toArray(IntVar[]::new);
         IntVar[] occurenceIdentifier = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getOccurenceVar()).toArray(IntVar[]::new);
         IntVar[] lieux = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getLieu()).toArray(IntVar[]::new);
 
 
-        solver.setSearch(Search.conflictOrderingSearch(Search.defaultSearch(model)));
+
+        Set<CoursChoco> cours = new HashSet<>();
+        //solver.setSearch(Search.conflictOrderingSearch(Search.defaultSearch(model)));
 
 
-        if (problem.getConstraints().getPlace().getValue() != -1) {
+        /*solver.setSearch(Search.intVarSearch(
+                variables -> Arrays.stream(moduleIdentifier).filter(v -> v.isInstantiated())
+                       .findFirst().orElse(null),
+                var -> var.getValue(),
+
+                moduleIdentifier
+
+        ));*/
+
+        /*if (problem.getConstraints().getPlace().getValue() != -1) {
             solver.setSearch(Search.intVarSearch(
                     variables -> Arrays.stream(lieux)
                             .filter(v -> !v.isInstantiated())
@@ -238,7 +249,7 @@ public class ChocoSolver {
                     DecisionOperatorFactory.makeIntEq(),
                     coursIdentifier
             ));
-        }
+        }*/
 
 
         //model.setObjective(Model.MAXIMIZE, moduleIdentifier);
@@ -257,7 +268,50 @@ public class ChocoSolver {
         int nbConstraintToFree = 1;
         while ((calendriersTrouve.size() < nbCalendrier) & (nbEssai < contrainteManager.maxAlternateSearch())) {
 
-            List<Solution> allSolutions = solver.findAllSolutions(stop);
+
+
+            if ( solver.solve() ) {
+                Calendar calendarTrouve = new Calendar();
+                List<CoursChoco> lesCoursTrouve = new ArrayList<>();
+                for (int i = 0; i < nbModules; i++) {
+
+                    // La valeur dans le modulesID... correspond à la valeur sélectionné par Choco
+                    if (moduleInChoco.get(i).getModulesWorkingDayDuration().getValue() > 0) {
+                        CoursChoco coursTrouve = moduleInChoco.get(i).getCoursDuModule().get(moduleInChoco.get(i).getCoursId().getValue());
+                        lesCoursTrouve.add(coursTrouve);
+                        ClassesCalendar classesCalendar = new ClassesCalendar(coursTrouve, finalContrainteManager.getContraintes(moduleInChoco.get(i)));
+                        calendarTrouve.addCours(classesCalendar);
+
+                        listeners.forEach(l -> l.foundCours(classesCalendar));
+                    }
+                }
+
+                // tri des cours par date de début
+                Collections.sort(lesCoursTrouve, Comparator.comparing(o -> o.getDebut()));
+                Collections.sort(calendarTrouve.getCours(), Comparator.comparing(o -> DateTimeHelper.toInstant(o.getStart())));
+                //.sort(Comparator.comparing(o -> lesCoursTrouve.indexOf(lesCoursTrouve.stream().filter( c -> c.getIdClasses().contentEquals(o.getIdClasses())))));
+
+                calendarTrouve.setConstraint(finalContrainteManager.getContraintes());
+
+                if (compare(calendriersTrouve, calendarTrouve) == false) {
+                    calendriersTrouve.add(calendarTrouve);
+
+                    listeners.forEach(l -> l.foundCalendar(calendarTrouve));
+                }
+                else
+                {
+                    System.out.println("Doublon trouvé essai " + nbEssai);
+                }
+
+            }
+            else
+            {
+                contrainteManager.alternateSearch(nbEssai);
+                solver.reset();
+            }
+            nbEssai++;
+
+            /*List<Solution> allSolutions = solver.findAllSolutions(stop);
             if ( allSolutions.size() > 0) {
                 for (Solution solution:allSolutions) {
                     Calendar calendarTrouve = new Calendar();
@@ -299,7 +353,7 @@ public class ChocoSolver {
                 contrainteManager.alternateSearch(nbEssai);
                 solver.reset();
             }
-            nbEssai++;
+            nbEssai++;*/
         }
         System.out.println("Essai " + nbEssai);
         return calendriersTrouve;

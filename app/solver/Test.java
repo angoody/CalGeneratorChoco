@@ -4,11 +4,14 @@ import models.input.*;
 import models.output.Calendar;
 import models.output.ClassesCalendar;
 import scala.reflect.internal.util.Origins;
+import solver.modelChoco.CoursChoco;
 import solver.modelChoco.PeriodeChoco;
 import utils.DateTimeHelper;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class Test
@@ -29,15 +32,28 @@ public class Test
             @Override
             public void foundCalendar(Calendar calendar)
             {
+                for (ClassesCalendar classe:calendar.getCours()) {
+                    Module module = problem.getModuleOfTraining().stream().filter(m -> m.getIdModule() == classe.getIdModule()).findFirst().get();
+                    Classes c = module.getListClasses().stream().filter(m -> m.getIdClasses().contentEquals(classe.getIdClasses())).findFirst().get();
 
-                //calendar.getListClasses().forEach(c -> afficheCours(c));
-
+                    System.out.printf("Classes d'id %s du Module d'id %s > %s à %d le %s au %s (%d/%d)\n",
+                            c.getIdClasses(),
+                            module.getIdModule(),
+                            String.join(",", module.getListIdModulePrerequisite().stream()
+                                    .map(m -> String.valueOf(m))
+                                    .collect(Collectors.toList())),
+                            c.getIdPlace(),
+                            c.getPeriod().getStart(),
+                            c.getPeriod().getEnd(),
+                            DateTimeHelper.toHourBetweenDateWithoutHolydays(c.getPeriod()),
+                            module.getNbHourOfModule());
+                }
             }
 
             @Override
             public void foundCours(ClassesCalendar cours)
             {
-                //System.out.println(cours.getPeriod().getStart()+ " " + cours.getPeriod().getEnd() + " " + cours.getIdClasses());
+
             }
 
             @Override
@@ -54,6 +70,12 @@ public class Test
 
 
         return calendars;
+
+    }
+
+
+    private void afficheCours(CoursChoco c) {
+
 
     }
 
@@ -310,7 +332,8 @@ public class Test
         {
             List<Calendar> autresCalendars = new ArrayList<>(calendars);
             autresCalendars.remove(calendar);
-            autresCalendars.stream().filter(cal -> cal.getCours().containsAll(calendar.getCours())).forEach(c -> System.out.println("Doublon trouvé"));
+            List<String> stringStreamCalendar = calendar.getCours().stream().map(c2 -> c2.getIdClasses()).collect(Collectors.toList());
+            autresCalendars.stream().filter(cal -> cal.getCours().stream().map(c -> c.getIdClasses()).allMatch(classe -> stringStreamCalendar.contains(classe))).forEach(c -> System.out.println("Doublon trouvé"));
 
         }
     }

@@ -9,6 +9,7 @@ import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.extension.Tuples;
 import org.chocosolver.solver.objective.ObjectiveStrategy;
+import org.chocosolver.solver.objective.ParetoOptimizer;
 import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
@@ -76,6 +77,7 @@ public class ChocoSolver {
         moduleInChocoDistinct = moduleInChoco.stream().distinct().collect(Collectors.toList());
         moduleInChoco.forEach(m -> m.setModule(moduleInChoco));
         nbModules = moduleInChoco.size();
+
 
         //Traitement des contraintes
 
@@ -213,30 +215,19 @@ public class ChocoSolver {
 
 
         // Permet de s'assurer que les solutions sont différentes les unes des autres
-        /*Map<IntVar, ModuleChoco> map = IntStream
-                .range(0, nbModules)
-                .boxed()
-                .collect(Collectors.toMap(i -> moduleInChoco.get(i).getId(), i -> moduleInChoco.get(i)));
 
         IntVar[] coursIdentifier = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getCoursIdentifier()).toArray(IntVar[]::new);
         IntVar[] moduleIdentifier = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getId()).toArray(IntVar[]::new);
+        //IntVar[][] coursParModules = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getId()).toArray(IntVar[]::new);
         IntVar[] occurenceIdentifier = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getOccurenceVar()).toArray(IntVar[]::new);
         IntVar[] lieux = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getLieu()).toArray(IntVar[]::new);
 
+        ParetoOptimizer po = new ParetoOptimizer(Model.MINIMIZE, coursIdentifier);
 
+        solver.plugMonitor(po);
 
-        Set<CoursChoco> cours = new HashSet<>();
-        //solver.setSearch(Search.conflictOrderingSearch(Search.defaultSearch(model)));
+        //solver.setSearch(Search.intVarSearch(moduleIdentifier));
 
-
-        /*solver.setSearch(Search.intVarSearch(
-                variables -> Arrays.stream(moduleIdentifier).filter(v -> v.isInstantiated())
-                       .findFirst().orElse(null),
-                var -> var.getValue(),
-
-                moduleIdentifier
-
-        ));*/
 
         /*if (problem.getConstraints().getPlace().getValue() != -1) {
             solver.setSearch(Search.intVarSearch(
@@ -269,10 +260,11 @@ public class ChocoSolver {
         while ((calendriersTrouve.size() < nbCalendrier) & (nbEssai < contrainteManager.maxAlternateSearch())) {
 
 
-
+            // Si une solution est trouvée
             if ( solver.solve() ) {
                 Calendar calendarTrouve = new Calendar();
                 List<CoursChoco> lesCoursTrouve = new ArrayList<>();
+                // Pour chaque module on retrouve le cours associé dans cette solution
                 for (int i = 0; i < nbModules; i++) {
 
                     // La valeur dans le modulesID... correspond à la valeur sélectionné par Choco
@@ -295,6 +287,20 @@ public class ChocoSolver {
 
                 if (compare(calendriersTrouve, calendarTrouve) == false) {
                     calendriersTrouve.add(calendarTrouve);
+                    // Lors de l'utilisation de modules scindés, pour ne pas avoir les mêmes résultats sur les différents modules portant le même id
+                    // Ajout de contrainte pour que les prochains résultats ne retourne pas les mêmes modules
+                    // Toujours sur le modules le moins fort
+                    moduleInChoco.stream().filter(
+                            // récupère les modules multiple
+                            m -> moduleInChoco.stream()
+                                    .filter(m2 -> m.getIdModule()==m2.getIdModule())
+                                    .count() > 1)
+                            // par module multiple
+                            .filter(m -> m.getModulesWorkingDayDuration().getValue() > 0)
+                            .min(Comparator.comparingInt(v -> v.getModulesWorkingDayDuration().getValue()))
+                            .map( m -> moduleInChoco.stream().filter(m3 -> m3.getIdModule() == m.getIdModule())
+                                    .map(m3 -> model.arithm(m3.getCoursId(), "!=", m.getCoursId().getValue())))
+                            .get().forEach(c -> c.post());
 
                     listeners.forEach(l -> l.foundCalendar(calendarTrouve));
                 }
@@ -384,15 +390,5 @@ public class ChocoSolver {
 
     }
 
-    private static int closest(IntVar var, Map<IntVar, Integer> map) {
-        int target = map.get(var);
-        if (var.contains(target)) {
-            return target;
-        } else {
-            int p = var.previousValue(target);
-            int n = var.nextValue(target);
-            return Math.abs(target - p) < Math.abs(n - target) ? p : n;
-        }
-    }
 
 }

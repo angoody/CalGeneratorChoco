@@ -5,24 +5,18 @@ import models.output.Calendar;
 import models.input.Classes;
 import models.output.ClassesCalendar;
 import org.chocosolver.solver.Model;
-import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.constraints.extension.Tuples;
-import org.chocosolver.solver.objective.ObjectiveStrategy;
+import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.objective.ParetoOptimizer;
 import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
-import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
-import org.chocosolver.solver.search.strategy.selectors.values.IntValueSelector;
-import org.chocosolver.solver.search.strategy.selectors.variables.VariableSelector;
-import org.chocosolver.solver.search.strategy.strategy.ConflictOrderingSearch;
-import org.chocosolver.solver.search.strategy.strategy.IntStrategy;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.util.criteria.Criterion;
 import solver.contraintes.ContrainteManager;
 import solver.modelChoco.CoursChoco;
 import solver.modelChoco.ModuleChoco;
-import solver.modelChoco.PeriodeChoco;
 import utils.DateTimeHelper;
 
 import java.lang.reflect.InvocationTargetException;
@@ -200,7 +194,7 @@ public class ChocoSolver {
         });
 
         // Si aucune solution n'est trouvée, permet de savoir pourquoi
-        solver.showContradiction();
+        //solver.showContradiction();
 
         // Lorsqu'une solution est trouvé, permet de comprendre le cheminement
         //solver.showDecisions();
@@ -222,11 +216,11 @@ public class ChocoSolver {
         IntVar[] occurenceIdentifier = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getOccurenceVar()).toArray(IntVar[]::new);
         IntVar[] lieux = IntStream.range(0, nbModules).mapToObj(i -> moduleInChoco.get(i).getLieu()).toArray(IntVar[]::new);
 
-        ParetoOptimizer po = new ParetoOptimizer(Model.MINIMIZE, coursIdentifier);
+        ParetoOptimizer po = new ParetoOptimizer(Model.MAXIMIZE, coursIdentifier);
 
         solver.plugMonitor(po);
 
-        //solver.setSearch(Search.intVarSearch(moduleIdentifier));
+        solver.setSearch(Search.conflictOrderingSearch(Search.defaultSearch(model)));
 
 
         /*if (problem.getConstraints().getPlace().getValue() != -1) {
@@ -290,24 +284,26 @@ public class ChocoSolver {
                     // Lors de l'utilisation de modules scindés, pour ne pas avoir les mêmes résultats sur les différents modules portant le même id
                     // Ajout de contrainte pour que les prochains résultats ne retourne pas les mêmes modules
                     // Toujours sur le modules le moins fort
-                    moduleInChoco.stream().filter(
-                            // récupère les modules multiple
-                            m -> moduleInChoco.stream()
-                                    .filter(m2 -> m.getIdModule()==m2.getIdModule())
-                                    .count() > 1)
-                            // par module multiple
+
+                    List<org.chocosolver.solver.constraints.Constraint> contraintes = new ArrayList<>();
+                    moduleInChoco.stream()
                             .filter(m -> m.getModulesWorkingDayDuration().getValue() > 0)
-                            .min(Comparator.comparingInt(v -> v.getModulesWorkingDayDuration().getValue()))
-                            .map( m -> moduleInChoco.stream().filter(m3 -> m3.getIdModule() == m.getIdModule())
-                                    .map(m3 -> model.arithm(m3.getCoursId(), "!=", m.getCoursId().getValue())))
-                            .get().forEach(c -> c.post());
+                            .forEach( module ->
+                                    moduleInChoco
+                                            .stream()
+                                            .filter(m -> m.getIdModule() == module.getIdModule())
+                                            .forEach(m -> contraintes.add(model.arithm(m.getCoursId(), "!=", module.getCoursId().getValue()))));
+                    //  solver.reset();
+                    model.post(model.or(contraintes.stream().toArray(Constraint[]::new)));
 
                     listeners.forEach(l -> l.foundCalendar(calendarTrouve));
                 }
                 else
                 {
                     System.out.println("Doublon trouvé essai " + nbEssai);
+
                 }
+
 
             }
             else

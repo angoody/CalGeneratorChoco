@@ -1,10 +1,16 @@
 package utils;
 
+import models.input.Period;
+
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class DateTimeHelper {
 
@@ -63,4 +69,59 @@ public class DateTimeHelper {
         long currentTime=(long) days*MAGIC;
         return Instant.ofEpochMilli(currentTime);
     }
+
+    public static Date toDate(Instant instant)
+    {
+        return Date.from(instant);
+    }
+
+    public static Calendar toCalendar(Instant instant)
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(toDate(instant));
+        return cal;
+    }
+
+    public static Calendar toCalendar(int days)
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(toDate(toInstant(days)));
+        return cal;
+    }
+
+    public static Integer toHourBetweenDateWithoutHolydays(Period period)
+    {
+        return toHourBetweenDateWithoutHolydays(toInstant(period.getStart()), toInstant(period.getEnd()));
+    }
+
+    public static Integer toHourBetweenDateWithoutHolydays(Instant start, Instant end)
+    {
+        Calendar endDate = toCalendar(end);
+        endDate.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+
+        Calendar startDate = toCalendar(start);
+        startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        return (getWorkingDaysBetweenTwoDates(startDate, endDate)) * 7;
+    }
+
+    public static int getWorkingDaysBetweenTwoDates(Calendar startCal, Calendar endCal) {
+
+        int workDays = 0;
+
+        //Return 0 if start and end are the same
+        if (startCal.getTimeInMillis() == endCal.getTimeInMillis()) {
+            return 0;
+        }
+
+        do {
+            //excluding start date
+            startCal.add(Calendar.DAY_OF_MONTH, 1);
+            if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                ++workDays;
+            }
+        } while (startCal.getTimeInMillis() < endCal.getTimeInMillis()); //excluding end date
+
+        return workDays+1;
+    }
+
 }

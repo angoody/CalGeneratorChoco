@@ -1,5 +1,7 @@
 package models.input;
 
+import utils.DateTimeHelper;
+
 public class Classes
 {
     private String  idClasses;
@@ -52,6 +54,13 @@ public class Classes
     public Integer getRealDuration()
     {
         return realDuration;
+    }
+
+    public Integer getWorkingDayDuration()
+    {
+        Integer workingHour = DateTimeHelper.toHourBetweenDateWithoutHolydays(period);
+
+        return workingHour > realDuration ? realDuration : workingHour;
     }
 
     public void setRealDuration(Integer realDuration)

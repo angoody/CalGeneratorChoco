@@ -3,6 +3,8 @@ package solver;
 import models.input.*;
 import models.output.Calendar;
 import models.output.ClassesCalendar;
+import scala.reflect.internal.util.Origins;
+import solver.modelChoco.PeriodeChoco;
 import utils.DateTimeHelper;
 
 import java.util.*;
@@ -46,9 +48,255 @@ public class Test
         });
         List<Calendar> calendars = solver.solve(5);
 
+        List<Classes> classes = problem.getModuleOfTraining().stream().flatMap(m -> m.getListClasses().stream()).collect(Collectors.toList());
+        calendarToCsv(classes, calendars, problem.getPeriodOfTraining());
         compare(calendars);
+
+
         return calendars;
 
+    }
+
+    public static void calendarToCsv( List<Classes> classes, List<Calendar> calendars, Period period)
+    {
+
+        Map<Integer, String> modules = new HashMap<>();
+        Map<Integer, String> lieux = new HashMap<>();
+
+        modules.put(	20	,"	Le langage de requête SQL	");
+        modules.put(	21	,"	Procédures stockées avec PL-SQL	");
+        modules.put(	33	,"	Stage Développeur Logiciel	");
+        modules.put(	34	,"	Utilisation de frameworks pour le développement avec Java EE	");
+        modules.put(	36	,"	Conduite de projet	");
+        modules.put(	44	,"	Base des réseaux	");
+        modules.put(	45	,"	Utilisation et administration d'un système Windows Client	");
+        modules.put(	51	,"	ITIL, gestion de parc et centre de support	");
+        modules.put(	53	,"	TP services réseaux hétérogènes	");
+        modules.put(	54	,"	Messagerie	");
+        modules.put(	56	,"	TP et évaluations finales	");
+        modules.put(	57	,"	Stage Informaticien Micro	");
+        modules.put(	93	,"	Stage Administrateur Système et Réseau	");
+        modules.put(	192	,"	Assistance bureautique	");
+        modules.put(	269	,"	Utilisation et administration d'un système Linux	");
+        modules.put(	270	,"	Services Réseaux Linux	");
+        modules.put(	301	,"	Développement avec Java SE	");
+        modules.put(	302	,"	Développement Web côté serveur avec Java EE	");
+        modules.put(	304	,"	Stage CDI	");
+        modules.put(	317	,"	Supervision avec Nagios	");
+        modules.put(	344	,"	Services réseaux Windows	");
+        modules.put(	345	,"	Déploiement des postes de travail sur un réseau d'entreprise	");
+        modules.put(	346	,"	Administration d'un serveur applicatif	");
+        modules.put(	347	,"	Virtualisation et clients légers	");
+        modules.put(	421	,"	Bilan final	");
+        modules.put(	477	,"	Supervision avec NAGIOS	");
+        modules.put(	478	,"	Initiation aux réseaux en environnement CISCO (CCNA-1V5)	");
+        modules.put(	497	,"	Immersion en entreprise	");
+        modules.put(	506	,"	Utilisation des environnements Windows et GNU/Linux	");
+        modules.put(	509	,"	Administration des systèmes informatiques	");
+        modules.put(	513	,"	Virtualisation de serveurs : gestion et exploitation	");
+        modules.put(	515	,"	Gestion de projet	");
+        modules.put(	517	,"	Scripting et PowerShell	");
+        modules.put(	519	,"	Téléphonie IP et Messagerie	");
+        modules.put(	523	,"	Routage et commutation avancés en environnement CISCO (CCNA 2 et 3 V5)	");
+        modules.put(	525	,"	Stage Systèmes et Réseaux	");
+        modules.put(	527	,"	Utilisation et administration d'une base de données	");
+        modules.put(	529	,"	Administration des systèmes informatiques : niveau avancé	");
+        modules.put(	531	,"	Services réseaux et sécurité	");
+        modules.put(	533	,"	Virtualisation de serveurs : conception et architecture	");
+        modules.put(	536	,"	Serveurs WEB et serveurs d'applications	");
+        modules.put(	541	,"	Développement Web côté client	");
+        modules.put(	544	,"	Développement Web côté serveur avec PHP et Symfony	");
+        modules.put(	552	,"	Analyse et conception	");
+        modules.put(	553	,"	Projet analyse et conception	");
+        modules.put(	560	,"	Développement Web côté serveur avec ASP.Net	");
+        modules.put(	566	,"	Technologie multi plateforme (Cross-platform)	");
+        modules.put(	576	,"	Immersion en entreprise	");
+        modules.put(	625	,"	Projet systèmes et réseaux - 1	");
+        modules.put(	648	,"	Algorithme et initiation à la programmation	");
+        modules.put(	649	,"	SQL et initiation NoSQL	");
+        modules.put(	650	,"	Programmation orientée objet avec Java	");
+        modules.put(	655	,"	AngularJS	");
+        modules.put(	692	,"	Algorithme et initiation programmation	");
+        modules.put(	698	,"	Initiation à la programmation orientée objet et au langage SQL	");
+        modules.put(	699	,"	Préparation à la certification CFTL/ISTQB niveau Fondation	");
+        modules.put(	702	,"	Quality Center	");
+        modules.put(	706	,"	TestLink : mise en oeuvre d'un gestionnaire de tests Open Source	");
+        modules.put(	708	,"	Programmation orientée objet avec Java	");
+        modules.put(	712	,"	Développement avec Java SE	");
+        modules.put(	713	,"	Développement Web côté client (HTML-CSS-Javascript)	");
+        modules.put(	714	,"	Développement Web avec Java EE	");
+        modules.put(	715	,"	Cas pratique	");
+        modules.put(	720	,"	TP système client	");
+        modules.put(	721	,"	Services Réseaux	");
+        modules.put(	722	,"	Services Réseaux (mise en  situation professionnelle)	");
+        modules.put(	723	,"	Algorithme	");
+        modules.put(	724	,"	Initiation à la programmation procédurale avec Java	");
+        modules.put(	725	,"	Développement en couches avec Java	");
+        modules.put(	727	,"	Projet 2 - Développement d'une application web 	");
+        modules.put(	728	,"	Développement d'une application mobile avec Android	");
+        modules.put(	729	,"	Projet 3 - Développement d'une application mobile	");
+        modules.put(	730	,"	Projet 1 - Développement d'une application client-serveur	");
+        modules.put(	731	,"	Administration d'un serveur Apache sous Linux	");
+        modules.put(	733	,"	Bilan final	");
+        modules.put(	734	,"	Analyse et conception	");
+        modules.put(	735	,"	Base des réseaux	");
+        modules.put(	736	,"	Assistance bureautique	");
+        modules.put(	737	,"	Utilisation et administration d'un système Windows Client	");
+        modules.put(	738	,"	Utilisation d'un système Linux	");
+        modules.put(	739	,"	Services réseaux Windows	");
+        modules.put(	740	,"	Virtualisation et clients légers	");
+        modules.put(	741	,"	Messagerie	");
+        modules.put(	742	,"	Gestion de parc	");
+        modules.put(	743	,"	Modélisation et conception UML	");
+        modules.put(	744	,"	Linux/Unix : utilisation en mode commande	");
+        modules.put(	745	,"	Préparation à la certification ISTQB -  niveau Fondation	");
+        modules.put(	746	,"	Développement avec Java	");
+        modules.put(	747	,"	Immersion en entreprise	");
+        modules.put(	749	,"	Théorie des réseaux locaux	");
+        modules.put(	750	,"	Cas pratique	");
+        modules.put(	751	,"	Hibernate/JPA	");
+        modules.put(	752	,"	Selenium : automatiser les tests fonctionnels des applications Web	");
+        modules.put(	754	,"	Développement web côté client	");
+        modules.put(	755	,"	Développement Javascript	");
+        modules.put(	756	,"	Le langage PHP	");
+        modules.put(	757	,"	Développement avec le framework Symfony	");
+        modules.put(	758	,"	Integration web	");
+        modules.put(	759	,"	Mise en oeuvre d'un CMS	");
+        modules.put(	760	,"	Projet : développement d'une application web	");
+        modules.put(	761	,"	Conduite de projet	");
+        modules.put(	762	,"	Analyse des besoins	");
+        modules.put(	763	,"	Analyse et conception	");
+        modules.put(	764	,"	CLOUD 	");
+        modules.put(	765	,"	Organisation d'une DSI	");
+        modules.put(	766	,"	CCNA Sécurité	");
+        modules.put(	767	,"	Entretien mémoire & mise en commun projet	");
+        modules.put(	768	,"	Qualité	");
+        modules.put(	769	,"	Soutenance intermédiaire & mise en commun projet	");
+        modules.put(	770	,"	Ethical Hacking	");
+        modules.put(	771	,"	Sécurité du Système d'Information	");
+        modules.put(	772	,"	ITIL	");
+        modules.put(	773	,"	Business Intelligence	");
+        modules.put(	774	,"	Présentation du projet d'études	");
+        modules.put(	775	,"	Conduite de projet	");
+        modules.put(	776	,"	Initiation aux réseaux	");
+        modules.put(	777	,"	Analyse des besoins	");
+        modules.put(	778	,"	Qualité	");
+        modules.put(	779	,"	Soutenance intermédiaire & mise en commun projet	");
+        modules.put(	780	,"	Urbanisation d'un système d'information	");
+        modules.put(	782	,"	Agilité en gestion de projet 	");
+        modules.put(	783	,"	Simulations d'entretiens	");
+        modules.put(	784	,"	Entretien mémoire & mise en commun projet	");
+        modules.put(	785	,"	ITIL & organisation d'une DSI	");
+        modules.put(	786	,"	Administration d'une base de données SQL Server	");
+        modules.put(	787	,"	Business Intelligence	");
+        modules.put(	788	,"	Objets connectés - Marketing	");
+        modules.put(	789	,"	Présentation du projet d'études	");
+        modules.put(	790	,"	Présentation des métiers du numérique	");
+        modules.put(	791	,"	Métiers \"Etudes et développement\"	");
+        modules.put(	792	,"	Métiers \"Support et infrastructure\"	");
+        modules.put(	793	,"	Autres métiers du numérique	");
+        modules.put(	796	,"	UML	");
+        modules.put(	797	,"	Rentrée	");
+        modules.put(	798	,"	Programmation orientée objet avec Java	");
+        modules.put(	799	,"	Projet 1 - Développement d'une application client-serveur	");
+        modules.put(	800	,"	Mobilité européenne	");
+        modules.put(	801	,"	Bilan - synthèse	");
+        modules.put(	802	,"	Développement Web côté serveur avec PHP	");
+        modules.put(	803	,"	Développement Web côté serveur avec Symfony	");
+        modules.put(	804	,"	TP services réseaux hétérogènes	");
+        modules.put(	805	,"	CMAP	");
+        modules.put(	807	,"	Savoir être	");
+        modules.put(	811	,"	Evaluations (2ème chance)	");
+        modules.put(	812	,"	Bilan final	");
+        modules.put(	813	,"	Rappels POO & SQL 	");
+        modules.put(	814	,"	Développement d'une application objet avec C#	");
+        modules.put(	815	,"	Développement web côté serveur avec ASP	");
+        modules.put(	817	,"	Bilan final	");
+        modules.put(	818	,"	Base des réseaux	");
+        modules.put(	819	,"	Assistance bureautique	");
+        modules.put(	820	,"	Utilisation et administration d’un système Windows client 	");
+        modules.put(	821	,"	Utilisation et administration d’un système linux	");
+        modules.put(	822	,"	Travaux pratiques - Système client	");
+        modules.put(	823	,"	Services réseaux Windows	");
+        modules.put(	824	,"	ITIL, gestion de parc et centre de support	");
+        modules.put(	825	,"	Déploiement à partir de Microsoft Windows Server - Savoir-être & recherche d'emploi	");
+        modules.put(	826	,"	Stage en entreprise	");
+        modules.put(	827	,"	Services réseaux Linux	");
+        modules.put(	828	,"	Travaux pratiques - Administration d’un réseau Windows serveur et Linux 	");
+        modules.put(	829	,"	Serveur applicatif	");
+        modules.put(	830	,"	Virtualisation et clients légers	");
+        modules.put(	831	,"	Messagerie	");
+        modules.put(	832	,"	Supervision	");
+        modules.put(	833	,"	Projet final et evaluations	");
+        modules.put(	834	,"	Session d'examen	");
+        modules.put(	835	,"	SQL	");
+        modules.put(	836	,"	Révision et passage de certification	");
+        modules.put(	837	,"	Services Réseaux	");
+        modules.put(	843	,"	Rappels sur la programmation en Java	");
+        modules.put(	844	,"	CFTL Fondation	");
+        modules.put(	845	,"	Semaine AGIR	");
+
+        lieux.put(	1	,"	NANTES	");
+        lieux.put(	2	,"	RENNES	");
+        lieux.put(	3	,"	ST NAZAIRE	");
+        lieux.put(	4	,"	ENI SERVICE	");
+        lieux.put(	5	,"	NIORT	");
+        lieux.put(	6	,"	AUTRE	");
+        lieux.put(	7	,"	SALLE EDITIONS	");
+        lieux.put(	8	,"	QUIMPER	");
+        lieux.put(	9	,"	HUB CREATIC	");
+        lieux.put(	10	,"	LA ROCHE SUR YON	");
+        lieux.put(	11	,"	ANGERS	");
+        lieux.put(	12	,"	LE MANS	");
+        lieux.put(	13	,"	EUPTOYOU	");
+
+
+        List<String> line = new ArrayList<>();
+        PeriodeChoco periode = new PeriodeChoco(period);
+        line.add("Du;Au");
+        for (Calendar calendar:calendars)
+        {
+            line.set(0, line.get(0)+ ";Module;Lieu");
+
+
+        }
+        for (int i = periode.getDebut(); i <= periode.getFin(); i+=7)
+        {
+            java.util.Calendar debut = DateTimeHelper.toCalendar(i);
+            debut.set(java.util.Calendar.DAY_OF_WEEK, java.util.Calendar.MONDAY);
+            java.util.Calendar fin = DateTimeHelper.toCalendar(i);
+            fin.set(java.util.Calendar.DAY_OF_WEEK, java.util.Calendar.FRIDAY);
+            java.util.Calendar milieu = DateTimeHelper.toCalendar(i);
+            milieu.set(java.util.Calendar.DAY_OF_WEEK, java.util.Calendar.WEDNESDAY);
+            String OneLine = DateTimeHelper.toString(debut.toInstant(), "dd/MM/yyyy")+ ";" + DateTimeHelper.toString(fin.toInstant(), "dd/MM/yyyy");
+            for (Calendar calendar:calendars)
+            {
+                String moduleLine = "";
+                for (ClassesCalendar classe :calendar.getCours())
+                {
+                    if ((milieu.toInstant().isAfter(DateTimeHelper.toInstant(classe.getStart()))
+                            && milieu.toInstant().isBefore(DateTimeHelper.toInstant(classe.getEnd())))
+                            ||
+                        (debut.toInstant().isBefore(DateTimeHelper.toInstant(classe.getStart()))
+                         && fin.toInstant().isAfter(DateTimeHelper.toInstant(classe.getEnd()))))
+                    {
+                        moduleLine += ";" + modules.get(classe.getIdModule()) + ";" + lieux.get(classes.stream().filter(c -> c.getIdClasses().contentEquals(classe.getIdClasses())).mapToInt(m -> m.getIdPlace()).min().getAsInt());
+                    }
+
+                }
+                if (moduleLine.contentEquals(""))
+                {
+                    moduleLine = ";;";
+                }
+                OneLine += moduleLine;
+            }
+            line.add(OneLine);
+        }
+
+        for (String l:line)
+        {
+            System.out.println(l);
+        }
     }
 
     public static Problem getInput()
@@ -66,6 +314,8 @@ public class Test
 
         }
     }
+
+
 
 
     public static Problem initProblem()

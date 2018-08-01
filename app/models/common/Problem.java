@@ -1,24 +1,21 @@
-package models.input;
+package models.common;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class Problem implements Serializable
+public class Problem
 {
-    private Period  periodOfTraining;
-    private Integer numberOfCalendarToFound = 5;
-    private Constraint   constraints = new Constraint();
-    private List<Module> moduleOfTraining;
 
+    private Period periodOfTraining;
+    private Constraint constraints = new Constraint();
+    private List<Module> moduleOfTraining;
 
     public Problem()
     {
     }
 
-    public Problem(Period periodOfTraining, Integer numberOfCalendarToFound, Constraint constraints, List<Module> moduleOfTraining)
+    public Problem(Period periodOfTraining, Constraint constraints, List<Module> moduleOfTraining)
     {
         this.periodOfTraining = periodOfTraining;
-        this.numberOfCalendarToFound = numberOfCalendarToFound;
         this.moduleOfTraining = moduleOfTraining;
         this.constraints = constraints;
     }
@@ -53,13 +50,5 @@ public class Problem implements Serializable
         this.constraints = constraints;
     }
 
-    public Integer getNumberOfCalendarToFound()
-    {
-        return numberOfCalendarToFound;
-    }
 
-    public void setNumberOfCalendarToFound(Integer numberOfCalendarToFound)
-    {
-        this.numberOfCalendarToFound = numberOfCalendarToFound;
-    }
 }

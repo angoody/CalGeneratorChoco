@@ -1,4 +1,4 @@
-package models.input;
+package models.common;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ public class Constraint implements Serializable
     private List<ConstraintPriority<Period>>      listPeriodeOfTrainingExclusion = new ArrayList<>();
     private List<ConstraintPriority<Period>>      listPeriodeOfTrainingInclusion = new ArrayList<>();
     private ConstraintPriority<Boolean>           constraintPrerequisite         = new ConstraintPriority<Boolean>(-1, true);
+    private ConstraintPriority<Boolean>           constraintModuleDuration       = new ConstraintPriority<Boolean>(-1, true);
 
 
     public Constraint()
@@ -56,7 +57,6 @@ public class Constraint implements Serializable
         this.annualNumberOfHour = annualNumberOfHour;
     }
 
-
     public ConstraintPriority<Integer> getMaxDurationOfTraining()
     {
         return maxDurationOfTraining;
@@ -67,7 +67,6 @@ public class Constraint implements Serializable
         this.maxDurationOfTraining = maxDurationOfTraining;
     }
 
-
     public ConstraintPriority<TrainingFrequency> getTrainingFrequency()
     {
         return trainingFrequency;
@@ -77,7 +76,6 @@ public class Constraint implements Serializable
     {
         this.trainingFrequency = trainingFrequency;
     }
-
 
     public List<ConstraintPriority<Student>> getListStudentRequired()
     {
@@ -122,5 +120,15 @@ public class Constraint implements Serializable
     public void setMaxStudentInTraining(ConstraintPriority<StudentCompany> maxStudentInTraining)
     {
         this.maxStudentInTraining = maxStudentInTraining;
+    }
+
+    public ConstraintPriority<Boolean> getModuleDuration()
+    {
+        return constraintModuleDuration;
+    }
+
+    public void setModuleDuration(ConstraintPriority<Boolean> constraintModuleDuration)
+    {
+        this.constraintModuleDuration = constraintModuleDuration;
     }
 }

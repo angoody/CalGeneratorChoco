@@ -10,16 +10,33 @@ Ce projet expose une API REST permettant la génération d'un calendar par contr
 
 | Méthode | Route | Paramètre | Retour | Exemple | 
 |---------|-------|-----------|------- |---------|
-| Get | /solve | Objet Problem | Renvoi les calendars répondant au problème | 1 |
+| Get | /solve | Objet Generator | Renvoi une liste de Calendar et la liste des contraintes vérifiées et non vérifiées | 1 |
 
-### Objet problem (Objet d'entrée)
+### Verify
+
+| Méthode | Route | Paramètre | Retour | Exemple | 
+|---------|-------|-----------|------- |---------|
+| Get | /verify | Objet Verify | Renvoi l'objet Calendar et la liste des contraintes vérifiées et non vérifiées | 2 |
+
+
+### Objet Generator (Objet d'entrée)
 
 | Atribut | Type | Obligatoire | Valeur par défaut |
 |---------|------|-------------|-------------------|
 | periodOfTraining | Period  | Oui | Non |
 | numberOfCalendarToFound | Integer | Oui | Oui (5) |
 | constraints | Constraint | Non |  Oui (uniquement constraintPrerequisite) |
+| moduleOfTraining| List<Module> |  Oui | Non |
+
+
+### Objet Verify (Objet d'entrée)
+
+| Atribut | Type | Obligatoire | Valeur par défaut |
+|---------|------|-------------|-------------------|
+| periodOfTraining | Period  | Oui | Non |
+| constraints | Constraint | Non |  Oui (uniquement constraintPrerequisite) |
 | moduleOfTraining| List<Module> |  Oui | Non | 
+ 
 
 ### Objet Period
 
@@ -142,7 +159,7 @@ Ce type d'objet demande un entier priority qui a une valeur par défaut à -1 et
 |||"Nombre de stagiaire" stagiaires de la même entreprise|
 |||Stagiaires recquis|
 
-Exemple des paramètres en entrée :
+Exemple des paramètres en entrée pour /solve :
 
 ```json
 [
@@ -3156,3 +3173,466 @@ Exemple des paramètres en sortie :
 ]
 ```
 
+Exemple des paramètres en entrée pour /verify :
+
+```json
+[
+    {
+      "periodOfTraining": {
+        "start": "2017-01-02",
+        "end": "2019-11-24"
+      },
+      "constraints": {
+        "place": {
+          "priority": 7,
+          "value": 2
+        },
+        "annualNumberOfHour": {
+          "priority": -1,
+          "value": -1
+        },
+        "maxDurationOfTraining": {
+          "priority": -1,
+          "value": -1
+        },
+        "trainingFrequency": {
+          "priority": 8,
+          "value": {
+            "maxWeekInTraining": 3,
+            "minWeekInCompany": 3
+          }
+        },
+        "maxStudentInTraining": {
+          "priority": -1,
+          "value": {
+            "maxStudentInTraining": -1,
+            "listStudentCompany": []
+          }
+        },
+        "listStudentRequired": [],
+        "listPeriodeOfTrainingExclusion": [
+          {
+            "priority": 5,
+            "value": {
+              "start": "2018-05-21",
+              "end": "2018-05-27"
+            }
+          }
+        ],
+        "listPeriodeOfTrainingInclusion": [
+          {
+            "priority": 4,
+            "value": {
+              "start": "2018-04-02",
+              "end": "2018-04-06"
+            }
+          }
+        ],
+        "moduleDuration": {
+          "priority": -1,
+          "value": true
+        },
+        "prerequisModule": {
+          "priority": -1,
+          "value": true
+        }
+      },
+      "moduleOfTraining": [
+        {
+          "idModule": 708,
+          "nbWeekOfModule": 3,
+          "nbHourOfModule": 35,
+          "listIdModulePrerequisite": [],
+          "listIdModuleOptional": [],
+          "listClasses": [
+            {
+              "idClasses": "77D66D8A-DEFD-44F6-A158-65DD5A34400E",
+              "period": {
+                "start": "2017-12-11",
+                "end": "2017-12-15"
+              },
+              "realDuration": 35,
+              "workingDayDuration": 35,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 20,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 35,
+          "listIdModulePrerequisite": [],
+          "listIdModuleOptional": [],
+          "listClasses": [
+            {
+              "idClasses": "71E6F84D-928F-41AE-B456-4321A8848462",
+              "period": {
+                "start": "2018-01-22",
+                "end": "2018-01-26"
+              },
+              "realDuration": 35,
+              "workingDayDuration": 35,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 21,
+          "nbWeekOfModule": 2,
+          "nbHourOfModule": 35,
+          "listIdModulePrerequisite": [
+            20
+          ],
+          "listIdModuleOptional": [],
+          "listClasses": [
+            {
+              "idClasses": "C73EEC8A-481A-487A-A896-7E77C8A78F5D",
+              "period": {
+                "start": "2018-04-03",
+                "end": "2018-04-06"
+              },
+              "realDuration": 35,
+              "workingDayDuration": 35,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 725,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 70,
+          "listIdModulePrerequisite": [
+            708
+          ],
+          "listIdModuleOptional": [],
+          "listClasses": [
+            {
+              "idClasses": "85239D35-A51E-4430-8B4F-8B05E5159614",
+              "period": {
+                "start": "2018-04-09",
+                "end": "2018-04-20"
+              },
+              "realDuration": 70,
+              "workingDayDuration": 70,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 730,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 70,
+          "listIdModulePrerequisite": [
+            725
+          ],
+          "listIdModuleOptional": [],
+          "listClasses": [
+            {
+              "idClasses": "F679E790-176B-4E64-9EE4-7DDA8F7CDE57",
+              "period": {
+                "start": "2018-06-25",
+                "end": "2018-07-06"
+              },
+              "realDuration": 70,
+              "workingDayDuration": 70,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 541,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 35,
+          "listIdModulePrerequisite": [],
+          "listIdModuleOptional": [],
+          "listClasses": [
+            {
+              "idClasses": "219CC390-7A58-477F-83D8-75278977BC67",
+              "period": {
+                "start": "2018-05-28",
+                "end": "2018-06-01"
+              },
+              "realDuration": 35,
+              "workingDayDuration": 35,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 544,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 105,
+          "listIdModulePrerequisite": [],
+          "listIdModuleOptional": [
+            541
+          ],
+          "listClasses": [
+            {
+              "idClasses": "0B839480-E37D-48D8-BABB-55B61ED78431",
+              "period": {
+                "start": "2018-11-19",
+                "end": "2018-11-30"
+              },
+              "realDuration": 105,
+              "workingDayDuration": 70,
+              "idPlace": 2
+            },
+            {
+              "idClasses": "AB2AE0F6-793C-4DB9-9701-297506E39300",
+              "period": {
+                "start": "2018-10-15",
+                "end": "2018-10-19"
+              },
+              "realDuration": 105,
+              "workingDayDuration": 35,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 302,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 70,
+          "listIdModulePrerequisite": [
+            725
+          ],
+          "listIdModuleOptional": [
+            541
+          ],
+          "listClasses": [
+            {
+              "idClasses": "C2B13BEE-AF8C-4B01-9138-96472CED391C",
+              "period": {
+                "start": "2019-01-07",
+                "end": "2019-01-18"
+              },
+              "realDuration": 70,
+              "workingDayDuration": 70,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 727,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 105,
+          "listIdModulePrerequisite": [
+            302
+          ],
+          "listIdModuleOptional": [],
+          "listClasses": [
+            {
+              "idClasses": "16E23474-A904-4CEB-B0B4-C5EB9963698F",
+              "period": {
+                "start": "2019-02-18",
+                "end": "2019-03-08"
+              },
+              "realDuration": 105,
+              "workingDayDuration": 105,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 728,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 70,
+          "listIdModulePrerequisite": [
+            725
+          ],
+          "listIdModuleOptional": [
+            302
+          ],
+          "listClasses": [
+            {
+              "idClasses": "9E10FA5B-8D32-4844-A86F-E4BD5133D1BC",
+              "period": {
+                "start": "2019-08-26",
+                "end": "2019-09-06"
+              },
+              "realDuration": 70,
+              "workingDayDuration": 70,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 729,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 35,
+          "listIdModulePrerequisite": [
+            728
+          ],
+          "listIdModuleOptional": [],
+          "listClasses": [
+            {
+              "idClasses": "1A53B31D-5197-4855-99BE-744677A5D04B",
+              "period": {
+                "start": "2019-09-09",
+                "end": "2019-09-13"
+              },
+              "realDuration": 35,
+              "workingDayDuration": 35,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 34,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 70,
+          "listIdModulePrerequisite": [
+            302
+          ],
+          "listIdModuleOptional": [],
+          "listClasses": [
+            {
+              "idClasses": "079857A4-C961-4CA5-A3F9-0F7697F379D1",
+              "period": {
+                "start": "2019-04-08",
+                "end": "2019-04-19"
+              },
+              "realDuration": 70,
+              "workingDayDuration": 70,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 731,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 35,
+          "listIdModulePrerequisite": [],
+          "listIdModuleOptional": [
+            544
+          ],
+          "listClasses": [
+            {
+              "idClasses": "B68EA7BA-5871-4093-95C9-79B5CE0C6C71",
+              "period": {
+                "start": "2019-05-20",
+                "end": "2019-05-24"
+              },
+              "realDuration": 35,
+              "workingDayDuration": 35,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 36,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 35,
+          "listIdModulePrerequisite": [],
+          "listIdModuleOptional": [],
+          "listClasses": [
+            {
+              "idClasses": "01CF703D-66AD-413B-8940-46BF4684F885",
+              "period": {
+                "start": "2019-05-27",
+                "end": "2019-05-31"
+              },
+              "realDuration": 35,
+              "workingDayDuration": 35,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 560,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 105,
+          "listIdModulePrerequisite": [],
+          "listIdModuleOptional": [
+            541
+          ],
+          "listClasses": [
+            {
+              "idClasses": "4EBD9C3F-373D-468D-BE7C-0C54BB88410C",
+              "period": {
+                "start": "2019-07-01",
+                "end": "2019-07-19"
+              },
+              "realDuration": 105,
+              "workingDayDuration": 105,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 566,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 35,
+          "listIdModulePrerequisite": [
+            560
+          ],
+          "listIdModuleOptional": [
+            728
+          ],
+          "listClasses": [
+            {
+              "idClasses": "2AD6370A-5C01-49E7-9342-5EC4DF37783D",
+              "period": {
+                "start": "2019-10-21",
+                "end": "2019-10-25"
+              },
+              "realDuration": 35,
+              "workingDayDuration": 35,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 734,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 70,
+          "listIdModulePrerequisite": [
+            708,
+            725
+          ],
+          "listIdModuleOptional": [],
+          "listClasses": [
+            {
+              "idClasses": "F9509972-B829-47FC-80AD-1FDF4DB35936",
+              "period": {
+                "start": "2018-08-20",
+                "end": "2018-08-31"
+              },
+              "realDuration": 70,
+              "workingDayDuration": 70,
+              "idPlace": 2
+            }
+          ]
+        },
+        {
+          "idModule": 817,
+          "nbWeekOfModule": 1,
+          "nbHourOfModule": 14,
+          "listIdModulePrerequisite": [
+            20,
+            566,
+            728,
+            34,
+            729,
+            544,
+            232,
+            731
+          ],
+          "listIdModuleOptional": [],
+          "listClasses": [
+            {
+              "idClasses": "2DDD0DDF-FB7B-4C16-8C36-6C23B776FD86",
+              "period": {
+                "start": "2019-11-19",
+                "end": "2019-11-20"
+              },
+              "realDuration": 14,
+              "workingDayDuration": 14,
+              "idPlace": 2
+            }
+          ]
+        }
+      ]
+    }
+]
+```

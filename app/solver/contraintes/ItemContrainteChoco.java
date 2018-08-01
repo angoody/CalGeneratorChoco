@@ -1,7 +1,6 @@
 package solver.contraintes;
 
-import models.input.ConstraintPriority;
-import models.output.ConstraintRespected;
+import models.common.ConstraintPriority;
 import org.chocosolver.solver.Model;
 import solver.modelChoco.ModuleChoco;
 

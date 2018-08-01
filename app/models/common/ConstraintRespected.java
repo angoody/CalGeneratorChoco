@@ -1,6 +1,4 @@
-package models.output;
-
-import models.input.ConstraintPriority;
+package models.common;
 
 public class ConstraintRespected extends ConstraintPriority
 {

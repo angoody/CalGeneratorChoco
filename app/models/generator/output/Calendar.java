@@ -1,4 +1,7 @@
-package models.output;
+package models.generator.output;
+
+import models.common.ClassesCalendar;
+import models.common.ConstraintRespected;
 
 import java.io.Serializable;
 import java.util.ArrayList;

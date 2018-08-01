@@ -1,6 +1,6 @@
 package solver.modelChoco;
 
-import models.input.Period;
+import models.common.Period;
 import utils.DateTimeHelper;
 
 public class PeriodeChoco {

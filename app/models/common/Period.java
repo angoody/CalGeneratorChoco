@@ -1,4 +1,4 @@
-package models.input;
+package models.common;
 
 import utils.DateTimeHelper;
 
@@ -10,7 +10,7 @@ public class Period
     private String start;
     private String end;
 
-    // Utilisé uniquement pour le Test, n'est jamais appelé par le from json
+    // Utilisé uniquement pour le ChocoTest, n'est jamais appelé par le from json
     public Period()
     {
         this(DateTimeHelper.toString(Instant.now()), DateTimeHelper.toString(Instant.now()));

@@ -1,4 +1,4 @@
-package models.input;
+package models.common;
 
 import java.util.List;
 

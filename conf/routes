@@ -3,10 +3,13 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
-POST    /solve                      controllers.CalendrierController.solve
-GET     /test/output                controllers.CalendrierController.test
-GET     /test/input                 controllers.CalendrierController.inputExample
+GET         /                          controllers.Application.index
+POST        /solve                     controllers.CalendrierController.solve
+POST        /verify                    controllers.CalendrierController.verify
+GET         /test/solve/output         controllers.CalendrierController.outputGeneratorExample
+GET         /test/solve/input          controllers.CalendrierController.inputGeneratorExample
+GET         /test/verify/output        controllers.CalendrierController.outputVerifyExample
+GET         /test/verify/input         controllers.CalendrierController.inputVerifyExample
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET         /assets/*file              controllers.Assets.at(path="/public", file)

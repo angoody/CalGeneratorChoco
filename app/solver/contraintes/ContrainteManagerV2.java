@@ -1,8 +1,8 @@
 package solver.contraintes;
 
-import models.input.Constraint;
-import models.input.Problem;
-import models.output.ConstraintRespected;
+import models.common.Constraint;
+import models.generator.input.Generator;
+import models.common.ConstraintRespected;
 import org.chocosolver.solver.Model;
 import solver.modelChoco.ModuleChoco;
 
@@ -33,7 +33,7 @@ public class ContrainteManagerV2
     private ContrainteChocoMaxStagiaire                           contrainteChocoMaxStagiaire = null;
 
 
-    public ContrainteManagerV2(Model model, Problem problem, List<ModuleChoco> moduleInChoco) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException
+    public ContrainteManagerV2(Model model, Generator problem, List<ModuleChoco> moduleInChoco) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException
     {
 
         this.constraint = problem.getConstraints();

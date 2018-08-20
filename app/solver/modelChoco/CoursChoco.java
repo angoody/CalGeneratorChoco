@@ -1,6 +1,6 @@
 package solver.modelChoco;
 
-import models.input.Classes;
+import models.common.Classes;
 
 public class CoursChoco extends CoursChocoStagiaire
 {

@@ -1,6 +1,6 @@
 package solver.contraintes;
 
-import models.input.ConstraintPriority;
+import models.common.ConstraintPriority;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import solver.modelChoco.ModuleChoco;
@@ -105,18 +105,6 @@ public class ListeContrainteChoco<T extends ItemContrainteChoco> {
         return contraintesChoco.stream().map(c -> post(c)).collect(Collectors.toList());
     }
 
-    /*public void addConstraintInEngine(T item, ModuleChoco module)
-    {
-        List<T> contraintesRemoved = constraintsRemovedInEngine.get(module);
-        if (contraintesRemoved == null)
-        {
-            contraintesRemoved = new ArrayList<>();
-            constraintsRemovedInEngine.put(module, contraintesRemoved);
-        }
-        contraintesRemoved.remove(item);
-
-        post(item, module);
-    }*/
 
 
     public Constraint unPost(T contrainte)

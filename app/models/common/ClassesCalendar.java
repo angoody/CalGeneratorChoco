@@ -1,4 +1,4 @@
-package models.output;
+package models.common;
 
 import solver.modelChoco.CoursChoco;
 

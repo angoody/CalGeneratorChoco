@@ -162,7 +162,7 @@ Ce type d'objet demande un entier priority qui a une valeur par défaut à -1 et
 Exemple des paramètres en entrée pour /solve :
 
 ```json
-[
+
  {
    "periodOfTraining": {
      "start": "2017-01-02",
@@ -3170,7 +3170,7 @@ Exemple des paramètres en sortie :
       }
     ]
   }
-]
+
 ```
 
 Exemple des paramètres en entrée pour /verify :

@@ -6,16 +6,16 @@ import java.util.List;
 
 public class Constraint implements Serializable
 {
-    private ConstraintPriority<Integer>           place                          = new ConstraintPriority<>(-1, -1);
-    private ConstraintPriority<Integer>           annualNumberOfHour             = new ConstraintPriority<>(-1, -1);
-    private ConstraintPriority<Integer>           maxDurationOfTraining          = new ConstraintPriority<>(-1, -1);
-    private ConstraintPriority<TrainingFrequency> trainingFrequency              = new ConstraintPriority<>(-1, new TrainingFrequency());
-    private ConstraintPriority<StudentCompany>    maxStudentInTraining           = new ConstraintPriority<>(-1, new StudentCompany());
+    private ConstraintPriority<Integer>           place                          = new ConstraintPriority<>(-1);
+    private ConstraintPriority<Integer>           annualNumberOfHour             = new ConstraintPriority<>(-1);
+    private ConstraintPriority<Integer>           maxDurationOfTraining          = new ConstraintPriority<>(-1);
+    private ConstraintPriority<TrainingFrequency> trainingFrequency              = new ConstraintPriority<>(new TrainingFrequency());
+    private ConstraintPriority<StudentCompany>    maxStudentInTraining           = new ConstraintPriority<>(new StudentCompany());
     private List<ConstraintPriority<Student>>     listStudentRequired            = new ArrayList<>();
     private List<ConstraintPriority<Period>>      listPeriodeOfTrainingExclusion = new ArrayList<>();
     private List<ConstraintPriority<Period>>      listPeriodeOfTrainingInclusion = new ArrayList<>();
-    private ConstraintPriority<Boolean>           constraintPrerequisite         = new ConstraintPriority<Boolean>(-1, true);
-    private ConstraintPriority<Boolean>           constraintModuleDuration       = new ConstraintPriority<Boolean>(-1, true);
+    private ConstraintPriority<Boolean>           constraintPrerequisite         = new ConstraintPriority<Boolean>(true);
+    private ConstraintPriority<Boolean>           constraintModuleDuration       = new ConstraintPriority<Boolean>(true);
 
 
     public Constraint()

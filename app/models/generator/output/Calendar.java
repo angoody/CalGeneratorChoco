@@ -12,11 +12,11 @@ public class Calendar implements Serializable
 
     private List<ClassesCalendar> listClasses = new ArrayList<>();
 
-    private List<ConstraintRespected> constraint;
+    private List<ConstraintRespected> constraints;
 
-    public List<ConstraintRespected> getConstraint()
+    public List<ConstraintRespected> getConstraints()
     {
-        return constraint;
+        return constraints;
     }
 
     public List<ClassesCalendar> getCours()
@@ -24,9 +24,9 @@ public class Calendar implements Serializable
         return listClasses;
     }
 
-    public void setConstraint(List<ConstraintRespected> constraints)
+    public void setConstraints(List<ConstraintRespected> constraints)
     {
-        this.constraint = constraints;
+        this.constraints = constraints;
     }
 
     public void setCours(List<ClassesCalendar> cours)

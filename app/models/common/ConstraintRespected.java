@@ -1,40 +1,59 @@
 package models.common;
 
-public class ConstraintRespected extends ConstraintPriority
-{
-    private Boolean isRespected = true;
-    private String  name       = "";
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-    public ConstraintRespected(String name, ConstraintPriority constraintPriority)
-    {
-        super(constraintPriority.getPriority(), constraintPriority.getValue());
+public class ConstraintRespected {
+    private String ID = "";
+    private String name = "";
+
+    @JsonIgnore
+    private Boolean respected = false;
+    @JsonIgnore
+    private Integer priority = -1;
+
+
+    public ConstraintRespected(String name, ConstraintPriority constraintPriority) {
+        this.ID = constraintPriority.getID();
+        this.priority = constraintPriority.getPriority();
         this.name = name;
     }
 
-    public ConstraintRespected(ConstraintRespected constrainteRespected, Boolean isRespected)
-    {
-        super(constrainteRespected.getPriority(), constrainteRespected.getValue());
+    public ConstraintRespected(ConstraintRespected constrainteRespected, Boolean isRespected) {
         this.name = constrainteRespected.getName();
-        this.isRespected = isRespected;
+        this.respected = isRespected;
+        this.priority = constrainteRespected.priority;
+        this.ID = constrainteRespected.getID();
     }
 
-    public Boolean isRespected()
-    {
-        return isRespected;
-    }
-
-    public void setRespected(Boolean respected)
-    {
-        isRespected = respected;
-    }
-
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public Boolean getRespected() {
+        return respected;
+    }
+
+    public void setRespected(Boolean respected) {
+        this.respected = respected;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 }

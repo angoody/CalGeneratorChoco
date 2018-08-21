@@ -117,6 +117,16 @@ public class ContrainteManager
         return contrainteParPriorite.stream().map(c -> c.calculateRespectOfConstraint()).collect(Collectors.toList());
     }
 
+    public List<ConstraintRespected> getContraintesFausses(ModuleChoco module)
+    {
+        return contrainteParPriorite.stream().map(c -> getContrainte(module, c)).filter(c -> c.getRespected() == false).collect(Collectors.toList());
+    }
+
+    public List<ConstraintRespected> getContraintesFausses()
+    {
+        return contrainteParPriorite.stream().map(c -> c.calculateRespectOfConstraint()).filter(c -> c.getRespected() == false).collect(Collectors.toList());
+    }
+
     public void disableConstraint()
     {
         contrainteParPriorite.stream().forEach(c -> disableConstraint(c));

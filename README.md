@@ -72,12 +72,14 @@ Ce type d'objet demande un entier priority qui a une valeur par défaut à -1 et
 | Atribut | Type | Obligatoire | Valeur par défaut |
 |---------|------|-------------|-------------------|
 | priority |Integer|Non|Oui (-1)|
+| ID | String | Oui | Non|
 |Value |Integer |Oui|Non|
 
 ### Objet ConstraintPriority de type TrainingFrequency
 | Atribut | Type | Obligatoire | Valeur par défaut |
 |---------|------|-------------|-------------------|
 | priority |Integer|Non|Oui (-1)|
+| ID | String | Oui | Non|
 |maxWeekInTraining|Integer|Oui|Non|
 |minWeekInCompany|Integer|Oui|Non|
     
@@ -85,6 +87,7 @@ Ce type d'objet demande un entier priority qui a une valeur par défaut à -1 et
 | Atribut | Type | Obligatoire | Valeur par défaut |
 |---------|------|-------------|-------------------|
 | priority |Integer|Non|Oui (-1)|
+| ID | String | Oui | Non|
 |maxStudentInTraining|Integer|Oui|Non|
 |listStudentCompany|Liste de Student|Oui|Non|
 
@@ -92,6 +95,7 @@ Ce type d'objet demande un entier priority qui a une valeur par défaut à -1 et
 | Atribut | Type | Obligatoire | Valeur par défaut |
 |---------|------|-------------|-------------------|
 | priority |Integer|Non|Oui (-1)|
+| ID | String | Oui | Non|
 |idStudent|Integer|Oui|Non|
 |listClassees|Liste de Classes|Oui|Non|
 
@@ -99,6 +103,7 @@ Ce type d'objet demande un entier priority qui a une valeur par défaut à -1 et
 | Atribut | Type | Obligatoire | Valeur par défaut |
 |---------|------|-------------|-------------------|
 | priority |Integer|Non|Oui (-1)|
+| ID | String | Oui | Non|
 | start  | String |Oui|Non|
 | end  | String|Oui|Non|
 
@@ -106,6 +111,7 @@ Ce type d'objet demande un entier priority qui a une valeur par défaut à -1 et
 | Atribut | Type | Obligatoire | Valeur par défaut |
 |---------|------|-------------|-------------------|
 | priority |Integer|Non|Oui (-1)|
+| ID | String | Oui | Non|
 |Value |Boolean |Oui|Non|
 
 ### Objet Module
@@ -134,23 +140,21 @@ Ce type d'objet demande un entier priority qui a une valeur par défaut à -1 et
 | Atribut | Type | 
 |---------|------|
 |listClasses|Liste de ClassesCalendar|
-|constraint|Liste de ConstraintRespected|
+|constraints|Liste de ConstraintRespected non respectées|
 
 ### Objet ClassesCalendar
    
 | Atribut | Type | 
 |---------|------|
-|start|String|
-|end|String|
 |idModule|int|
 |idClasses|String|
-|constraints|Liste de ConstraintRespected par ordre de priorité décroissante|
+|constraints|Liste de ConstraintRespected non respectées par ordre de priorité décroissante|
 
 ### Objet ConstraintRespected
    
 | Atribut | Type | Valeur possible |
 |---------|------|-------------|
-|isRespected|Boolean| |
+|ID|String| |
 |name|String|Fréquence de formation de %d semaines et de %d semaines en entreprise|
 |||Lieu|
 |||Modules prérequis|
@@ -168,33 +172,37 @@ Exemple des paramètres en entrée pour /solve :
      "start": "2017-01-02",
      "end": "2019-11-24"
    },
-   "numberOfCalendarToFound": 1,
    "constraints": {
      "place": {
        "priority": 7,
-       "value": 10
+       "value": 2,
+       "id": "158e12a7-2230-43c8-b209-65d10f199a7a"
      },
      "annualNumberOfHour": {
        "priority": -1,
-       "value": -1
+       "value": -1,
+       "id": "5883de30-f445-4fc8-bc17-f45087ee231d"
      },
      "maxDurationOfTraining": {
        "priority": -1,
-       "value": -1
+       "value": -1,
+       "id": "7d53937f-5e8b-4a03-bc15-fded1146c92f"
      },
      "trainingFrequency": {
        "priority": 8,
        "value": {
          "maxWeekInTraining": 3,
          "minWeekInCompany": 3
-       }
+       },
+       "id": "8cce155d-a92e-4577-ad2a-d0df4082bdce"
      },
      "maxStudentInTraining": {
        "priority": -1,
        "value": {
          "maxStudentInTraining": -1,
          "listStudentCompany": []
-       }
+       },
+       "id": "8248d569-ecae-4653-bb2c-4ff5ff7d40e5"
      },
      "listStudentRequired": [],
      "listPeriodeOfTrainingExclusion": [
@@ -203,7 +211,8 @@ Exemple des paramètres en entrée pour /solve :
          "value": {
            "start": "2018-05-21",
            "end": "2018-05-27"
-         }
+         },
+         "id": "acf74195-c288-4420-8b2f-f4714cb91cd5"
        }
      ],
      "listPeriodeOfTrainingInclusion": [
@@ -212,12 +221,19 @@ Exemple des paramètres en entrée pour /solve :
          "value": {
            "start": "2018-04-02",
            "end": "2018-04-06"
-         }
+         },
+         "id": "407c4830-c48f-4849-82d1-06d2ab581c74"
        }
      ],
+     "moduleDuration": {
+       "priority": -1,
+       "value": true,
+       "id": "b5e3694f-5b5b-4edc-b175-d8c6e916230e"
+     },
      "prerequisModule": {
        "priority": -1,
-       "value": true
+       "value": true,
+       "id": "be6ec8d3-f66d-4019-8b83-0f2eb68a197f"
      }
    },
    "moduleOfTraining": [
@@ -235,6 +251,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-30"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -244,6 +261,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-03-23"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -253,6 +271,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-15"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          },
          {
@@ -262,6 +281,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-03-23"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          },
          {
@@ -271,6 +291,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-12-07"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 10
          },
          {
@@ -280,6 +301,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-13"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -289,6 +311,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-02-02"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 12
          },
          {
@@ -298,6 +321,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-05"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -307,6 +331,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-13"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 10
          },
          {
@@ -316,6 +341,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2017-12-15"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -325,6 +351,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-13"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -334,6 +361,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-15"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -343,6 +371,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2017-12-22"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -352,6 +381,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-13"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -361,6 +391,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-05"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          }
        ]
@@ -379,6 +410,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-03-30"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          },
          {
@@ -388,6 +420,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-03-30"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -397,6 +430,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-20"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -406,6 +440,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-20"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -415,6 +450,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-20"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -424,6 +460,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-22"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -433,6 +470,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-20"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 10
          },
          {
@@ -442,6 +480,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-12-14"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 10
          },
          {
@@ -451,6 +490,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-12"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -460,6 +500,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-01-26"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -469,6 +510,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-22"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          },
          {
@@ -478,6 +520,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-12-07"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -487,6 +530,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-02-09"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 12
          },
          {
@@ -496,6 +540,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-12"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -505,6 +550,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-01-05"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          }
        ]
@@ -525,6 +571,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-06"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          },
          {
@@ -534,6 +581,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-19"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -543,6 +591,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-27"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 10
          },
          {
@@ -552,6 +601,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-27"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -561,6 +611,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-19"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -570,6 +621,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-02-16"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 12
          },
          {
@@ -579,6 +631,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-02-02"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -588,6 +641,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-12-21"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 10
          },
          {
@@ -597,6 +651,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-12-14"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -606,6 +661,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-06"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -615,6 +671,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-27"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -624,6 +681,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-27"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -633,6 +691,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-29"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -642,6 +701,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-29"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          }
        ]
@@ -662,6 +722,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-05-25"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -671,6 +732,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-20"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -680,6 +742,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-12-21"
            },
            "realDuration": 70,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -689,6 +752,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-05-18"
            },
            "realDuration": 70,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -698,6 +762,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-05-18"
            },
            "realDuration": 70,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -707,6 +772,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-13"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -716,6 +782,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-02"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -725,6 +792,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-05-04"
            },
            "realDuration": 70,
+           "workingDayDuration": 35,
            "idPlace": 10
          },
          {
@@ -734,6 +802,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-01-18"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 10
          },
          {
@@ -743,6 +812,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-03-02"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 12
          },
          {
@@ -752,6 +822,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-13"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 11
          },
          {
@@ -761,6 +832,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-20"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 11
          },
          {
@@ -770,6 +842,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-05-04"
            },
            "realDuration": 70,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -779,6 +852,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-05-04"
            },
            "realDuration": 70,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -788,6 +862,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-01-11"
            },
            "realDuration": 70,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -797,6 +872,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-02"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          }
        ]
@@ -817,6 +893,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-05-04"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -826,6 +903,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-02-01"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 10
          },
          {
@@ -835,6 +913,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-03-16"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 12
          },
          {
@@ -844,6 +923,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-06"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -853,6 +933,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-01-25"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -862,6 +943,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-27"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 11
          },
          {
@@ -871,6 +953,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-01"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -880,6 +963,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-01"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 10
          },
          {
@@ -889,6 +973,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-16"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -898,6 +983,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-16"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -907,6 +993,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-01"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -916,6 +1003,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-27"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -925,6 +1013,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-05-04"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 11
          }
        ]
@@ -943,6 +1032,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-12-07"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -952,6 +1042,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-22"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 10
          },
          {
@@ -961,6 +1052,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-24"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -970,6 +1062,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-24"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          },
          {
@@ -979,6 +1072,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-01"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          },
          {
@@ -988,6 +1082,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-01"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -997,6 +1092,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-06"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 12
          },
          {
@@ -1006,6 +1102,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-22"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1015,6 +1112,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-02-22"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 10
          },
          {
@@ -1024,6 +1122,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-22"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1033,6 +1132,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-02-15"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1042,6 +1142,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-12"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -1051,6 +1152,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-12-07"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          }
        ]
@@ -1071,6 +1173,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-13"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 10
          },
          {
@@ -1080,6 +1183,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-14"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 11
          },
          {
@@ -1089,6 +1193,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-03-15"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 10
          },
          {
@@ -1098,6 +1203,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-01-11"
            },
            "realDuration": 105,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1107,6 +1213,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-12-21"
            },
            "realDuration": 105,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1116,6 +1223,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-03-08"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 1
          },
          {
@@ -1125,6 +1233,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-22"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 11
          },
          {
@@ -1134,6 +1243,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-13"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 1
          },
          {
@@ -1143,6 +1253,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-01-11"
            },
            "realDuration": 105,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1152,6 +1263,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-12-21"
            },
            "realDuration": 105,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1161,6 +1273,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-22"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 2
          },
          {
@@ -1170,6 +1283,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-30"
            },
            "realDuration": 105,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -1179,6 +1293,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-14"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 1
          },
          {
@@ -1188,6 +1303,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-13"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 1
          },
          {
@@ -1197,6 +1313,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-19"
            },
            "realDuration": 105,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -1206,6 +1323,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-04-27"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 12
          }
        ]
@@ -1228,6 +1346,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-03-22"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1237,6 +1356,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-27"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 10
          },
          {
@@ -1246,6 +1366,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-01-25"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1255,6 +1376,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-28"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1264,6 +1386,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-02-09"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1273,6 +1396,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-06"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 11
          },
          {
@@ -1282,6 +1406,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-03-29"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 10
          },
          {
@@ -1291,6 +1416,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-27"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1300,6 +1426,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-01-18"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -1309,6 +1436,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-05-04"
            },
            "realDuration": 70,
+           "workingDayDuration": 35,
            "idPlace": 12
          },
          {
@@ -1318,6 +1446,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-27"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1327,6 +1456,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-05-18"
            },
            "realDuration": 70,
+           "workingDayDuration": 35,
            "idPlace": 12
          },
          {
@@ -1336,6 +1466,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-01-25"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1345,6 +1476,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-06"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -1354,6 +1486,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-28"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 11
          }
        ]
@@ -1374,6 +1507,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-04-12"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 1
          },
          {
@@ -1383,6 +1517,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-02-15"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 1
          },
          {
@@ -1392,6 +1527,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-03-08"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 2
          },
          {
@@ -1401,6 +1537,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-19"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 11
          },
          {
@@ -1410,6 +1547,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-08"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 12
          },
          {
@@ -1419,6 +1557,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-24"
            },
            "realDuration": 105,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1428,6 +1567,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-24"
            },
            "realDuration": 105,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1437,6 +1577,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-10"
            },
            "realDuration": 105,
+           "workingDayDuration": 70,
            "idPlace": 10
          },
          {
@@ -1446,6 +1587,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-04-19"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 10
          },
          {
@@ -1455,6 +1597,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-19"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 1
          },
          {
@@ -1464,6 +1607,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-27"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 11
          },
          {
@@ -1473,6 +1617,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-10"
            },
            "realDuration": 105,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1482,6 +1627,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-07-27"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 2
          },
          {
@@ -1491,6 +1637,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-10"
            },
            "realDuration": 105,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1500,6 +1647,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-02-15"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 1
          }
        ]
@@ -1522,6 +1670,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-06-14"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1531,6 +1680,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-10"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 11
          },
          {
@@ -1540,6 +1690,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-03-01"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1549,6 +1700,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-07"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1558,6 +1710,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-05-03"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 10
          },
          {
@@ -1567,6 +1720,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-04-19"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1576,6 +1730,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-26"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1585,6 +1740,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-07"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 10
          },
          {
@@ -1594,6 +1750,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-12-21"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 11
          },
          {
@@ -1603,6 +1760,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-22"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 12
          },
          {
@@ -1612,6 +1770,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-09-06"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -1621,6 +1780,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-28"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -1630,6 +1790,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-02"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          }
        ]
@@ -1650,6 +1811,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-03-08"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1659,6 +1821,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-02"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1668,6 +1831,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-05-10"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 10
          },
          {
@@ -1677,6 +1841,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-06-21"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1686,6 +1851,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-05"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -1695,6 +1861,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-29"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 12
          },
          {
@@ -1704,6 +1871,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-09"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1713,6 +1881,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-04-26"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1722,6 +1891,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-14"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 10
          },
          {
@@ -1731,6 +1901,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-09-13"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -1740,6 +1911,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-01-11"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          },
          {
@@ -1749,6 +1921,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-14"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1758,6 +1931,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-17"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          }
        ]
@@ -1778,6 +1952,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-10"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -1787,6 +1962,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-04-19"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -1796,6 +1972,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-02"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 11
          },
          {
@@ -1805,6 +1982,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-07"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1814,6 +1992,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-03-01"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -1823,6 +2002,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-04-26"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          }
        ]
@@ -1843,6 +2023,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-14"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1852,6 +2033,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-03-08"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1861,6 +2043,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-05-24"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -1870,6 +2053,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-09"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          },
          {
@@ -1879,6 +2063,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-05-03"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1888,6 +2073,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-17"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          }
        ]
@@ -1906,6 +2092,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-16"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          },
          {
@@ -1915,6 +2102,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-05-10"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1924,6 +2112,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-03-15"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1933,6 +2122,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-21"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -1942,6 +2132,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-24"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -1951,6 +2142,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-05-31"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          }
        ]
@@ -1971,6 +2163,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-07-19"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 2
          },
          {
@@ -1980,6 +2173,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-04-05"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 1
          },
          {
@@ -1989,6 +2183,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-12-07"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 11
          },
          {
@@ -1998,6 +2193,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-12"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 1
          },
          {
@@ -2007,6 +2203,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-09-14"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 2
          },
          {
@@ -2016,6 +2213,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-05-31"
            },
            "realDuration": 105,
+           "workingDayDuration": 105,
            "idPlace": 1
          }
        ]
@@ -2038,6 +2236,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-09"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -2047,6 +2246,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-01-18"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 11
          },
          {
@@ -2056,6 +2256,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-06-28"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          },
          {
@@ -2065,6 +2266,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-09-20"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -2074,6 +2276,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-10-25"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -2083,6 +2286,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-10-12"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 2
          },
          {
@@ -2092,6 +2296,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-05-03"
            },
            "realDuration": 35,
+           "workingDayDuration": 35,
            "idPlace": 1
          }
        ]
@@ -2113,6 +2318,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-03-16"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -2122,6 +2328,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-10"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -2131,6 +2338,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-30"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -2140,6 +2348,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-02-15"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 10
          },
          {
@@ -2149,6 +2358,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-05-25"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 11
          },
          {
@@ -2158,6 +2368,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-31"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -2167,6 +2378,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-15"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -2176,6 +2388,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-05-25"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 2
          },
          {
@@ -2185,6 +2398,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-30"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -2194,6 +2408,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-08-10"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 11
          },
          {
@@ -2203,6 +2418,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-03-30"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 12
          },
          {
@@ -2212,6 +2428,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-15"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          },
          {
@@ -2221,6 +2438,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-06-15"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 10
          },
          {
@@ -2230,6 +2448,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-02-08"
            },
            "realDuration": 70,
+           "workingDayDuration": 70,
            "idPlace": 1
          }
        ]
@@ -2257,6 +2476,7 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2018-11-20"
            },
            "realDuration": 14,
+           "workingDayDuration": 14,
            "idPlace": 2
          },
          {
@@ -2266,11 +2486,13 @@ Exemple des paramètres en entrée pour /solve :
              "end": "2019-11-20"
            },
            "realDuration": 14,
+           "workingDayDuration": 14,
            "idPlace": 2
          }
        ]
      }
-   ]
+   ],
+   "numberOfCalendarToFound": 5
  }
 
 ```
@@ -2278,895 +2500,533 @@ Exemple des paramètres en entrée pour /solve :
 Exemple des paramètres en sortie :
 
 ```json
-[
   {
-    "constraint": [
+    "constraints": [],
+    "cours": [
       {
-        "priority": 8,
-        "value": {
-          "maxWeekInTraining": 3,
-          "minWeekInCompany": 3
-        },
+        "idModule": 708,
+        "idClasses": "77D66D8A-DEFD-44F6-A158-65DD5A34400E",
+        "constraints": []
+      },
+      {
+        "idModule": 20,
+        "idClasses": "71E6F84D-928F-41AE-B456-4321A8848462",
+        "constraints": []
+      },
+      {
+        "idModule": 21,
+        "idClasses": "C73EEC8A-481A-487A-A896-7E77C8A78F5D",
+        "constraints": []
+      },
+      {
+        "idModule": 725,
+        "idClasses": "85239D35-A51E-4430-8B4F-8B05E5159614",
+        "constraints": []
+      },
+      {
+        "idModule": 541,
+        "idClasses": "219CC390-7A58-477F-83D8-75278977BC67",
+        "constraints": []
+      },
+      {
+        "idModule": 730,
+        "idClasses": "F679E790-176B-4E64-9EE4-7DDA8F7CDE57",
+        "constraints": []
+      },
+      {
+        "idModule": 734,
+        "idClasses": "F9509972-B829-47FC-80AD-1FDF4DB35936",
+        "constraints": []
+      },
+      {
+        "idModule": 544,
+        "idClasses": "AB2AE0F6-793C-4DB9-9701-297506E39300",
+        "constraints": []
+      },
+      {
+        "idModule": 544,
+        "idClasses": "0B839480-E37D-48D8-BABB-55B61ED78431",
+        "constraints": []
+      },
+      {
+        "idModule": 302,
+        "idClasses": "C2B13BEE-AF8C-4B01-9138-96472CED391C",
+        "constraints": []
+      },
+      {
+        "idModule": 727,
+        "idClasses": "16E23474-A904-4CEB-B0B4-C5EB9963698F",
+        "constraints": []
+      },
+      {
+        "idModule": 34,
+        "idClasses": "079857A4-C961-4CA5-A3F9-0F7697F379D1",
+        "constraints": []
+      },
+      {
+        "idModule": 731,
+        "idClasses": "B68EA7BA-5871-4093-95C9-79B5CE0C6C71",
+        "constraints": []
+      },
+      {
+        "idModule": 36,
+        "idClasses": "01CF703D-66AD-413B-8940-46BF4684F885",
+        "constraints": []
+      },
+      {
+        "idModule": 560,
+        "idClasses": "4EBD9C3F-373D-468D-BE7C-0C54BB88410C",
+        "constraints": []
+      },
+      {
+        "idModule": 728,
+        "idClasses": "9E10FA5B-8D32-4844-A86F-E4BD5133D1BC",
+        "constraints": []
+      },
+      {
+        "idModule": 729,
+        "idClasses": "1A53B31D-5197-4855-99BE-744677A5D04B",
+        "constraints": []
+      },
+      {
+        "idModule": 566,
+        "idClasses": "2AD6370A-5C01-49E7-9342-5EC4DF37783D",
+        "constraints": []
+      },
+      {
+        "idModule": 817,
+        "idClasses": "2DDD0DDF-FB7B-4C16-8C36-6C23B776FD86",
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "constraints": [],
+    "cours": [
+      {
+        "idModule": 708,
+        "idClasses": "77D66D8A-DEFD-44F6-A158-65DD5A34400E",
+        "constraints": []
+      },
+      {
+        "idModule": 20,
+        "idClasses": "71E6F84D-928F-41AE-B456-4321A8848462",
+        "constraints": []
+      },
+      {
+        "idModule": 21,
+        "idClasses": "C73EEC8A-481A-487A-A896-7E77C8A78F5D",
+        "constraints": []
+      },
+      {
+        "idModule": 725,
+        "idClasses": "85239D35-A51E-4430-8B4F-8B05E5159614",
+        "constraints": []
+      },
+      {
+        "idModule": 730,
+        "idClasses": "F679E790-176B-4E64-9EE4-7DDA8F7CDE57",
+        "constraints": []
+      },
+      {
+        "idModule": 734,
+        "idClasses": "F9509972-B829-47FC-80AD-1FDF4DB35936",
+        "constraints": []
+      },
+      {
+        "idModule": 541,
+        "idClasses": "B061528A-4125-400C-A348-BDDA7469D42F",
+        "constraints": []
+      },
+      {
+        "idModule": 544,
+        "idClasses": "AB2AE0F6-793C-4DB9-9701-297506E39300",
+        "constraints": []
+      },
+      {
+        "idModule": 544,
+        "idClasses": "0B839480-E37D-48D8-BABB-55B61ED78431",
+        "constraints": []
+      },
+      {
+        "idModule": 302,
+        "idClasses": "C2B13BEE-AF8C-4B01-9138-96472CED391C",
+        "constraints": []
+      },
+      {
+        "idModule": 727,
+        "idClasses": "16E23474-A904-4CEB-B0B4-C5EB9963698F",
+        "constraints": []
+      },
+      {
+        "idModule": 34,
+        "idClasses": "079857A4-C961-4CA5-A3F9-0F7697F379D1",
+        "constraints": []
+      },
+      {
+        "idModule": 731,
+        "idClasses": "B68EA7BA-5871-4093-95C9-79B5CE0C6C71",
+        "constraints": []
+      },
+      {
+        "idModule": 36,
+        "idClasses": "01CF703D-66AD-413B-8940-46BF4684F885",
+        "constraints": []
+      },
+      {
+        "idModule": 560,
+        "idClasses": "4EBD9C3F-373D-468D-BE7C-0C54BB88410C",
+        "constraints": []
+      },
+      {
+        "idModule": 728,
+        "idClasses": "9E10FA5B-8D32-4844-A86F-E4BD5133D1BC",
+        "constraints": []
+      },
+      {
+        "idModule": 729,
+        "idClasses": "1A53B31D-5197-4855-99BE-744677A5D04B",
+        "constraints": []
+      },
+      {
+        "idModule": 566,
+        "idClasses": "2AD6370A-5C01-49E7-9342-5EC4DF37783D",
+        "constraints": []
+      },
+      {
+        "idModule": 817,
+        "idClasses": "2DDD0DDF-FB7B-4C16-8C36-6C23B776FD86",
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "constraints": [
+      {
         "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-        "respected": false
-      },
-      {
-        "priority": 7,
-        "value": 10,
-        "name": "Lieu",
-        "respected": false
-      },
-      {
-        "priority": 5,
-        "value": {
-          "start": "2018-05-21",
-          "end": "2018-05-27"
-        },
-        "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-        "respected": true
-      },
-      {
-        "priority": 4,
-        "value": {
-          "start": "2018-04-02",
-          "end": "2018-04-06"
-        },
-        "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-        "respected": true
-      },
-      {
-        "priority": -1,
-        "value": true,
-        "name": "Modules prérequis",
-        "respected": true
+        "id": "89d49f8b-8a38-485f-bf7c-70ff6e930f99"
       }
     ],
     "cours": [
       {
-        "start": "2018-03-26",
-        "end": "2018-03-30",
-        "idModule": 20,
-        "idClasses": "9AC9F5B9-BE0F-418D-AC3C-00EBB8582246",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": false
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": false
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
-      },
-      {
-        "start": "2018-04-03",
-        "end": "2018-04-06",
-        "idModule": 21,
-        "idClasses": "46DB575D-76BB-40EC-BEBA-E408F4EE158B",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": false
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": false
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
-      },
-      {
-        "start": "2018-04-09",
-        "end": "2018-04-13",
         "idModule": 708,
-        "idClasses": "88EED523-8B7C-4F5C-B71A-3D29C589FDB8",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": true
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": true
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
+        "idClasses": "77D66D8A-DEFD-44F6-A158-65DD5A34400E",
+        "constraints": []
       },
       {
-        "start": "2018-04-30",
-        "end": "2018-05-04",
+        "idModule": 20,
+        "idClasses": "EEF20121-7745-4C55-8259-06ED9888E0A4",
+        "constraints": []
+      },
+      {
+        "idModule": 21,
+        "idClasses": "C73EEC8A-481A-487A-A896-7E77C8A78F5D",
+        "constraints": []
+      },
+      {
         "idModule": 725,
-        "idClasses": "9AF796A9-ABF2-45EC-8068-F616B71A01D6",
+        "idClasses": "85239D35-A51E-4430-8B4F-8B05E5159614",
         "constraints": [
           {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
             "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": false
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": false
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
+            "id": "89d49f8b-8a38-485f-bf7c-70ff6e930f99"
           }
         ]
       },
       {
-        "start": "2018-05-28",
-        "end": "2018-06-01",
         "idModule": 541,
         "idClasses": "219CC390-7A58-477F-83D8-75278977BC67",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": false
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": false
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
+        "constraints": []
       },
       {
-        "start": "2018-06-04",
-        "end": "2018-06-15",
-        "idModule": 734,
-        "idClasses": "D820AA47-D8B8-47AA-91DE-D864EB65C4EA",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": true
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": true
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
-      },
-      {
-        "start": "2018-07-16",
-        "end": "2018-07-27",
-        "idModule": 302,
-        "idClasses": "A6F82AF0-CAB6-42FB-A1B2-56B7A7ED1CEF",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": true
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": true
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
-      },
-      {
-        "start": "2018-08-27",
-        "end": "2018-09-07",
-        "idModule": 728,
-        "idClasses": "98B4405A-1760-4C4D-A131-1F23D754E51F",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": true
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": true
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
-      },
-      {
-        "start": "2018-09-10",
-        "end": "2018-09-14",
-        "idModule": 729,
-        "idClasses": "CAB51343-77CE-4A05-9A27-75BDA17AFAAD",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": true
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": true
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
-      },
-      {
-        "start": "2018-12-10",
-        "end": "2018-12-21",
-        "idModule": 544,
-        "idClasses": "966E9CF6-1126-474A-A8CC-D01EA99E3735",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": false
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": false
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
-      },
-      {
-        "start": "2019-01-14",
-        "end": "2019-01-25",
         "idModule": 730,
-        "idClasses": "7D4FA370-30F2-4F59-9E3C-6D53C01DAA7C",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": false
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": false
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
+        "idClasses": "F679E790-176B-4E64-9EE4-7DDA8F7CDE57",
+        "constraints": []
       },
       {
-        "start": "2019-02-18",
-        "end": "2019-03-01",
-        "idModule": 34,
-        "idClasses": "3AB4CDEA-A36F-426F-87D1-AA7F45BAF6B2",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": true
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": false
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
+        "idModule": 734,
+        "idClasses": "F9509972-B829-47FC-80AD-1FDF4DB35936",
+        "constraints": []
       },
       {
-        "start": "2019-03-04",
-        "end": "2019-03-08",
-        "idModule": 731,
-        "idClasses": "FABB62A4-66D5-458C-846C-E6C8927249DC",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": true
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": false
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
+        "idModule": 544,
+        "idClasses": "AB2AE0F6-793C-4DB9-9701-297506E39300",
+        "constraints": []
       },
       {
-        "start": "2019-04-01",
-        "end": "2019-04-19",
+        "idModule": 544,
+        "idClasses": "0B839480-E37D-48D8-BABB-55B61ED78431",
+        "constraints": []
+      },
+      {
+        "idModule": 302,
+        "idClasses": "C2B13BEE-AF8C-4B01-9138-96472CED391C",
+        "constraints": []
+      },
+      {
         "idModule": 727,
-        "idClasses": "3E17AF8A-FC24-4BDA-8010-0203826B9899",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": true
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": true
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
+        "idClasses": "16E23474-A904-4CEB-B0B4-C5EB9963698F",
+        "constraints": []
       },
       {
-        "start": "2019-05-27",
-        "end": "2019-05-31",
+        "idModule": 34,
+        "idClasses": "079857A4-C961-4CA5-A3F9-0F7697F379D1",
+        "constraints": []
+      },
+      {
+        "idModule": 731,
+        "idClasses": "B68EA7BA-5871-4093-95C9-79B5CE0C6C71",
+        "constraints": []
+      },
+      {
         "idModule": 36,
         "idClasses": "01CF703D-66AD-413B-8940-46BF4684F885",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": true
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": false
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
+        "constraints": []
       },
       {
-        "start": "2019-07-01",
-        "end": "2019-07-19",
         "idModule": 560,
         "idClasses": "4EBD9C3F-373D-468D-BE7C-0C54BB88410C",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": true
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": false
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
+        "constraints": []
       },
       {
-        "start": "2019-09-16",
-        "end": "2019-09-20",
+        "idModule": 728,
+        "idClasses": "9E10FA5B-8D32-4844-A86F-E4BD5133D1BC",
+        "constraints": []
+      },
+      {
+        "idModule": 729,
+        "idClasses": "1A53B31D-5197-4855-99BE-744677A5D04B",
+        "constraints": []
+      },
+      {
         "idModule": 566,
-        "idClasses": "EBD828B0-4CF0-464D-876C-929B8A5C8E80",
-        "constraints": [
-          {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
-            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": true
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": false
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
-          }
-        ]
+        "idClasses": "2AD6370A-5C01-49E7-9342-5EC4DF37783D",
+        "constraints": []
       },
       {
-        "start": "2019-11-19",
-        "end": "2019-11-20",
         "idModule": 817,
         "idClasses": "2DDD0DDF-FB7B-4C16-8C36-6C23B776FD86",
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "constraints": [
+      {
+        "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
+        "id": "89d49f8b-8a38-485f-bf7c-70ff6e930f99"
+      }
+    ],
+    "cours": [
+      {
+        "idModule": 708,
+        "idClasses": "8DCF25E3-1B22-47AF-9400-C891A50240A3",
+        "constraints": []
+      },
+      {
+        "idModule": 20,
+        "idClasses": "EEF20121-7745-4C55-8259-06ED9888E0A4",
+        "constraints": []
+      },
+      {
+        "idModule": 21,
+        "idClasses": "C73EEC8A-481A-487A-A896-7E77C8A78F5D",
+        "constraints": []
+      },
+      {
+        "idModule": 725,
+        "idClasses": "85239D35-A51E-4430-8B4F-8B05E5159614",
         "constraints": [
           {
-            "priority": 8,
-            "value": {
-              "maxWeekInTraining": 3,
-              "minWeekInCompany": 3
-            },
             "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
-            "respected": true
-          },
-          {
-            "priority": 7,
-            "value": 10,
-            "name": "Lieu",
-            "respected": false
-          },
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            },
-            "name": "Périodes exclues du 2018-05-21 au 2018-05-27",
-            "respected": true
-          },
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            },
-            "name": "Périodes inclues du 2018-04-02 au 2018-04-06",
-            "respected": true
-          },
-          {
-            "priority": -1,
-            "value": true,
-            "name": "Modules prérequis",
-            "respected": true
+            "id": "89d49f8b-8a38-485f-bf7c-70ff6e930f99"
           }
         ]
+      },
+      {
+        "idModule": 541,
+        "idClasses": "219CC390-7A58-477F-83D8-75278977BC67",
+        "constraints": []
+      },
+      {
+        "idModule": 730,
+        "idClasses": "F679E790-176B-4E64-9EE4-7DDA8F7CDE57",
+        "constraints": []
+      },
+      {
+        "idModule": 734,
+        "idClasses": "F9509972-B829-47FC-80AD-1FDF4DB35936",
+        "constraints": []
+      },
+      {
+        "idModule": 544,
+        "idClasses": "AB2AE0F6-793C-4DB9-9701-297506E39300",
+        "constraints": []
+      },
+      {
+        "idModule": 544,
+        "idClasses": "0B839480-E37D-48D8-BABB-55B61ED78431",
+        "constraints": []
+      },
+      {
+        "idModule": 302,
+        "idClasses": "C2B13BEE-AF8C-4B01-9138-96472CED391C",
+        "constraints": []
+      },
+      {
+        "idModule": 727,
+        "idClasses": "16E23474-A904-4CEB-B0B4-C5EB9963698F",
+        "constraints": []
+      },
+      {
+        "idModule": 34,
+        "idClasses": "079857A4-C961-4CA5-A3F9-0F7697F379D1",
+        "constraints": []
+      },
+      {
+        "idModule": 731,
+        "idClasses": "B68EA7BA-5871-4093-95C9-79B5CE0C6C71",
+        "constraints": []
+      },
+      {
+        "idModule": 36,
+        "idClasses": "01CF703D-66AD-413B-8940-46BF4684F885",
+        "constraints": []
+      },
+      {
+        "idModule": 560,
+        "idClasses": "4EBD9C3F-373D-468D-BE7C-0C54BB88410C",
+        "constraints": []
+      },
+      {
+        "idModule": 728,
+        "idClasses": "9E10FA5B-8D32-4844-A86F-E4BD5133D1BC",
+        "constraints": []
+      },
+      {
+        "idModule": 729,
+        "idClasses": "1A53B31D-5197-4855-99BE-744677A5D04B",
+        "constraints": []
+      },
+      {
+        "idModule": 566,
+        "idClasses": "2AD6370A-5C01-49E7-9342-5EC4DF37783D",
+        "constraints": []
+      },
+      {
+        "idModule": 817,
+        "idClasses": "2DDD0DDF-FB7B-4C16-8C36-6C23B776FD86",
+        "constraints": []
+      }
+    ]
+  },
+  {
+    "constraints": [
+      {
+        "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
+        "id": "89d49f8b-8a38-485f-bf7c-70ff6e930f99"
+      }
+    ],
+    "cours": [
+      {
+        "idModule": 20,
+        "idClasses": "71E6F84D-928F-41AE-B456-4321A8848462",
+        "constraints": []
+      },
+      {
+        "idModule": 708,
+        "idClasses": "8DCF25E3-1B22-47AF-9400-C891A50240A3",
+        "constraints": []
+      },
+      {
+        "idModule": 21,
+        "idClasses": "C73EEC8A-481A-487A-A896-7E77C8A78F5D",
+        "constraints": []
+      },
+      {
+        "idModule": 725,
+        "idClasses": "85239D35-A51E-4430-8B4F-8B05E5159614",
+        "constraints": [
+          {
+            "name": "Fréquence de formation de 3 semaines et de 3 semaines en entreprise",
+            "id": "89d49f8b-8a38-485f-bf7c-70ff6e930f99"
+          }
+        ]
+      },
+      {
+        "idModule": 541,
+        "idClasses": "219CC390-7A58-477F-83D8-75278977BC67",
+        "constraints": []
+      },
+      {
+        "idModule": 730,
+        "idClasses": "F679E790-176B-4E64-9EE4-7DDA8F7CDE57",
+        "constraints": []
+      },
+      {
+        "idModule": 731,
+        "idClasses": "F6F85C5D-AD6F-47C1-BB5F-9FDC333DD6C4",
+        "constraints": []
+      },
+      {
+        "idModule": 734,
+        "idClasses": "F9509972-B829-47FC-80AD-1FDF4DB35936",
+        "constraints": []
+      },
+      {
+        "idModule": 544,
+        "idClasses": "AB2AE0F6-793C-4DB9-9701-297506E39300",
+        "constraints": []
+      },
+      {
+        "idModule": 544,
+        "idClasses": "0B839480-E37D-48D8-BABB-55B61ED78431",
+        "constraints": []
+      },
+      {
+        "idModule": 302,
+        "idClasses": "C2B13BEE-AF8C-4B01-9138-96472CED391C",
+        "constraints": []
+      },
+      {
+        "idModule": 727,
+        "idClasses": "16E23474-A904-4CEB-B0B4-C5EB9963698F",
+        "constraints": []
+      },
+      {
+        "idModule": 34,
+        "idClasses": "079857A4-C961-4CA5-A3F9-0F7697F379D1",
+        "constraints": []
+      },
+      {
+        "idModule": 36,
+        "idClasses": "01CF703D-66AD-413B-8940-46BF4684F885",
+        "constraints": []
+      },
+      {
+        "idModule": 560,
+        "idClasses": "4EBD9C3F-373D-468D-BE7C-0C54BB88410C",
+        "constraints": []
+      },
+      {
+        "idModule": 728,
+        "idClasses": "9E10FA5B-8D32-4844-A86F-E4BD5133D1BC",
+        "constraints": []
+      },
+      {
+        "idModule": 729,
+        "idClasses": "1A53B31D-5197-4855-99BE-744677A5D04B",
+        "constraints": []
+      },
+      {
+        "idModule": 566,
+        "idClasses": "2AD6370A-5C01-49E7-9342-5EC4DF37783D",
+        "constraints": []
+      },
+      {
+        "idModule": 817,
+        "idClasses": "2DDD0DDF-FB7B-4C16-8C36-6C23B776FD86",
+        "constraints": []
       }
     ]
   }
@@ -3177,462 +3037,470 @@ Exemple des paramètres en entrée pour /verify :
 
 ```json
 
-    {
-      "periodOfTraining": {
-        "start": "2017-01-02",
-        "end": "2019-11-24"
-      },
-      "constraints": {
-        "place": {
-          "priority": 7,
-          "value": 2
-        },
-        "annualNumberOfHour": {
-          "priority": -1,
-          "value": -1
-        },
-        "maxDurationOfTraining": {
-          "priority": -1,
-          "value": -1
-        },
-        "trainingFrequency": {
-          "priority": 8,
-          "value": {
-            "maxWeekInTraining": 3,
-            "minWeekInCompany": 3
-          }
-        },
-        "maxStudentInTraining": {
-          "priority": -1,
-          "value": {
-            "maxStudentInTraining": -1,
-            "listStudentCompany": []
-          }
-        },
-        "listStudentRequired": [],
-        "listPeriodeOfTrainingExclusion": [
-          {
-            "priority": 5,
-            "value": {
-              "start": "2018-05-21",
-              "end": "2018-05-27"
-            }
-          }
-        ],
-        "listPeriodeOfTrainingInclusion": [
-          {
-            "priority": 4,
-            "value": {
-              "start": "2018-04-02",
-              "end": "2018-04-06"
-            }
-          }
-        ],
-        "moduleDuration": {
-          "priority": -1,
-          "value": true
-        },
-        "prerequisModule": {
-          "priority": -1,
-          "value": true
-        }
-      },
-      "moduleOfTraining": [
-        {
-          "idModule": 708,
-          "nbWeekOfModule": 3,
-          "nbHourOfModule": 35,
-          "listIdModulePrerequisite": [],
-          "listIdModuleOptional": [],
-          "listClasses": [
-            {
-              "idClasses": "77D66D8A-DEFD-44F6-A158-65DD5A34400E",
-              "period": {
-                "start": "2017-12-11",
-                "end": "2017-12-15"
-              },
-              "realDuration": 35,
-              "workingDayDuration": 35,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 20,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 35,
-          "listIdModulePrerequisite": [],
-          "listIdModuleOptional": [],
-          "listClasses": [
-            {
-              "idClasses": "71E6F84D-928F-41AE-B456-4321A8848462",
-              "period": {
-                "start": "2018-01-22",
-                "end": "2018-01-26"
-              },
-              "realDuration": 35,
-              "workingDayDuration": 35,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 21,
-          "nbWeekOfModule": 2,
-          "nbHourOfModule": 35,
-          "listIdModulePrerequisite": [
-            20
-          ],
-          "listIdModuleOptional": [],
-          "listClasses": [
-            {
-              "idClasses": "C73EEC8A-481A-487A-A896-7E77C8A78F5D",
-              "period": {
-                "start": "2018-04-03",
-                "end": "2018-04-06"
-              },
-              "realDuration": 35,
-              "workingDayDuration": 35,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 725,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 70,
-          "listIdModulePrerequisite": [
-            708
-          ],
-          "listIdModuleOptional": [],
-          "listClasses": [
-            {
-              "idClasses": "85239D35-A51E-4430-8B4F-8B05E5159614",
-              "period": {
-                "start": "2018-04-09",
-                "end": "2018-04-20"
-              },
-              "realDuration": 70,
-              "workingDayDuration": 70,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 730,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 70,
-          "listIdModulePrerequisite": [
-            725
-          ],
-          "listIdModuleOptional": [],
-          "listClasses": [
-            {
-              "idClasses": "F679E790-176B-4E64-9EE4-7DDA8F7CDE57",
-              "period": {
-                "start": "2018-06-25",
-                "end": "2018-07-06"
-              },
-              "realDuration": 70,
-              "workingDayDuration": 70,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 541,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 35,
-          "listIdModulePrerequisite": [],
-          "listIdModuleOptional": [],
-          "listClasses": [
-            {
-              "idClasses": "219CC390-7A58-477F-83D8-75278977BC67",
-              "period": {
-                "start": "2018-05-28",
-                "end": "2018-06-01"
-              },
-              "realDuration": 35,
-              "workingDayDuration": 35,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 544,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 105,
-          "listIdModulePrerequisite": [],
-          "listIdModuleOptional": [
-            541
-          ],
-          "listClasses": [
-            {
-              "idClasses": "0B839480-E37D-48D8-BABB-55B61ED78431",
-              "period": {
-                "start": "2018-11-19",
-                "end": "2018-11-30"
-              },
-              "realDuration": 105,
-              "workingDayDuration": 70,
-              "idPlace": 2
-            },
-            {
-              "idClasses": "AB2AE0F6-793C-4DB9-9701-297506E39300",
-              "period": {
-                "start": "2018-10-15",
-                "end": "2018-10-19"
-              },
-              "realDuration": 105,
-              "workingDayDuration": 35,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 302,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 70,
-          "listIdModulePrerequisite": [
-            725
-          ],
-          "listIdModuleOptional": [
-            541
-          ],
-          "listClasses": [
-            {
-              "idClasses": "C2B13BEE-AF8C-4B01-9138-96472CED391C",
-              "period": {
-                "start": "2019-01-07",
-                "end": "2019-01-18"
-              },
-              "realDuration": 70,
-              "workingDayDuration": 70,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 727,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 105,
-          "listIdModulePrerequisite": [
-            302
-          ],
-          "listIdModuleOptional": [],
-          "listClasses": [
-            {
-              "idClasses": "16E23474-A904-4CEB-B0B4-C5EB9963698F",
-              "period": {
-                "start": "2019-02-18",
-                "end": "2019-03-08"
-              },
-              "realDuration": 105,
-              "workingDayDuration": 105,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 728,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 70,
-          "listIdModulePrerequisite": [
-            725
-          ],
-          "listIdModuleOptional": [
-            302
-          ],
-          "listClasses": [
-            {
-              "idClasses": "9E10FA5B-8D32-4844-A86F-E4BD5133D1BC",
-              "period": {
-                "start": "2019-08-26",
-                "end": "2019-09-06"
-              },
-              "realDuration": 70,
-              "workingDayDuration": 70,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 729,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 35,
-          "listIdModulePrerequisite": [
-            728
-          ],
-          "listIdModuleOptional": [],
-          "listClasses": [
-            {
-              "idClasses": "1A53B31D-5197-4855-99BE-744677A5D04B",
-              "period": {
-                "start": "2019-09-09",
-                "end": "2019-09-13"
-              },
-              "realDuration": 35,
-              "workingDayDuration": 35,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 34,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 70,
-          "listIdModulePrerequisite": [
-            302
-          ],
-          "listIdModuleOptional": [],
-          "listClasses": [
-            {
-              "idClasses": "079857A4-C961-4CA5-A3F9-0F7697F379D1",
-              "period": {
-                "start": "2019-04-08",
-                "end": "2019-04-19"
-              },
-              "realDuration": 70,
-              "workingDayDuration": 70,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 731,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 35,
-          "listIdModulePrerequisite": [],
-          "listIdModuleOptional": [
-            544
-          ],
-          "listClasses": [
-            {
-              "idClasses": "B68EA7BA-5871-4093-95C9-79B5CE0C6C71",
-              "period": {
-                "start": "2019-05-20",
-                "end": "2019-05-24"
-              },
-              "realDuration": 35,
-              "workingDayDuration": 35,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 36,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 35,
-          "listIdModulePrerequisite": [],
-          "listIdModuleOptional": [],
-          "listClasses": [
-            {
-              "idClasses": "01CF703D-66AD-413B-8940-46BF4684F885",
-              "period": {
-                "start": "2019-05-27",
-                "end": "2019-05-31"
-              },
-              "realDuration": 35,
-              "workingDayDuration": 35,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 560,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 105,
-          "listIdModulePrerequisite": [],
-          "listIdModuleOptional": [
-            541
-          ],
-          "listClasses": [
-            {
-              "idClasses": "4EBD9C3F-373D-468D-BE7C-0C54BB88410C",
-              "period": {
-                "start": "2019-07-01",
-                "end": "2019-07-19"
-              },
-              "realDuration": 105,
-              "workingDayDuration": 105,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 566,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 35,
-          "listIdModulePrerequisite": [
-            560
-          ],
-          "listIdModuleOptional": [
-            728
-          ],
-          "listClasses": [
-            {
-              "idClasses": "2AD6370A-5C01-49E7-9342-5EC4DF37783D",
-              "period": {
-                "start": "2019-10-21",
-                "end": "2019-10-25"
-              },
-              "realDuration": 35,
-              "workingDayDuration": 35,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 734,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 70,
-          "listIdModulePrerequisite": [
-            708,
-            725
-          ],
-          "listIdModuleOptional": [],
-          "listClasses": [
-            {
-              "idClasses": "F9509972-B829-47FC-80AD-1FDF4DB35936",
-              "period": {
-                "start": "2018-08-20",
-                "end": "2018-08-31"
-              },
-              "realDuration": 70,
-              "workingDayDuration": 70,
-              "idPlace": 2
-            }
-          ]
-        },
-        {
-          "idModule": 817,
-          "nbWeekOfModule": 1,
-          "nbHourOfModule": 14,
-          "listIdModulePrerequisite": [
-            20,
-            566,
-            728,
-            34,
-            729,
-            544,
-            232,
-            731
-          ],
-          "listIdModuleOptional": [],
-          "listClasses": [
-            {
-              "idClasses": "2DDD0DDF-FB7B-4C16-8C36-6C23B776FD86",
-              "period": {
-                "start": "2019-11-19",
-                "end": "2019-11-20"
-              },
-              "realDuration": 14,
-              "workingDayDuration": 14,
-              "idPlace": 2
-            }
-          ]
-        }
-      ]
-    }
-
+ {
+   "periodOfTraining": {
+     "start": "2017-01-02",
+     "end": "2019-11-24"
+   },
+   "constraints": {
+     "place": {
+       "priority": 7,
+       "value": 2,
+       "id": "2954ca58-0009-487b-a22d-c1230ae8d87d"
+     },
+     "annualNumberOfHour": {
+       "priority": -1,
+       "value": -1,
+       "id": "85c8ade8-22c8-4f9b-8c69-e4dca71f4524"
+     },
+     "maxDurationOfTraining": {
+       "priority": -1,
+       "value": -1,
+       "id": "b802b315-d61d-4572-828c-693b8506cba1"
+     },
+     "trainingFrequency": {
+       "priority": 8,
+       "value": {
+         "maxWeekInTraining": 3,
+         "minWeekInCompany": 3
+       },
+       "id": "cf69d280-36b8-4918-8eeb-d9014f3c5c18"
+     },
+     "maxStudentInTraining": {
+       "priority": -1,
+       "value": {
+         "maxStudentInTraining": -1,
+         "listStudentCompany": []
+       },
+       "id": "505c0741-e2d6-4647-a389-db12ebac8650"
+     },
+     "listStudentRequired": [],
+     "listPeriodeOfTrainingExclusion": [
+       {
+         "priority": 5,
+         "value": {
+           "start": "2018-05-21",
+           "end": "2018-05-27"
+         },
+         "id": "0aaa6fb8-c43d-402f-a326-5283a5efcf29"
+       }
+     ],
+     "listPeriodeOfTrainingInclusion": [
+       {
+         "priority": 4,
+         "value": {
+           "start": "2018-04-02",
+           "end": "2018-04-06"
+         },
+         "id": "5fad8a27-540a-4d19-9e7e-5598aef90cc1"
+       }
+     ],
+     "moduleDuration": {
+       "priority": -1,
+       "value": true,
+       "id": "225d7984-8edc-4a0c-aa97-8f84dd9b408d"
+     },
+     "prerequisModule": {
+       "priority": -1,
+       "value": true,
+       "id": "ef08c9b7-a095-4839-bd68-9b7f58c76470"
+     }
+   },
+   "moduleOfTraining": [
+     {
+       "idModule": 708,
+       "nbWeekOfModule": 3,
+       "nbHourOfModule": 35,
+       "listIdModulePrerequisite": [],
+       "listIdModuleOptional": [],
+       "listClasses": [
+         {
+           "idClasses": "77D66D8A-DEFD-44F6-A158-65DD5A34400E",
+           "period": {
+             "start": "2017-12-11",
+             "end": "2017-12-15"
+           },
+           "realDuration": 35,
+           "workingDayDuration": 35,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 20,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 35,
+       "listIdModulePrerequisite": [],
+       "listIdModuleOptional": [],
+       "listClasses": [
+         {
+           "idClasses": "71E6F84D-928F-41AE-B456-4321A8848462",
+           "period": {
+             "start": "2018-01-22",
+             "end": "2018-01-26"
+           },
+           "realDuration": 35,
+           "workingDayDuration": 35,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 21,
+       "nbWeekOfModule": 2,
+       "nbHourOfModule": 35,
+       "listIdModulePrerequisite": [
+         20
+       ],
+       "listIdModuleOptional": [],
+       "listClasses": [
+         {
+           "idClasses": "C73EEC8A-481A-487A-A896-7E77C8A78F5D",
+           "period": {
+             "start": "2018-04-03",
+             "end": "2018-04-06"
+           },
+           "realDuration": 35,
+           "workingDayDuration": 35,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 725,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 70,
+       "listIdModulePrerequisite": [
+         708
+       ],
+       "listIdModuleOptional": [],
+       "listClasses": [
+         {
+           "idClasses": "85239D35-A51E-4430-8B4F-8B05E5159614",
+           "period": {
+             "start": "2018-04-09",
+             "end": "2018-04-20"
+           },
+           "realDuration": 70,
+           "workingDayDuration": 70,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 730,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 70,
+       "listIdModulePrerequisite": [
+         725
+       ],
+       "listIdModuleOptional": [],
+       "listClasses": [
+         {
+           "idClasses": "F679E790-176B-4E64-9EE4-7DDA8F7CDE57",
+           "period": {
+             "start": "2018-06-25",
+             "end": "2018-07-06"
+           },
+           "realDuration": 70,
+           "workingDayDuration": 70,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 541,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 35,
+       "listIdModulePrerequisite": [],
+       "listIdModuleOptional": [],
+       "listClasses": [
+         {
+           "idClasses": "219CC390-7A58-477F-83D8-75278977BC67",
+           "period": {
+             "start": "2018-05-28",
+             "end": "2018-06-01"
+           },
+           "realDuration": 35,
+           "workingDayDuration": 35,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 544,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 105,
+       "listIdModulePrerequisite": [],
+       "listIdModuleOptional": [
+         541
+       ],
+       "listClasses": [
+         {
+           "idClasses": "0B839480-E37D-48D8-BABB-55B61ED78431",
+           "period": {
+             "start": "2018-11-19",
+             "end": "2018-11-30"
+           },
+           "realDuration": 105,
+           "workingDayDuration": 70,
+           "idPlace": 2
+         },
+         {
+           "idClasses": "AB2AE0F6-793C-4DB9-9701-297506E39300",
+           "period": {
+             "start": "2018-10-15",
+             "end": "2018-10-19"
+           },
+           "realDuration": 105,
+           "workingDayDuration": 35,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 302,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 70,
+       "listIdModulePrerequisite": [
+         725
+       ],
+       "listIdModuleOptional": [
+         541
+       ],
+       "listClasses": [
+         {
+           "idClasses": "C2B13BEE-AF8C-4B01-9138-96472CED391C",
+           "period": {
+             "start": "2019-01-07",
+             "end": "2019-01-18"
+           },
+           "realDuration": 70,
+           "workingDayDuration": 70,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 727,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 105,
+       "listIdModulePrerequisite": [
+         302
+       ],
+       "listIdModuleOptional": [],
+       "listClasses": [
+         {
+           "idClasses": "16E23474-A904-4CEB-B0B4-C5EB9963698F",
+           "period": {
+             "start": "2019-02-18",
+             "end": "2019-03-08"
+           },
+           "realDuration": 105,
+           "workingDayDuration": 105,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 728,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 70,
+       "listIdModulePrerequisite": [
+         725
+       ],
+       "listIdModuleOptional": [
+         302
+       ],
+       "listClasses": [
+         {
+           "idClasses": "9E10FA5B-8D32-4844-A86F-E4BD5133D1BC",
+           "period": {
+             "start": "2019-08-26",
+             "end": "2019-09-06"
+           },
+           "realDuration": 70,
+           "workingDayDuration": 70,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 729,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 35,
+       "listIdModulePrerequisite": [
+         728
+       ],
+       "listIdModuleOptional": [],
+       "listClasses": [
+         {
+           "idClasses": "1A53B31D-5197-4855-99BE-744677A5D04B",
+           "period": {
+             "start": "2019-09-09",
+             "end": "2019-09-13"
+           },
+           "realDuration": 35,
+           "workingDayDuration": 35,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 34,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 70,
+       "listIdModulePrerequisite": [
+         302
+       ],
+       "listIdModuleOptional": [],
+       "listClasses": [
+         {
+           "idClasses": "079857A4-C961-4CA5-A3F9-0F7697F379D1",
+           "period": {
+             "start": "2019-04-08",
+             "end": "2019-04-19"
+           },
+           "realDuration": 70,
+           "workingDayDuration": 70,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 731,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 35,
+       "listIdModulePrerequisite": [],
+       "listIdModuleOptional": [
+         544
+       ],
+       "listClasses": [
+         {
+           "idClasses": "B68EA7BA-5871-4093-95C9-79B5CE0C6C71",
+           "period": {
+             "start": "2019-05-20",
+             "end": "2019-05-24"
+           },
+           "realDuration": 35,
+           "workingDayDuration": 35,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 36,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 35,
+       "listIdModulePrerequisite": [],
+       "listIdModuleOptional": [],
+       "listClasses": [
+         {
+           "idClasses": "01CF703D-66AD-413B-8940-46BF4684F885",
+           "period": {
+             "start": "2019-05-27",
+             "end": "2019-05-31"
+           },
+           "realDuration": 35,
+           "workingDayDuration": 35,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 560,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 105,
+       "listIdModulePrerequisite": [],
+       "listIdModuleOptional": [
+         541
+       ],
+       "listClasses": [
+         {
+           "idClasses": "4EBD9C3F-373D-468D-BE7C-0C54BB88410C",
+           "period": {
+             "start": "2019-07-01",
+             "end": "2019-07-19"
+           },
+           "realDuration": 105,
+           "workingDayDuration": 105,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 566,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 35,
+       "listIdModulePrerequisite": [
+         560
+       ],
+       "listIdModuleOptional": [
+         728
+       ],
+       "listClasses": [
+         {
+           "idClasses": "2AD6370A-5C01-49E7-9342-5EC4DF37783D",
+           "period": {
+             "start": "2019-10-21",
+             "end": "2019-10-25"
+           },
+           "realDuration": 35,
+           "workingDayDuration": 35,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 734,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 70,
+       "listIdModulePrerequisite": [
+         708,
+         725
+       ],
+       "listIdModuleOptional": [],
+       "listClasses": [
+         {
+           "idClasses": "F9509972-B829-47FC-80AD-1FDF4DB35936",
+           "period": {
+             "start": "2018-08-20",
+             "end": "2018-08-31"
+           },
+           "realDuration": 70,
+           "workingDayDuration": 70,
+           "idPlace": 2
+         }
+       ]
+     },
+     {
+       "idModule": 817,
+       "nbWeekOfModule": 1,
+       "nbHourOfModule": 14,
+       "listIdModulePrerequisite": [
+         20,
+         566,
+         728,
+         34,
+         729,
+         544,
+         232,
+         731
+       ],
+       "listIdModuleOptional": [],
+       "listClasses": [
+         {
+           "idClasses": "2DDD0DDF-FB7B-4C16-8C36-6C23B776FD86",
+           "period": {
+             "start": "2019-11-19",
+             "end": "2019-11-20"
+           },
+           "realDuration": 14,
+           "workingDayDuration": 14,
+           "idPlace": 2
+         }
+       ]
+     }
+   ]
+ }
 ```

@@ -161,7 +161,9 @@ public class ChocoVerify
                         {
                             model.getContrainteManager().disableConstraint(contrainte, module);
                         }
-                        constraintRespected.add(model.getContrainteManager().getContrainte(module, contrainte));
+                        ConstraintRespected contrainteDuCours = model.getContrainteManager().getContrainte(module, contrainte);
+                        if (contrainteDuCours.getRespected() == false)
+                            constraintRespected.add(contrainteDuCours);
                     }
                     calendriersTrouve.addCours(getCours(module, constraintRespected));
                 }
@@ -173,7 +175,7 @@ public class ChocoVerify
         Collections.sort(calendriersTrouve.getCours(), Comparator.comparing(o -> DateTimeHelper.toInstant(o.getStart())));
         //.sort(Comparator.comparing(o -> lesCoursTrouve.indexOf(lesCoursTrouve.stream().filter( c -> c.getIdClasses().contentEquals(o.getIdClasses())))));
 
-        calendriersTrouve.setConstraint(model.getContrainteManager().getContraintes());
+        calendriersTrouve.setConstraints(model.getContrainteManager().getContraintesFausses());
         return calendriersTrouve;
     }
 
@@ -184,6 +186,6 @@ public class ChocoVerify
 
     private ClassesCalendar getCours(ModuleChoco module)
     {
-        return getCours(module, model.getContrainteManager().getContraintes(module));
+        return getCours(module, model.getContrainteManager().getContraintesFausses(module));
     }
 }

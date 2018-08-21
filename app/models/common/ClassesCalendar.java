@@ -1,5 +1,6 @@
 package models.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import solver.modelChoco.CoursChoco;
 
 import java.util.ArrayList;
@@ -7,7 +8,9 @@ import java.util.List;
 
 public class ClassesCalendar
 {
+    @JsonIgnore
     private final String start;
+    @JsonIgnore
     private final String end;
     private final int    idModule;
     private String       idClasses;

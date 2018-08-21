@@ -14,7 +14,6 @@ import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.util.criteria.Criterion;
-import solver.contraintes.ContrainteManager;
 import solver.modelChoco.CoursChoco;
 import solver.modelChoco.ModuleChoco;
 import utils.DateTimeHelper;
@@ -156,7 +155,7 @@ public class ChocoGenerator
                     if (model.getModuleInChoco().get(i).getModulesWorkingDayDuration().getValue() > 0) {
                         CoursChoco coursTrouve = model.getModuleInChoco().get(i).getCoursDuModule().get(model.getModuleInChoco().get(i).getCoursId().getValue());
                         lesCoursTrouve.add(coursTrouve);
-                        ClassesCalendar classesCalendar = new ClassesCalendar(coursTrouve, model.getContrainteManager().getContraintes(model.getModuleInChoco().get(i)));
+                        ClassesCalendar classesCalendar = new ClassesCalendar(coursTrouve, model.getContrainteManager().getContraintesFausses(model.getModuleInChoco().get(i)));
                         calendarTrouve.addCours(classesCalendar);
 
                         listeners.forEach(l -> l.foundCours(classesCalendar));
@@ -168,7 +167,7 @@ public class ChocoGenerator
                 Collections.sort(calendarTrouve.getCours(), Comparator.comparing(o -> DateTimeHelper.toInstant(o.getStart())));
                 //.sort(Comparator.comparing(o -> lesCoursTrouve.indexOf(lesCoursTrouve.stream().filter( c -> c.getIdClasses().contentEquals(o.getIdClasses())))));
 
-                calendarTrouve.setConstraint(model.getContrainteManager().getContraintes());
+                calendarTrouve.setConstraints(model.getContrainteManager().getContraintesFausses());
 
                 if (compare(calendriersTrouve, calendarTrouve) == false) {
                     calendriersTrouve.add(calendarTrouve);

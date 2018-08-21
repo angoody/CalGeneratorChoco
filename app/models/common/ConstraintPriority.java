@@ -3,6 +3,7 @@ package models.common;
 public class ConstraintPriority<T>
 {
     private Integer priority = -1;
+    private String id = "";
     private T value;
 
     public ConstraintPriority()

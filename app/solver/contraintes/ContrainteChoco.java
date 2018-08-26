@@ -34,16 +34,16 @@ public abstract class ContrainteChoco  <T> {
 
     public abstract String getConstraintName();
 
-    public ConstraintRespected getConstrainteRespected() {
+    ConstraintRespected getConstrainteRespected() {
         return constrainteRespected;
     }
 
-    public ConstraintRespected calculateRespectOfConstraint()
+    ConstraintRespected calculateRespectOfConstraint()
     {
         return new ConstraintRespected(constrainteRespected, !isAlternateSearch());
     }
 
-    public ConstraintRespected calculateRespectOfConstraint(ModuleChoco module)
+    ConstraintRespected calculateRespectOfConstraint(ModuleChoco module)
     {
         return new ConstraintRespected(constrainteRespected, !isAlternateSearch(module));
     }
@@ -58,12 +58,12 @@ public abstract class ContrainteChoco  <T> {
 
     public Boolean isAlternateSearch(ModuleChoco module)
     {
-        return constraints.get(module) == null ? false : (constraints.get(module).getStatus() != Constraint.Status.POSTED);
+        return constraints.get(module) != null && (constraints.get(module).getStatus() != Constraint.Status.POSTED);
     }
 
-    public Boolean isAlternateSearch()
+    private Boolean isAlternateSearch()
     {
-        return modulesInChoco.stream().filter(m -> isAlternateSearch(m)).count() > 0 ;
+        return modulesInChoco.stream().anyMatch(this::isAlternateSearch);
     }
 
     public Constraint post(ModuleChoco module) {
@@ -107,16 +107,16 @@ public abstract class ContrainteChoco  <T> {
 
     public List<Constraint> getConstraint()
     {
-        return constraints.values().stream().collect(Collectors.toList());
+        return new ArrayList<>(constraints.values());
     }
 
 
-    public List<ModuleChoco> getModulesInChoco() {
+    List<ModuleChoco> getModulesInChoco() {
         return modulesInChoco;
     }
 
 
-    public ConstraintPriority<T> getContraintePriority()
+    ConstraintPriority<T> getContraintePriority()
     {
         return contrainteModel;
     }

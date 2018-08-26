@@ -105,6 +105,11 @@ public class ListeContrainteChoco<T extends ItemContrainteChoco> {
         return contraintesChoco.stream().map(c -> post(c)).collect(Collectors.toList());
     }
 
+    public List<Constraint> post(int nbModule)
+    {
+        return contraintesChoco.stream().map(c -> c.post(nbModule)).collect(Collectors.toList());
+    }
+
 
 
     public Constraint unPost(T contrainte)

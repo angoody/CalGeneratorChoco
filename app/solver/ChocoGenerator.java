@@ -85,13 +85,13 @@ public class ChocoGenerator
         });
 
         // Si aucune solution n'est trouvée, permet de savoir pourquoi
-        //solver.showContradiction();
+        solver.showContradiction();
 
         // Lorsqu'une solution est trouvé, permet de comprendre le cheminement
-        //solver.showDecisions();
+        solver.showDecisions();
 
         // Statistiques complètes
-        //solver.showStatistics();
+        solver.showStatistics();
 
         solver.showShortStatistics();
 
@@ -142,6 +142,7 @@ public class ChocoGenerator
         int j = 0;
         int nbEssai = 0;
         int nbConstraintToFree = 1;
+        Constraint duplicateCalendar = null;
         while ((calendriersTrouve.size() < problem.getNumberOfCalendarToFound()) & (nbEssai < model.getContrainteManager().maxAlternateSearch())) {
 
 
@@ -199,7 +200,6 @@ public class ChocoGenerator
                 else
                 {
                     System.out.println("Doublon trouvé essai " + nbEssai);
-
                 }
 
 

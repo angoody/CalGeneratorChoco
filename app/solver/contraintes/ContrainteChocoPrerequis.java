@@ -35,7 +35,10 @@ public class ContrainteChocoPrerequis extends ContrainteChoco<Boolean>
             contraintes.addAll(module.getModuleFacultatif().stream().map(m -> model.arithm(module.getDebut(), ">", m.getFin())).collect(Collectors.toList()));
         }
 
-        return model.and(contraintes.stream().toArray(Constraint[]::new));
+        if (contraintes.size() > 0)
+            return model.and(contraintes.stream().toArray(Constraint[]::new));
+        else
+            return model.trueConstraint();
     }
 
     @Override

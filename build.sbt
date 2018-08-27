@@ -11,7 +11,7 @@ scalaVersion := "2.12.2"
 
 libraryDependencies ++= Seq(
   javaJdbc ,
-  cache ,
+  ehcache ,
   javaWs,
   "org.choco-solver" % "choco-solver" % "4.0.8" withSources() withJavadoc())
 

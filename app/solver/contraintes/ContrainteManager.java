@@ -23,6 +23,7 @@ public class ContrainteManager
     private List<ContrainteChoco> contrainteParPriorite = new ArrayList<>();
 
     private ContrainteChocoLieu                                   contrainteLieu              = null;
+    private ContrainteChocoAnnualNumberHour                       contrainteHeureAnnuel       = null;
     private ContrainteChocoPrerequis                              contraintePrerequis         = null;
     private ContrainteChocoModuleDuration                         contrainteModuleDuration    = null;
     private ContrainteChocoPeriodeFormation                       contraintePeriodeFormation  = null;
@@ -56,6 +57,19 @@ public class ContrainteManager
             contrainteParPriorite.add(contrainteLieu);
         }
 
+        // Contrainte de nombre d'heure de formation
+        if (constraint.getAnnualNumberOfHour().getValue() > 0 )
+        {
+            contrainteHeureAnnuel = new ContrainteChocoAnnualNumberHour(
+                    model,
+                    constraint.getAnnualNumberOfHour(),
+                    moduleInChoco,
+                    problem.getPeriodOfTraining());
+            moduleInChoco.forEach(m -> contrainteHeureAnnuel.post(m));
+            contrainteParPriorite.add(contrainteHeureAnnuel);
+        }
+
+        // Période d'exclusion de formation
         if (constraint.getListPeriodeOfTrainingExclusion().size() > 0)
         {
             contraintePeriodeExclusion = new ListeContrainteChoco<ContrainteChocoPeriodeExclusion>(model, constraint.getListPeriodeOfTrainingExclusion(), ContrainteChocoPeriodeExclusion.class, moduleInChoco, ListeContrainteChoco.AND);
@@ -63,6 +77,8 @@ public class ContrainteManager
             contrainteParPriorite.addAll(contraintePeriodeExclusion.getContraintesChoco());
         }
 
+
+        // Période de formation obligatoire
         if (constraint.getListPeriodeOfTrainingInclusion().size() > 0)
         {
             contraintePeriodeInclusion = new ListeContrainteChoco<ContrainteChocoPeriodeInclusion>(model, constraint.getListPeriodeOfTrainingInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
@@ -70,6 +86,7 @@ public class ContrainteManager
             contrainteParPriorite.addAll(contraintePeriodeInclusion.getContraintesChoco());
         }
 
+        // Fréquence de formation
         if (constraint.getTrainingFrequency().getValue().getMaxWeekInTraining() > 0)
         {
             contraintePeriodeFormation = new ContrainteChocoPeriodeFormation(model, constraint.getTrainingFrequency(), moduleInChoco);
@@ -94,8 +111,8 @@ public class ContrainteManager
             contrainteParPriorite.add(contrainteChocoMaxStagiaire);
         }
 
-        // Les contraintes décomposé retirable sont ajoutée dans la liste des contrainteParPriorite décroissante
-
+        // Les contraintes décomposé retirable sont ajoutée dans la liste des contrainte Par Priorite décroissante
+        // Les contraintes avec la priorité la plus haute (8 étant moins prioritaire que 1) sont retiré du modèle un par un et module par module en cas d'échec de la recherche
         Collections.sort(contrainteParPriorite, (Comparator.comparing(o -> o.getConstrainteRespected().getPriority())));
         Collections.reverse(contrainteParPriorite);
 

@@ -15,6 +15,7 @@ import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.util.criteria.Criterion;
 import solver.modelChoco.CoursChoco;
+import solver.modelChoco.CoursChocoStagiaire;
 import solver.modelChoco.ModuleChoco;
 import utils.DateTimeHelper;
 
@@ -42,7 +43,7 @@ public class ChocoGenerator
             {
                 return moduleOfTraining.stream().filter(m -> m.getListClasses().size() > 0)
                     .flatMap(
-                            m -> IntStream.range(0, (m.getListClasses().stream().mapToInt(c -> c.getRealDuration()).max().getAsInt() / m.getListClasses().stream().mapToInt(c -> c.getWorkingDayDuration()).min().getAsInt()))
+                            m -> IntStream.range(0, (m.getListClasses().stream().mapToInt(Classes::getRealDuration).max().getAsInt() / m.getListClasses().stream().mapToInt(Classes::getWorkingDayDuration).min().getAsInt()))
                                     .mapToObj(i -> new ModuleChoco(m, getModel(), i))).collect(Collectors.toList());
             }
         };
@@ -163,13 +164,12 @@ public class ChocoGenerator
                 }
 
                 // tri des cours par date de début
-                Collections.sort(lesCoursTrouve, Comparator.comparing(o -> o.getDebut()));
-                Collections.sort(calendarTrouve.getCours(), Comparator.comparing(o -> DateTimeHelper.toInstant(o.getStart())));
-                //.sort(Comparator.comparing(o -> lesCoursTrouve.indexOf(lesCoursTrouve.stream().filter( c -> c.getIdClasses().contentEquals(o.getIdClasses())))));
+                lesCoursTrouve.sort(Comparator.comparing(CoursChocoStagiaire::getDebut));
+                calendarTrouve.getCours().sort(Comparator.comparing(o -> DateTimeHelper.toInstant(o.getStart())));
 
                 calendarTrouve.setConstraints(model.getContrainteManager().getContraintesFausses());
 
-                if (compare(calendriersTrouve, calendarTrouve) == false) {
+                if (!compare(calendriersTrouve, calendarTrouve)) {
                     calendriersTrouve.add(calendarTrouve);
                     // Lors de l'utilisation de modules scindés, pour ne pas avoir les mêmes résultats sur les différents modules portant le même id
                     // Ajout de contrainte pour que les prochains résultats ne retourne pas les mêmes modules
@@ -203,49 +203,6 @@ public class ChocoGenerator
             }
             nbEssai++;
 
-            /*List<Solution> allSolutions = solver.findAllSolutions(stop);
-            if ( allSolutions.size() > 0) {
-                for (Solution solution:allSolutions) {
-                    Calendar calendarTrouve = new Calendar();
-                    List<CoursChoco> lesCoursTrouve = new ArrayList<>();
-                    for (int i = 0; i < nbModules; i++) {
-
-                        // La valeur dans le modulesID... correspond à la valeur sélectionné par Choco
-                        if (solution.getIntVal(moduleInChoco.get(i).getModulesWorkingDayDuration()) > 0) {
-                            CoursChoco coursTrouve = moduleInChoco.get(i).getCoursDuModule().get(solution.getIntVal(moduleInChoco.get(i).getCoursId()));
-                            lesCoursTrouve.add(coursTrouve);
-                            ClassesCalendar classesCalendar = new ClassesCalendar(coursTrouve, finalContrainteManager.getContraintes(moduleInChoco.get(i)));
-                            calendarTrouve.addCours(classesCalendar);
-
-                            listeners.forEach(l -> l.foundCours(classesCalendar));
-                        }
-                    }
-
-                    // tri des cours par date de début
-                    Collections.sort(lesCoursTrouve, Comparator.comparing(o -> o.getDebut()));
-                    Collections.sort(calendarTrouve.getCours(), Comparator.comparing(o -> DateTimeHelper.toInstant(o.getStart())));
-                    //.sort(Comparator.comparing(o -> lesCoursTrouve.indexOf(lesCoursTrouve.stream().filter( c -> c.getIdClasses().contentEquals(o.getIdClasses())))));
-
-                    calendarTrouve.setConstraint(finalContrainteManager.getContraintes());
-
-                    if (compare(calendriersTrouve, calendarTrouve) == false) {
-                        calendriersTrouve.add(calendarTrouve);
-
-                        listeners.forEach(l -> l.foundCalendar(calendarTrouve));
-                    }
-                    else
-                    {
-                        System.out.println("Doublon trouvé essai " + nbEssai);
-                    }
-                }
-
-            }
-            else
-            {
-                contrainteManager.alternateSearch(nbEssai);
-                solver.reset();
-            }
-            nbEssai++;*/
         }
         System.out.println("Essai " + nbEssai);
         return calendriersTrouve;

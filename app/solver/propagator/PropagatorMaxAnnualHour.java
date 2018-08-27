@@ -10,6 +10,7 @@ import org.chocosolver.util.ESat;
 import solver.modelChoco.ModuleChoco;
 import utils.DateTimeHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PropagatorMaxAnnualHour extends Propagator<IntVar> {
@@ -17,7 +18,6 @@ public class PropagatorMaxAnnualHour extends Propagator<IntVar> {
 
     private ModuleChoco module;
     private final List<ModuleChoco> modules;
-    private static List<Integer> countHour;
     private final Integer nbHour;
     private final Integer fin;
     private final Integer debut;
@@ -46,34 +46,42 @@ public class PropagatorMaxAnnualHour extends Propagator<IntVar> {
     }
 
     @Override
-    public void fails() throws ContradictionException {
-        super.fails();
-        countHour.clear();
-    }
-
-    @Override
     public void propagate(int evtmask) throws ContradictionException {
 
         // determine le premier cours
-        final Integer[] datePremierModule;
-        datePremierModule = new Integer[]{fin};
-        modules.stream().filter(m -> m.getDebut().getValue() > debut && m.getDebut().getValue() < fin).forEach(m -> datePremierModule[0] = m.getDebut().getValue());
+        if (isAternatifSearch())
+        {
+            isEntailed = ESat.TRUE;
+        }
+        else {
+            Integer datePremierModule = fin;
+            for (ModuleChoco moduleChoco : modules) {
+                if (moduleChoco.getDebut().getValue() >= debut && moduleChoco.getFin().getValue() <= fin && moduleChoco.getDebut().getValue() < datePremierModule) {
+                    datePremierModule = moduleChoco.getDebut().getValue();
+                }
+            }
 
-        int annee = module.getFin().getValue() - datePremierModule[0] / 365;
 
-        while (countHour.size() < annee) { countHour.add(0);}
+            int anneeDebut = (((module.getFin().getValue() - datePremierModule) / 365) * 365) + datePremierModule;
+            int anneeFin = ((((module.getFin().getValue() - datePremierModule) / 365) + 1) * 365) + datePremierModule;
 
-        for (IntVar var : getVars()) {
-            if ((countHour.get(annee) + module.getDuration().getValue()) < nbHour) {
-                countHour.set(annee, countHour.get(annee) + module.getDuration().getValue());
+            Integer countHour = 0;
+
+            for (ModuleChoco moduleChoco : modules) {
+                if (moduleChoco.getDebut().getValue() >= anneeDebut && moduleChoco.getFin().getValue() <= anneeFin) {
+                    countHour = countHour + moduleChoco.getDuration().getValue();
+                }
+            }
+
+            if (countHour > nbHour) {
+                for (IntVar var : getVars()) {
+                    var.removeValue(var.getValue(), this);
+                    isEntailed = ESat.UNDEFINED;
+                }
+            } else {
                 isEntailed = ESat.TRUE;
             }
-            else {
-                var.removeValue(var.getValue(), this);
-                isEntailed = ESat.UNDEFINED;
-            }
         }
-
 
     }
 

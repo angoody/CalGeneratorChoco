@@ -213,6 +213,9 @@ public class ChocoGenerator
 
         }
         System.out.println("Essai " + nbEssai);
+
+        // ChocoTest.calendarToCsv(problem.getModuleOfTraining().stream().flatMap(m -> m.getListClasses().stream()).collect(Collectors.toList()), calendriersTrouve, problem.getPeriodOfTraining());
+
         return calendriersTrouve;
 
     }

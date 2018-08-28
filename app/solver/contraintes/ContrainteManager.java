@@ -26,15 +26,7 @@ public class ContrainteManager
     private ContrainteChocoPrerequis                              contraintePrerequis         = null;
     private ContrainteChocoModuleDuration                         contrainteModuleDuration    = null;
     private ContrainteChocoPeriodeFormation                       contraintePeriodeFormation  = null;
-    private ListeContrainteChoco<ContrainteChocoPeriodeExclusion> contraintePeriodeExclusion  = null;
-    private ListeContrainteChoco<ContrainteChocoPeriodeInclusion> contraintePeriodeInclusion  = null;
     private ContrainteChocoMaxStagiaire                           contrainteChocoMaxStagiaire = null;
-
-    private ContrainteChocoLieu                                   contrainteLieu;
-    private ContrainteChocoPrerequis                              contraintePrerequis;
-    private ContrainteChocoModuleDuration                         contrainteModuleDuration;
-    private ContrainteChocoPeriodeFormation                       contraintePeriodeFormation;
-    private ContrainteChocoMaxStagiaire                           contrainteChocoMaxStagiaire;
 
 
 
@@ -127,9 +119,6 @@ public class ContrainteManager
 
         // Les contraintes décomposé retirable sont ajoutée dans la liste des contrainte Par Priorite décroissante
         // Les contraintes avec la priorité la plus haute (8 étant moins prioritaire que 1) sont retiré du modèle un par un et module par module en cas d'échec de la recherche
-        Collections.sort(contrainteParPriorite, (Comparator.comparing(o -> o.getConstrainteRespected().getPriority())));
-
-        // Les contraintes décomposé retirable sont ajoutée dans la liste des contrainteParPriorite décroissante
         contrainteParPriorite.sort((Comparator.comparing(o -> o.getConstrainteRespected().getPriority())));
         Collections.reverse(contrainteParPriorite);
 

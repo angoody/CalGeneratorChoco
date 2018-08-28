@@ -176,15 +176,23 @@ public class ChocoGenerator
                     // Toujours sur le modules le moins fort
 
                     List<org.chocosolver.solver.constraints.Constraint> contraintes = new ArrayList<>();
+
+                    // Crée des contraintes sur chaque module pour que la suite de cours d'un même module ne soit pas sélectionné de nouveau
                     model.getModuleInChoco().stream()
                             .filter(m -> m.getModulesWorkingDayDuration().getValue() > 0)
                             .forEach( module ->
-                                     model.getModuleInChoco()
-                                            .stream()
-                                            .filter(m -> m.getIdModule() == module.getIdModule())
-                                            .forEach(m -> contraintes.add(model.getModel().arithm(m.getCoursId(), "!=", module.getCoursId().getValue()))));
+                                    contraintes.add(
+                                            model.getModel().and(
+                                                    model.getModuleInChoco().stream()
+                                                        .filter(m -> module.getIdModule() == m.getIdModule() )
+                                                            .map(m -> model.getModel().arithm(m.getCoursId(), "!=", module.getCoursId().getValue()))
+                                                            .toArray(Constraint[]::new)
+                                            )
+                                    )
+                            );
                     //  solver.reset();
-                    model.getModel().post(model.getModel().or(contraintes.stream().toArray(Constraint[]::new)));
+
+                    model.getModel().or(contraintes.stream().toArray(Constraint[]::new)).post();
 
                     listeners.forEach(l -> l.foundCalendar(calendarTrouve));
                 }

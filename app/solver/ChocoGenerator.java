@@ -142,6 +142,13 @@ public class ChocoGenerator
         int j = 0;
         int nbEssai = 0;
         int nbConstraintToFree = 1;
+
+        System.out.println("Recherche de " + problem.getNumberOfCalendarToFound() + " calendriers avec ");
+        System.out.println("- période : du " + problem.getPeriodOfTraining().getStart() + " au " + problem.getPeriodOfTraining().getEnd());
+        System.out.println("- modules : " + problem.getModuleOfTraining().size());
+        System.out.println("- place : " + problem.getConstraints().getPlace().getValue() );
+        System.out.println("- contraintes : " + model.getContrainteManager().getContrainteParPriorite().size() );
+
         while ((calendriersTrouve.size() < problem.getNumberOfCalendarToFound()) & (nbEssai < model.getContrainteManager().maxAlternateSearch())) {
 
 

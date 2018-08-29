@@ -67,8 +67,6 @@ public class ChocoTest
         List<Classes> classes = problem.getModuleOfTraining().stream().flatMap(m -> m.getListClasses().stream()).collect(Collectors.toList());
         calendarToCsv(classes, calendars, problem.getPeriodOfTraining());
         compare(calendars);
-
-
         return calendars;
 
     }
@@ -667,7 +665,7 @@ public class ChocoTest
         frequence.getValue().setMinWeekInCompany(3);
         frequence.getValue().setMaxWeekInTraining(3);
         problem.getConstraints().setTrainingFrequency(frequence);
-        problem.getConstraints().setAnnualNumberOfHour(new ConstraintPriority<>(2, 1000));
+        problem.getConstraints().setAnnualNumberOfHour(new ConstraintPriority<>(9, 1200));
         problem.getConstraints().setListPeriodeOfTrainingExclusion(Arrays.asList(new ConstraintPriority<>(5, new Period("2018-05-21", "2018-05-27"))));
         problem.getConstraints().setListPeriodeOfTrainingInclusion(Arrays.asList(new ConstraintPriority<>(4, new Period("2018-04-02", "2018-04-06"))));
 

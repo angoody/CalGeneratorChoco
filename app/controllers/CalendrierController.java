@@ -28,6 +28,11 @@ public class CalendrierController  extends Controller {
         if (json == null)
             return badRequest();
         final Generator problem = Json.fromJson(json, Generator.class);
+        System.out.println("Récupération du problème, demande de " + problem.getNumberOfCalendarToFound() + " calendriers avec ");
+        System.out.println("- période : du " + problem.getPeriodOfTraining().getStart() + " au " + problem.getPeriodOfTraining().getEnd());
+        System.out.println("- modules : " + problem.getModuleOfTraining().size());
+        System.out.println("- place : " + problem.getConstraints().getPlace().getValue() );
+
         return ok(Json.toJson(new ChocoGenerator(problem).solve()));
     }
 

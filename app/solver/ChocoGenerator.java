@@ -12,14 +12,18 @@ import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.objective.ParetoOptimizer;
 import org.chocosolver.solver.search.loop.monitors.IMonitorSolution;
 import org.chocosolver.solver.search.strategy.Search;
+import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.impl.BoolVarImpl;
 import org.chocosolver.util.criteria.Criterion;
+import solver.contraintes.ContrainteChoco;
 import solver.modelChoco.CoursChoco;
 import solver.modelChoco.CoursChocoStagiaire;
 import solver.modelChoco.ModuleChoco;
 import utils.DateTimeHelper;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -107,9 +111,24 @@ public class ChocoGenerator
         IntVar[] occurenceIdentifier = IntStream.range(0, nbModules).mapToObj(i -> model.getModuleInChoco().get(i).getOccurenceVar()).toArray(IntVar[]::new);
         IntVar[] lieux = IntStream.range(0, nbModules).mapToObj(i -> model.getModuleInChoco().get(i).getLieu()).toArray(IntVar[]::new);
 
-        ParetoOptimizer po = new ParetoOptimizer(Model.MAXIMIZE, coursIdentifier);
+        ParetoOptimizer po = new ParetoOptimizer(Model.MAXIMIZE, );
+        List<BoolVar> test = new ArrayList<BoolVar>();
 
+
+        for (ContrainteChoco contrainteChoco : model.getContrainteManager().getContrainteParPriorite()) {
+            test.addAll(contrainteChoco.getConstraintReified());
+        }
+
+
+
+
+        BoolVar[] domSet = test.stream().toArray(BoolVar[]::new);
+        IntVar size = model.getModel().intVar(0,model.getContrainteManager().maxAlternateSearch());
+        model.getModel().setObjective(Model.MINIMIZE,size);
+        model.getModel().sum(domSet,"=",size).post();
         solver.plugMonitor(po);
+
+
 
         solver.setSearch(Search.conflictOrderingSearch(Search.defaultSearch(model.getModel())));
 
@@ -206,7 +225,7 @@ public class ChocoGenerator
             }
             else
             {
-                model.getContrainteManager().alternateSearch(nbEssai);
+                //model.getContrainteManager().alternateSearch(nbEssai);
                 solver.reset();
             }
             nbEssai++;

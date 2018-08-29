@@ -5,17 +5,16 @@ import models.common.ConstraintRespected;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.BoolVar;
+import org.chocosolver.util.ESat;
 import solver.modelChoco.ModuleChoco;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class ContrainteChoco<T> {
 
     protected static ResourceBundle language = ResourceBundle.getBundle("language", Locale.getDefault());
 
-    protected Map<ModuleChoco, Constraint> constraints = new HashMap<>();
-    private List<BoolVar> constraintReified = new ArrayList<>();
+    protected Map<ModuleChoco, BoolVar> constraints = new HashMap<>();
     private ConstraintRespected constrainteRespected;
     private ConstraintPriority<T> contrainteModel;
     private List<ModuleChoco> modulesInChoco;
@@ -57,7 +56,7 @@ public abstract class ContrainteChoco<T> {
     }
 
     public Boolean isAlternateSearch(ModuleChoco module) {
-        return constraints.get(module) == null ? false : (constraints.get(module).getStatus() != Constraint.Status.POSTED);
+        return constraints.get(module) == null ? false : (constraints.get(module).getBooleanValue() != ESat.TRUE);
     }
 
     public Boolean isAlternateSearch() {
@@ -68,51 +67,34 @@ public abstract class ContrainteChoco<T> {
         if (heuristic != null)
             model.unpost(heuristic);
 
-        heuristic = model.and(reify());
+        heuristic = model.sum(reify(), "=", nbModule);
         heuristic.post();
         return heuristic;
     }
 
     public Constraint post(ModuleChoco module) {
-        Constraint constraint = constraints.get(module);
+        BoolVar constraint = constraints.get(module);
         if (constraint == null) {
-            constraint = createConstraint(module);
+            constraint = createConstraint(module).reify();
             constraints.put(module, constraint);
         }
-        if (constraint.getStatus() != Constraint.Status.FREE)
-            model.unpost(constraint);
 
-        if (constraint.getStatus() != Constraint.Status.POSTED)
-            constraint.post();
-
-        // Si toutes les contraintes sont posté, alors la contrainte est respectée
-        if (constraints.values().stream().filter(c -> c.getStatus() == Constraint.Status.POSTED).count() == constraints.values().size())
-            constrainteRespected.setRespected(true);
-
-        return constraint;
+        return model.trueConstraint();
     }
 
     public Constraint unPost(ModuleChoco module) {
-        Constraint constraint = constraints.get(module);
-        if (constraint.getStatus() == Constraint.Status.POSTED)
-            model.unpost(constraint);
-        //constraint.reify();
-        constrainteRespected.setRespected(false);
 
-        return constraint;
+        return model.falseConstraint();
+    }
+
+    public List<BoolVar> getConstraintReified()
+    {
+        return new ArrayList<>(constraints.values());
     }
 
     public Constraint getContraint(ModuleChoco module) {
-        Constraint constraint = constraints.get(module);
-        if (constraint == null) {
-            constraint = createConstraint(module);
-            constraints.put(module, constraint);
-        }
-        return constraint;
-    }
 
-    public List<Constraint> getConstraints() {
-        return constraints.values().stream().collect(Collectors.toList());
+        return model.trueConstraint();
     }
 
 
@@ -130,20 +112,14 @@ public abstract class ContrainteChoco<T> {
     }
 
     public BoolVar[] reify() {
-        if (constraintReified.isEmpty()) {
+        if (constraints.size() == 0) {
             //modulesInChoco.forEach(m -> unPost(m));
-            constraintReified.addAll(modulesInChoco.stream().map(m -> getConstraint(m).reify()).collect(Collectors.toList()));
+            modulesInChoco.stream().forEach(m -> constraints.put(m, createConstraint(m).reify()));
+
         }
-        return constraintReified.stream().toArray(BoolVar[]::new);
+        return constraints.values().stream().toArray(BoolVar[]::new);
 
     }
 
-    public Constraint getConstraint(ModuleChoco module) {
-        Constraint constraint = constraints.get(module);
-        if (constraint == null) {
-            constraint = createConstraint(module);
-            constraints.put(module, constraint);
-        }
-        return constraint;
-    }
+
 }

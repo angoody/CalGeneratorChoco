@@ -107,7 +107,31 @@ public class ListeContrainteChoco<T extends ItemContrainteChoco> {
 
     public List<Constraint> post(int nbModule)
     {
-        return contraintesChoco.stream().map(c -> c.post(nbModule)).collect(Collectors.toList());
+ /*       if (constraints.size() == 0)
+        {
+            contraintesChoco.forEach(c -> constraints.put(c, createConstraint(c)));
+
+        }
+
+        if (operation == AND) {
+            for (Constraint constraint : constraints.values()) {
+                if (constraint.getStatus() == Constraint.Status.REIFIED)
+                    model.unpost(constraint);
+
+            }
+        }
+
+
+
+        // On ne doit pas reposter deux fois la même contrainte dans Choco
+        if (constraint.getStatus() != Constraint.Status.POSTED)
+            constraint.post();
+
+        // au post les contraintes sont respectées
+        contrainte.getConstrainteRespected().setRespected(true);
+
+        return constraint;*/
+        return contraintesChoco.stream().map(c -> post(c)).collect(Collectors.toList());
     }
 
 

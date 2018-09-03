@@ -34,7 +34,8 @@ public class ContrainteChocoAnnualNumberHour extends ContrainteChoco<Integer> {
 
     @Override
     public String getConstraintName() {
-        return language.getString("contrainte.annualHour");
+
+        return String.format(language.getString("contrainte.annualHour"), getContraintePriority().getValue());
     }
 
     @Override

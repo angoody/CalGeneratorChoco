@@ -61,15 +61,16 @@ public class PropagatorMaxAnnualHour extends Propagator<IntVar> {
                 }
             }
 
-
+            // retrouve la date de début de l'année par rapport au premier cours
+            // si le premier module commence le 03/04/2017, alors la seconde année commence le 03/04/2018
             int anneeDebut = (((module.getFin().getValue() - datePremierModule) / 365) * 365) + datePremierModule;
-            int anneeFin = ((((module.getFin().getValue() - datePremierModule) / 365) + 1) * 365) + datePremierModule;
+            int anneeFin = anneeDebut + 365;
 
             Integer countHour = 0;
 
             for (ModuleChoco moduleChoco : modules) {
                 if (moduleChoco.getDebut().getValue() >= anneeDebut && moduleChoco.getFin().getValue() <= anneeFin) {
-                    countHour = countHour + moduleChoco.getDuration().getValue();
+                    countHour = countHour + moduleChoco.getModulesWorkingDayDuration().getValue();
                 }
             }
 

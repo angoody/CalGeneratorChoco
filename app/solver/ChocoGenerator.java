@@ -191,13 +191,8 @@ public class ChocoGenerator
                                             model.getModel().and(
                                                     model.getModuleInChoco().stream()
                                                         .filter(m -> module.getIdModule() == m.getIdModule() )
-                                                            .map(
-                                                                    m -> model.getModel().and(
-                                                                        model.getModel().arithm(m.getDebut(), "!=", module.getDebut().getValue()),
-                                                                        model.getModel().arithm(m.getFin(), "!=", module.getFin().getValue()),
-                                                                        model.getModel().arithm(m.getLieu(), "!=", module.getLieu().getValue())
-                                                                )
-                                                            ).toArray(Constraint[]::new)
+                                                            .map(m -> model.getModel().arithm(m.getCoursId(), "!=", module.getCoursId().getValue()))
+                                                            .toArray(Constraint[]::new)
                                             )
                                     )
                             );

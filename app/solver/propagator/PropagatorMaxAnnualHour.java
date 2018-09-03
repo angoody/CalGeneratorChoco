@@ -42,7 +42,7 @@ public class PropagatorMaxAnnualHour extends Propagator<IntVar> {
 
     public Boolean isAternatifSearch()
     {
-        return alternatif;
+        return countNumberOfHour() > nbHour;
     }
 
     @Override
@@ -54,27 +54,7 @@ public class PropagatorMaxAnnualHour extends Propagator<IntVar> {
             isEntailed = ESat.TRUE;
         }
         else {
-            Integer datePremierModule = fin;
-            for (ModuleChoco moduleChoco : modules) {
-                if (moduleChoco.getDebut().getValue() >= debut && moduleChoco.getFin().getValue() <= fin && moduleChoco.getDebut().getValue() < datePremierModule) {
-                    datePremierModule = moduleChoco.getDebut().getValue();
-                }
-            }
-
-            // retrouve la date de début de l'année par rapport au premier cours
-            // si le premier module commence le 03/04/2017, alors la seconde année commence le 03/04/2018
-            int anneeDebut = (((module.getFin().getValue() - datePremierModule) / 365) * 365) + datePremierModule;
-            int anneeFin = anneeDebut + 365;
-
-            Integer countHour = 0;
-
-            for (ModuleChoco moduleChoco : modules) {
-                if (moduleChoco.getDebut().getValue() >= anneeDebut && moduleChoco.getFin().getValue() <= anneeFin) {
-                    countHour = countHour + moduleChoco.getModulesWorkingDayDuration().getValue();
-                }
-            }
-
-            if (countHour > nbHour) {
+            if (countNumberOfHour() > nbHour) {
                 for (IntVar var : getVars()) {
                     var.removeValue(var.getValue(), this);
                     isEntailed = ESat.UNDEFINED;
@@ -89,5 +69,28 @@ public class PropagatorMaxAnnualHour extends Propagator<IntVar> {
     @Override
     public ESat isEntailed() {
         return isEntailed;
+    }
+
+    private Integer countNumberOfHour() {
+        Integer datePremierModule = fin;
+        for (ModuleChoco moduleChoco : modules) {
+            if (moduleChoco.getDebut().getValue() >= debut && moduleChoco.getFin().getValue() <= fin && moduleChoco.getDebut().getValue() < datePremierModule) {
+                datePremierModule = moduleChoco.getDebut().getValue();
+            }
+        }
+
+        // retrouve la date de début de l'année par rapport au premier cours
+        // si le premier module commence le 03/04/2017, alors la seconde année commence le 03/04/2018
+        int anneeDebut = (((module.getFin().getValue() - datePremierModule) / 365) * 365) + datePremierModule;
+        int anneeFin = anneeDebut + 365;
+
+        Integer countHour = 0;
+
+        for (ModuleChoco moduleChoco : modules) {
+            if (moduleChoco.getDebut().getValue() >= anneeDebut && moduleChoco.getFin().getValue() <= anneeFin) {
+                countHour = countHour + moduleChoco.getModulesWorkingDayDuration().getValue();
+            }
+        }
+        return countHour;
     }
 }

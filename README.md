@@ -55,17 +55,18 @@ Si une contrainte est renseigné alors leurs valeurs obligatoire et les valeurs 
 Ex: si la contrainte de place est renseigné, il faut un objet ConstraintPriority de type Integer.
 Ce type d'objet demande un entier priority qui a une valeur par défaut à -1 et un entier qui est obligatoire.
 
-| Atribut | Type | Obligatoire | Valeur par défaut |
-|---------|------|-------------|-------------------|
-|place |ConstraintPriority de type Integer |Non|Non|
-|maxDurationOfTraining |ConstraintPriority de type Integer |Non|Non|
-|maxDurationOfTraining |ConstraintPriority de type Integer |Non|Non|
-|trainingFrequency |ConstraintPriority de type TrainingFrequency|Non|Non|
-|maxStudentInTraining |ConstraintPriority de type StudentCompany |Non|Non|
-|listStudentRequired |Liste de ConstraintPriority de type Student |Non|Non|
-|listPeriodeOfTrainingExclusion |Liste de ConstraintPriority de type Period |Non|Non|
-|listPeriodeOfTrainingInclusion |Liste de ConstraintPriority de type Period |Non|Non|
-|constraintPrerequisite |ConstraintPriority de type Boolean |Non|Oui (priorité -1)|
+| Atribut | Type | Obligatoire | Valeur par défaut | Commentaire |
+|---------|------|-------------|-------------------|-------------|
+|place |ConstraintPriority de type Integer |Non|Non| le lieu |
+|maxDurationOfTraining |ConstraintPriority de type Integer |Non|Non| le volume d'heure max annuel de formation |
+|maxDurationOfTraining |ConstraintPriority de type Integer |Non|Non| Amplitude maximum de la formation en semaines |
+|trainingFrequency |ConstraintPriority de type TrainingFrequency|Non|Non| Fréquence de formation, composé du nombre max de semaine de formation et du nombre minimum de semaine en entreprise |
+|maxStudentInTraining |ConstraintPriority de type StudentCompany |Non|Non| Nombre maximum de stagiaires d'une même entreprise à suivre les cours en même temps |
+|listStudentRequired |Liste de ConstraintPriority de type Student |Non|Non| Liste des stagiaires dont la présence d'au moins un stagiaire est requise |
+|listPeriodeOfTrainingExclusion |Liste de ConstraintPriority de type Period |Non|Non| Liste des périodes de présences obligatoire en entreprise |
+|listPeriodeOfTrainingInclusion |Liste de ConstraintPriority de type Period |Non|Non|Liste des périodes de présences obligatoire en formation |
+|constraintPrerequisite |ConstraintPriority de type Boolean |Non|Oui (priorité -1)| Contrainte sur la prise en compte des modules prérequis |
+|constraintModuleDuration |ConstraintPriority de type Boolean |Non|Oui (priorité -1)| Contrainte sur la prise en compte de la durée du module |
 
 
 ### Objet ConstraintPriority de type Integer

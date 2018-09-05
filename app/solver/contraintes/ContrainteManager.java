@@ -72,7 +72,12 @@ public class ContrainteManager
         // Contrainte de l'amplitude max de la formation en semaine
         if (constraint.getMaxDurationOfTraining().getValue() > 0)
         {
-
+            ContrainteChocoMaxDurationOfTraining durationOfTraining = new ContrainteChocoMaxDurationOfTraining(
+                    model,
+                    constraint.getMaxDurationOfTraining(),
+                    moduleInChoco);
+            moduleInChoco.forEach(m -> durationOfTraining.post(m));
+            contrainteParPriorite.add(durationOfTraining);
         }
 
         // Période d'exclusion de formation

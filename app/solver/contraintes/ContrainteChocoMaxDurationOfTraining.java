@@ -16,7 +16,7 @@ public class ContrainteChocoMaxDurationOfTraining extends ContrainteChoco<Intege
 
     private Map<ModuleChoco, PropagatorMaxDurationOfTraining> propagators   = new HashMap<>();
 
-    public ContrainteChocoMaxDurationOfTraining(Model model, ConstraintPriority<Integer> contrainteModel, List<ModuleChoco> modulesInChoco, Period periodOfTraining) {
+    public ContrainteChocoMaxDurationOfTraining(Model model, ConstraintPriority<Integer> contrainteModel, List<ModuleChoco> modulesInChoco) {
         super(model, contrainteModel, modulesInChoco);
     }
 

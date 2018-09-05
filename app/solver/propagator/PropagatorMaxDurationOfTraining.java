@@ -21,7 +21,7 @@ public class PropagatorMaxDurationOfTraining extends Propagator<IntVar> {
 
     public PropagatorMaxDurationOfTraining(ModuleChoco module, List<ModuleChoco> modules, Integer nbWeek)
     {
-        super(module.getDebut());
+        super(module.getFin());
         this.module = module;
         this.modules = modules;
         this.nbWeek = nbWeek;
@@ -47,14 +47,17 @@ public class PropagatorMaxDurationOfTraining extends Propagator<IntVar> {
             isEntailed = ESat.TRUE;
         }
         else {
-            if (countNumberOfWeek() > nbWeek) {
-                for (IntVar var : getVars()) {
+            Integer datePremierModule = modules.stream().mapToInt(m -> m.getDebut().getValue()).min().getAsInt();
+            for (IntVar var : getVars()) {
+                if ( var.getValue() - datePremierModule > nbWeek) {
                     var.removeValue(var.getValue(), this);
                     isEntailed = ESat.UNDEFINED;
+                } else {
+                    isEntailed = ESat.TRUE;
                 }
-            } else {
-                isEntailed = ESat.TRUE;
             }
+
+
         }
 
     }

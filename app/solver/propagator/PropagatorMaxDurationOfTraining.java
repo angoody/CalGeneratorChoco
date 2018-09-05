@@ -1,37 +1,30 @@
 package solver.propagator;
 
 import models.common.Period;
-import org.chocosolver.solver.constraints.Operator;
 import org.chocosolver.solver.constraints.Propagator;
-import org.chocosolver.solver.constraints.nary.sum.PropSum;
 import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.util.ESat;
 import solver.modelChoco.ModuleChoco;
 import utils.DateTimeHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class PropagatorMaxAnnualHour extends Propagator<IntVar> {
+public class PropagatorMaxDurationOfTraining extends Propagator<IntVar> {
 
 
     private ModuleChoco module;
     private final List<ModuleChoco> modules;
-    private final Integer nbHour;
-    private final Integer fin;
-    private final Integer debut;
+    private final Integer nbWeek;
     private boolean alternatif = false;
     private ESat isEntailed;
 
-    public PropagatorMaxAnnualHour (ModuleChoco module, List<ModuleChoco> modules, Period period, Integer nbHour)
+    public PropagatorMaxDurationOfTraining(ModuleChoco module, List<ModuleChoco> modules, Integer nbWeek)
     {
         super(module.getDebut());
         this.module = module;
         this.modules = modules;
-        this.nbHour = nbHour;
-        fin = DateTimeHelper.toDays(period.getEnd());
-        debut = DateTimeHelper.toDays(period.getStart());
+        this.nbWeek = nbWeek;
     }
 
 
@@ -42,7 +35,7 @@ public class PropagatorMaxAnnualHour extends Propagator<IntVar> {
 
     public Boolean isAternatifSearch()
     {
-        return countNumberOfHour() > nbHour;
+        return countNumberOfWeek() > nbWeek;
     }
 
     @Override
@@ -54,7 +47,7 @@ public class PropagatorMaxAnnualHour extends Propagator<IntVar> {
             isEntailed = ESat.TRUE;
         }
         else {
-            if (countNumberOfHour() > nbHour) {
+            if (countNumberOfWeek() > nbWeek) {
                 for (IntVar var : getVars()) {
                     var.removeValue(var.getValue(), this);
                     isEntailed = ESat.UNDEFINED;
@@ -71,21 +64,11 @@ public class PropagatorMaxAnnualHour extends Propagator<IntVar> {
         return isEntailed;
     }
 
-    private Integer countNumberOfHour() {
+    private Integer countNumberOfWeek() {
         Integer datePremierModule = modules.stream().mapToInt(m -> m.getDebut().getValue()).min().getAsInt();
+        Integer dateDernierModule = modules.stream().mapToInt(m -> m.getFin().getValue()).max().getAsInt();
 
-        // retrouve la date de début de l'année par rapport au premier cours
-        // si le premier module commence le 03/04/2017, alors la seconde année commence le 03/04/2018
-        int anneeDebut = (((module.getFin().getValue() - datePremierModule) / 365) * 365) + datePremierModule;
-        int anneeFin = anneeDebut + 365;
+        return (dateDernierModule - datePremierModule) / 7;
 
-        Integer countHour = 0;
-
-        for (ModuleChoco moduleChoco : modules) {
-            if (moduleChoco.getDebut().getValue() >= anneeDebut && moduleChoco.getFin().getValue() <= anneeFin) {
-                countHour = countHour + moduleChoco.getModulesWorkingDayDuration().getValue();
-            }
-        }
-        return countHour;
     }
 }

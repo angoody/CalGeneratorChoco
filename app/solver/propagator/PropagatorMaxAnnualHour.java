@@ -72,12 +72,7 @@ public class PropagatorMaxAnnualHour extends Propagator<IntVar> {
     }
 
     private Integer countNumberOfHour() {
-        Integer datePremierModule = fin;
-        for (ModuleChoco moduleChoco : modules) {
-            if (moduleChoco.getDebut().getValue() >= debut && moduleChoco.getFin().getValue() <= fin && moduleChoco.getDebut().getValue() < datePremierModule) {
-                datePremierModule = moduleChoco.getDebut().getValue();
-            }
-        }
+        Integer datePremierModule = modules.stream().mapToInt(m -> m.getDebut().getValue()).min().getAsInt();
 
         // retrouve la date de début de l'année par rapport au premier cours
         // si le premier module commence le 03/04/2017, alors la seconde année commence le 03/04/2018

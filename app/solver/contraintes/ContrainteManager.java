@@ -69,6 +69,17 @@ public class ContrainteManager
             contrainteParPriorite.add(contrainteHeureAnnuel);
         }
 
+        // Contrainte de l'amplitude max de la formation en semaine
+        if (constraint.getMaxDurationOfTraining().getValue() > 0)
+        {
+            ContrainteChocoMaxDurationOfTraining durationOfTraining = new ContrainteChocoMaxDurationOfTraining(
+                    model,
+                    constraint.getMaxDurationOfTraining(),
+                    moduleInChoco);
+            moduleInChoco.forEach(m -> durationOfTraining.post(m));
+            contrainteParPriorite.add(durationOfTraining);
+        }
+
         // Période d'exclusion de formation
         if (constraint.getListPeriodeOfTrainingExclusion().size() > 0)
         {
@@ -78,11 +89,9 @@ public class ContrainteManager
         }
 
         // Période de formation obligatoire
-        ListeContrainteChoco<ContrainteChocoPeriodeInclusion> contraintePeriodeInclusion;
-
         if (constraint.getListPeriodeOfTrainingInclusion().size() > 0)
         {
-            contraintePeriodeInclusion = new ListeContrainteChoco<>(model, constraint.getListPeriodeOfTrainingInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
+            ListeContrainteChoco<ContrainteChocoPeriodeInclusion> contraintePeriodeInclusion = new ListeContrainteChoco<>(model, constraint.getListPeriodeOfTrainingInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
             contraintePeriodeInclusion.post();
             contrainteParPriorite.addAll(contraintePeriodeInclusion.getContraintesChoco());
         }
@@ -102,9 +111,9 @@ public class ContrainteManager
         if (constraint.getListStudentRequired().size() > 0)
         {
             //coursDesStagiairesRecquis = constraint.getListStudentRequired().stream().flatMap(stagiaire -> stagiaire.getValue().getListClasses().stream().map(cr -> new PeriodeChoco(cr))).collect(Collectors.toList());
-            contraintePeriodeInclusion = new ListeContrainteChoco<>(model, constraint.getListPeriodeOfTrainingInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
-            contraintePeriodeInclusion.post();
-            contrainteParPriorite.addAll(contraintePeriodeInclusion.getContraintesChoco());
+            ListeContrainteChoco<ContrainteChocoPeriodeInclusion> contraintePeriodeStudent = new ListeContrainteChoco<>(model, constraint.getListPeriodeOfTrainingInclusion(), ContrainteChocoPeriodeInclusion.class, moduleInChoco, ListeContrainteChoco.OR);
+            contraintePeriodeStudent.post();
+            contrainteParPriorite.addAll(contraintePeriodeStudent.getContraintesChoco());
         }
 
         // les cours dont le nombre de stagiaire a atteint le nombre maximum

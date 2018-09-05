@@ -205,7 +205,6 @@ public class ChocoGenerator
                 else
                 {
                     System.out.println("Doublon trouvé essai " + nbEssai);
-
                 }
 
 
@@ -218,9 +217,6 @@ public class ChocoGenerator
             nbEssai++;
 
         }
-
-
-        // ChocoTest.calendarToCsv(problem.getModuleOfTraining().stream().flatMap(m -> m.getListClasses().stream()).collect(Collectors.toList()), calendriersTrouve, problem.getPeriodOfTraining());
 
         return calendriersTrouve;
 

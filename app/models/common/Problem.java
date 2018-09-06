@@ -1,5 +1,6 @@
 package models.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Problem
@@ -7,7 +8,7 @@ public class Problem
 
     private Period periodOfTraining;
     private Constraint constraints = new Constraint();
-    private List<Module> moduleOfTraining;
+    private List<Module> moduleOfTraining = new ArrayList<>();
 
     public Problem()
     {

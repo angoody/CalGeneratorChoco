@@ -80,11 +80,15 @@ public class PropagatorContrainteLieu extends PropMemberEnum {
                 }
             }
         }
-        else if (alternatif || noLieuPrefere) {
+        else if (noLieuPrefere || alternatif) {
             for (IntVar var : getVars())
-                for (Integer integer : lieuxDuModule)
-                    if (!autreLieuPossible.contains(integer))
-                    var.removeValue(integer, this);
+            {
+                if (autreLieuPossible.stream().anyMatch(al -> lieuxDuModule.contains(al)))
+                    for (Integer integer : lieuxDuModule)
+                        if (!autreLieuPossible.contains(integer))
+                            var.removeValue(integer, this);
+            }
+
         }
 
 

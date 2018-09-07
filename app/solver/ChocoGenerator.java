@@ -221,7 +221,7 @@ public class ChocoGenerator
                 nbEssai++;
 
             }
-
+            System.out.println("Nombre d'essai parcouru " + nbEssai);
         }
 
 

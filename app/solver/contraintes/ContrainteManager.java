@@ -235,7 +235,7 @@ public class ContrainteManager
 
     public void alternateSearch(int nbEssai)
     {
-        alternateSearch(nbEssai % moduleInChoco.size(), (nbEssai / moduleInChoco.size()) % moduleInChoco.size(), (nbEssai / (moduleInChoco.size() * moduleInChoco.size() + 1)));
+        alternateSearch((nbEssai-1) % moduleInChoco.size(), (nbEssai / moduleInChoco.size()) % moduleInChoco.size(), (nbEssai / (moduleInChoco.size() * moduleInChoco.size() + 1)));
 
 
     }

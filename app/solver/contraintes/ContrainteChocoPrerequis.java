@@ -15,27 +15,31 @@ import java.util.stream.Collectors;
 public class ContrainteChocoPrerequis extends ContrainteChoco<Boolean>
 {
     private Map<ModuleChoco, PropagatorContraintePrerequis> propagators = new HashMap<>();
+    private Boolean optional;
 
 
-    public ContrainteChocoPrerequis(Model model, ConstraintPriority<Boolean> prerequis, List<ModuleChoco> modulesInChoco)
+    public ContrainteChocoPrerequis(Model model, ConstraintPriority<Boolean> prerequis, List<ModuleChoco> modulesInChoco, Boolean optional)
     {
         super(model, prerequis, modulesInChoco);
+        this.optional = optional;
     }
 
     @Override
     public Constraint createConstraint(ModuleChoco module)
     {
         List<Constraint> contraintes = new ArrayList<>();
-        if (module.getModuleRequis().size() > 0)
+        if (!optional && module.getModuleRequis().size() > 0)
         {
             contraintes.addAll(module.getModuleRequis().stream().map(m -> model.arithm(module.getDebut(), ">", m.getFin())).collect(Collectors.toList()));
         }
-        if (module.getModuleFacultatif().size() > 0 )
+        if (optional && module.getModuleFacultatif().size() > 0 )
         {
             contraintes.addAll(module.getModuleFacultatif().stream().map(m -> model.arithm(module.getDebut(), ">", m.getFin())).collect(Collectors.toList()));
         }
-
-        return model.and(contraintes.stream().toArray(Constraint[]::new));
+        if (contraintes.size() == 0)
+            return model.trueConstraint();
+        else
+            return model.and(contraintes.stream().toArray(Constraint[]::new));
     }
 
     @Override
@@ -44,4 +48,11 @@ public class ContrainteChocoPrerequis extends ContrainteChoco<Boolean>
         return language.getString("contrainte.modules.prerequis");
     }
 
+    @Override
+    public Boolean isAlternateSearch(ModuleChoco module) {
+        if (!optional)
+            return getModulesInChoco().stream().filter(m -> m.getDebut().getValue() > module.getFin().getValue()).anyMatch(m -> module.getModuleRequis().contains(m));
+        else
+            return getModulesInChoco().stream().filter(m -> m.getDebut().getValue() > module.getFin().getValue()).anyMatch(m -> module.getModuleFacultatif().contains(m));
+    }
 }

@@ -42,14 +42,14 @@ public class PropagatorMaxDurationOfTraining extends Propagator<IntVar> {
     public void propagate(int evtmask) throws ContradictionException {
 
         // determine le premier cours
-        if (isAternatifSearch())
+        if (alternatif)
         {
             isEntailed = ESat.TRUE;
         }
         else {
-            Integer datePremierModule = modules.stream().mapToInt(m -> m.getDebut().getValue()).min().getAsInt();
+            int datePremierModule = modules.stream().mapToInt(m -> m.getDebut().getValue()).min().getAsInt();
             for (IntVar var : getVars()) {
-                if ( var.getValue() - datePremierModule > nbWeek) {
+                if ( ((var.getValue() - datePremierModule) / 7) > nbWeek) {
                     var.removeValue(var.getValue(), this);
                     isEntailed = ESat.UNDEFINED;
                 } else {

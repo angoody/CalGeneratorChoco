@@ -1,6 +1,7 @@
 package solver.contraintes;
 
 import models.common.Constraint;
+import models.common.ConstraintPriority;
 import models.common.ConstraintRespected;
 import models.common.Problem;
 import org.chocosolver.solver.Model;
@@ -14,6 +15,7 @@ public class ContrainteManager
 {
 
 
+
     private int                   oldStart              = 0;
     private int                   oldNbModuleToFree     = 0;
     private int                   oldNbConstraintToFree = 0;
@@ -22,6 +24,7 @@ public class ContrainteManager
 
 
     private ContrainteChocoLieu                                   contrainteLieu              = null;
+    private ContrainteChocoPrerequis                              contrainteOptional          = null;
     private ContrainteChocoAnnualNumberHour                       contrainteHeureAnnuel       = null;
     private ContrainteChocoPrerequis                              contraintePrerequis         = null;
     private ContrainteChocoModuleDuration                         contrainteModuleDuration    = null;
@@ -36,7 +39,7 @@ public class ContrainteManager
         Constraint constraint = problem.getConstraints();
         this.moduleInChoco = moduleInChoco;
 
-        contraintePrerequis = new ContrainteChocoPrerequis(model, constraint.getPrerequisModule(), moduleInChoco);
+        contraintePrerequis = new ContrainteChocoPrerequis(model, constraint.getPrerequisModule(), moduleInChoco, false);
         moduleInChoco.stream().filter(m -> m.getModuleRequis().size() > 0).forEach(m -> contraintePrerequis.post(m));
         contrainteParPriorite = new ArrayList<>();
         contrainteParPriorite.add(contraintePrerequis);
@@ -124,6 +127,12 @@ public class ContrainteManager
             moduleInChoco.forEach(m -> contrainteChocoMaxStagiaire.post(m));
             contrainteParPriorite.add(contrainteChocoMaxStagiaire);
         }
+
+        // module facultatif
+        ConstraintPriority<Boolean> contraintePrerequisOptional = new ConstraintPriority<Boolean>(contrainteParPriorite.stream().mapToInt(c -> c.getContraintePriority().getPriority()).max().getAsInt() + 1, constraint.getPrerequisModule().getID(), constraint.getPrerequisModule().getValue());
+        contrainteOptional = new ContrainteChocoPrerequis(model, contraintePrerequisOptional, moduleInChoco, true);
+        moduleInChoco.stream().filter(m -> m.getModuleFacultatif().size() > 0).forEach(m -> contrainteOptional.post(m));
+        contrainteParPriorite.add(contrainteOptional);
 
 
         // Les contraintes décomposé retirable sont ajoutée dans la liste des contrainte Par Priorite décroissante

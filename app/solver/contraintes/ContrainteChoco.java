@@ -88,7 +88,7 @@ public abstract class ContrainteChoco  <T> {
     public Constraint unPost(ModuleChoco module)
     {
         Constraint constraint = constraints.get(module);
-        if (constraint.getStatus() == Constraint.Status.POSTED)
+        if (constraint != null && constraint.getStatus() == Constraint.Status.POSTED)
             model.unpost(constraint);
         //constraint.reify();
         constrainteRespected.setRespected(false);

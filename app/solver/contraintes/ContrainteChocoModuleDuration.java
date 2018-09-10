@@ -43,7 +43,7 @@ public class ContrainteChocoModuleDuration extends ContrainteChoco<Boolean>
     @Override
     public String getConstraintName()
     {
-        return language.getString("contrainte.modules.duration");
+        return "Durée du module";
     }
 
 }

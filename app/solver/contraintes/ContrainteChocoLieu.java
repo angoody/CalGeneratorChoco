@@ -60,7 +60,7 @@ public class ContrainteChocoLieu extends ContrainteChoco<Integer>
     @Override
     public String getConstraintName()
     {
-        return String.format(language.getString("contrainte.idPlace"), getContraintePriority().getValue());
+        return String.format("Lieu %d", getContraintePriority().getValue());
     }
 
     @Override

@@ -32,7 +32,7 @@ public class ContrainteChocoPeriodeFormation extends ContrainteChoco<TrainingFre
     @Override
     public String getConstraintName()
     {
-        return String.format(language.getString("contrainte.frequence.formation"), getContraintePriority().getValue().getMaxWeekInTraining(), getContraintePriority().getValue().getMinWeekInCompany());
+        return String.format("Fréquence de formation de %d semaines et de %d semaines en entreprise", getContraintePriority().getValue().getMaxWeekInTraining(), getContraintePriority().getValue().getMinWeekInCompany());
     }
 
 }

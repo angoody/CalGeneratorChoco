@@ -35,7 +35,7 @@ public class ContrainteChocoPeriodeInclusion extends ItemContrainteChoco<Period>
     @Override
     public String getConstraintName()
     {
-        return String.format(language.getString("contrainte.periodes.inclues"), getContraintePriority().getValue().getStart(), getContraintePriority().getValue().getEnd());
+        return String.format("Périodes inclues du %s au %s", getContraintePriority().getValue().getStart(), getContraintePriority().getValue().getEnd());
     }
 
 

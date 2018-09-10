@@ -21,7 +21,7 @@ public class ChocoTest
 
 
         Generator problem = new Generator(initProblem());
-        problem.setNumberOfCalendarToFound(5);
+        problem.setNumberOfCalendarToFound(4);
 
         ChocoGenerator solver = new ChocoGenerator(problem);
         solver.addListener(new ChocoGeneratorListener()

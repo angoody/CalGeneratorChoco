@@ -31,7 +31,7 @@ public class ContrainteChocoMaxDurationOfTraining extends ContrainteChoco<Intege
     @Override
     public String getConstraintName() {
 
-        return String.format(language.getString("contrainte.training.duration.max"), getContraintePriority().getValue());
+        return String.format("Amplitude maximum de %d semaines", getContraintePriority().getValue());
     }
 
     @Override

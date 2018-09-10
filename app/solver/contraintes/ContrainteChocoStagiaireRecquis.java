@@ -34,7 +34,7 @@ public class ContrainteChocoStagiaireRecquis extends ItemContrainteChoco<Student
     @Override
     public String getConstraintName()
     {
-        return language.getString("contrainte.stagiaires.recquis");
+        return "Stagiaires recquis";
     }
 
     @Override

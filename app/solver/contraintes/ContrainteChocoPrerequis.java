@@ -45,7 +45,7 @@ public class ContrainteChocoPrerequis extends ContrainteChoco<Boolean>
     @Override
     public String getConstraintName()
     {
-        return language.getString("contrainte.modules.prerequis");
+        return "Modules prérequis";
     }
 
     @Override

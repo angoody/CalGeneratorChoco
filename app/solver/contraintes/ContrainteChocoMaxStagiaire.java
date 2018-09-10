@@ -41,6 +41,6 @@ public class ContrainteChocoMaxStagiaire extends ContrainteChoco<StudentCompany>
     @Override
     public String getConstraintName()
     {
-        return String.format(language.getString("contrainte.stagiaires.entreprise"), getContraintePriority().getValue().getMaxStudentInTraining());
+        return String.format("%d stagiaires de la même entreprise", getContraintePriority().getValue().getMaxStudentInTraining());
     }
 }

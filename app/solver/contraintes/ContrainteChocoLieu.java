@@ -78,7 +78,7 @@ public class ContrainteChocoLieu extends ContrainteChoco<Integer>
     @Override
     public Boolean isAlternateSearch(ModuleChoco module)
     {
-        return propagators.get(module).isAternatifSearch();
+        return module.getLieu().getValue() != getContraintePriority().getValue();
     }
 
     // https://stackoverflow.com/questions/46468877/choco-solver-propogation-and-search-strategy-interaction

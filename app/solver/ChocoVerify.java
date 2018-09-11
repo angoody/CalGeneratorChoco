@@ -146,9 +146,11 @@ public class ChocoVerify
                 model.getContrainteManager().disableConstraint();
 
                 for (ModuleChoco module : model.getModuleInChoco()) {
-                    model.getContrainteManager().enableConstraint(module);
+
                     Boolean verif = false;
                     try{
+                        solver.reset();
+                        model.getContrainteManager().enableConstraint(module);
                         verif = solver.solve();
                     }
                     catch (SolverException e)
@@ -162,9 +164,11 @@ public class ChocoVerify
                             model.getContrainteManager().disableConstraint(module);
                             List<ConstraintRespected> constraintRespected = new ArrayList<>();
                             for (ContrainteChoco contrainte : model.getContrainteManager().getContrainteParPriorite()) {
-                                model.getContrainteManager().enableConstraint(contrainte, module);
+
                                 verif = false;
                                 try{
+                                    solver.reset();
+                                    model.getContrainteManager().enableConstraint(contrainte, module);
                                     verif = solver.solve();
                                 }
                                 catch (SolverException e2)

@@ -14,8 +14,8 @@ public class Constraint implements Serializable
     private List<ConstraintPriority<Student>>     listStudentRequired            = new ArrayList<>();
     private List<ConstraintPriority<Period>>      listPeriodeOfTrainingExclusion = new ArrayList<>();
     private List<ConstraintPriority<Period>>      listPeriodeOfTrainingInclusion = new ArrayList<>();
-    private ConstraintPriority<Boolean>           constraintPrerequisite         = new ConstraintPriority<Boolean>(true);
-    private ConstraintPriority<Boolean>           constraintModuleDuration       = new ConstraintPriority<Boolean>(true);
+    private ConstraintPriority<Boolean>           constraintPrerequisite         = new ConstraintPriority<Boolean>(-2, true);
+    private ConstraintPriority<Boolean>           constraintModuleDuration       = new ConstraintPriority<Boolean>(-3, true);
 
 
     public Constraint()

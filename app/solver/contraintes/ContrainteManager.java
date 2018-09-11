@@ -238,7 +238,7 @@ public class ContrainteManager
 
     public Integer maxAlternateSearch()
     {
-        return (moduleInChoco.size()) * (moduleInChoco.size()) * contrainteParPriorite.size();
+        return (moduleInChoco.size()) * (moduleInChoco.size() +1 ) * (contrainteParPriorite.size());
 
     }
 
@@ -251,6 +251,7 @@ public class ContrainteManager
 
     private void alternateSearch(int start, int nbModuleToFree, int nbConstraintToFree)
     {
+        //System.out.println(start + " " + nbModuleToFree + "/" + moduleInChoco.size() + " " + nbConstraintToFree + "/" + contrainteParPriorite.size());
         disableAlternateSearch(oldStart, oldNbModuleToFree, oldNbConstraintToFree);
 
         for (int i = 0; i < nbConstraintToFree; i++)
